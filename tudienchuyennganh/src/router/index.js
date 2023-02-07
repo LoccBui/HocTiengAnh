@@ -1,18 +1,42 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 import PageNotFound from '../components/PageNotFound.vue'
 import ForgotPassword from '../components/ForgotPassword.vue'
-import MainLayout from '../layouts/MainLayout.vue'
 
+import MainLayout from '../layouts/MainLayout.vue'
+import TestComponent from '../layouts/TestComponent.vue'
+import Title from '../layouts/Title.vue'
+
+import LearnWords from '../views/LearnWords.vue'
+
+// views
+import Login from '../views/Login.vue'
 
 const routes = [
   {path: '/',  component: Login},
+  {path: '/login',  component: Login},
   {path: '/register',  component: Register},
   {path: '/forgot',  component: ForgotPassword},
-  {path: '/dashboard',  component: MainLayout},
+  {
+    path: '/home',
+    component: MainLayout,
+    children: [
+      {
+        path: '/test',
+        component: TestComponent
+      },
+      {
+        path: '/title',
+        component: Title
+      },
+      {
+        path: '/learning',
+        component: LearnWords
+      }
+  ]
+  },
 
   // Navigate 404 if not found any path
   {path: '/:pathMatch(.*)*',  component: PageNotFound},
