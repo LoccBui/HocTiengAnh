@@ -115,17 +115,8 @@ export default {
         },
 
         login(){
-            axiosInstance.get('/SelectAllSach',
-            {
-                
-                headers: {
-				// 'x-rapidapi-host': 'famous-quotes4.p.rapidapi.com',
-				// 'x-rapidapi-key': API_KEY,
-                "Access-Control-Allow-Origin": '*',
-                "Access-Control-Allow-Methods": 'HEAD, GET, POST, PUT, PATCH, DELETE',
-                "Access-Control-Allow-Headers": 'Origin, Content-Type, X-Auth-Token'
-			}
-            })
+            axiosInstance.get('/SelectAllUser')
+            .then(res => console.log(res.data))
         },
 
         async login1() {

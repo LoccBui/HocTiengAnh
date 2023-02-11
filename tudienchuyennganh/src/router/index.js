@@ -10,6 +10,7 @@ import TestComponent from '../layouts/TestComponent.vue'
 import Title from '../layouts/Title.vue'
 
 import LearnWords from '../views/LearnWords.vue'
+import Searching from '../views/Searching.vue'
 
 // views
 import Login from '../views/Login.vue'
@@ -24,8 +25,8 @@ const routes = [
     component: MainLayout,
     children: [
       {
-        path: '/test',
-        component: TestComponent
+        path: '/searching',
+        component: Searching
       },
       {
         path: '/title',

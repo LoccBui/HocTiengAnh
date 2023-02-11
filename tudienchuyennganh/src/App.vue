@@ -3,12 +3,14 @@
 </template>
 
 <script setup>
-
+       console.log = function () {}; // disable console.log
 </script>
 
 <style>
+/* color pallete picker: https://imagecolorpicker.com/color-code/0038ff */
 :root{
   --main-color: #0038FF;
+  --light-blue-90: #e6ebff;
   --gray-text: #888888;
 }
 
@@ -46,6 +48,20 @@ a:visited {
   cursor: default;
 }
 
+/* size */
+
+.txt-20{
+  font-size: 20px;
+}
+
+
+.txt-40{
+  font-size: 40px;
+}
+
+.size-icon-48px{
+  width: 48px;
+}
 
 
 </style>
