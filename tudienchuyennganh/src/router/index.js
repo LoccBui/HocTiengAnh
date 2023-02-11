@@ -11,6 +11,7 @@ import Title from '../layouts/Title.vue'
 
 import LearnWords from '../views/LearnWords.vue'
 import Searching from '../views/Searching.vue'
+import Topic from '../views/Topic.vue'
 
 // views
 import Login from '../views/Login.vue'
@@ -29,8 +30,8 @@ const routes = [
         component: Searching
       },
       {
-        path: '/title',
-        component: Title
+        path: '/topic',
+        component: Topic
       },
       {
         path: '/learning',

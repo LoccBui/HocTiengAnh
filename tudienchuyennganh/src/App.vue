@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
-       console.log = function () {}; // disable console.log
+       // disable console.log
+      //  console.log = function () {}; 
 </script>
 
 <style>
