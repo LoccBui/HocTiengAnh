@@ -58,7 +58,7 @@ export default {
 
   mounted(){
     this.changeTitle()
-    console.log('1')
+    console.log('learnword:1')
 
     this.speak()
   },

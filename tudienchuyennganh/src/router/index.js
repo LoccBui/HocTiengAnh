@@ -12,6 +12,7 @@ import Title from '../layouts/Title.vue'
 import LearnWords from '../views/LearnWords.vue'
 import Searching from '../views/Searching.vue'
 import Topic from '../views/Topic.vue'
+import TopicDetail from '../views/TopicDetail.vue'
 
 // views
 import Login from '../views/Login.vue'
@@ -21,6 +22,7 @@ const routes = [
   {path: '/login',  component: Login},
   {path: '/register',  component: Register},
   {path: '/forgot',  component: ForgotPassword},
+  {path: '/detail',  component: TopicDetail},
   {
     path: '/home',
     component: MainLayout,

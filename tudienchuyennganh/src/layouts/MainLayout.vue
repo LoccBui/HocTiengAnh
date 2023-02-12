@@ -41,13 +41,11 @@
 export default {
     data(){
         return {
-            abc: ``,
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
               {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
-              {icon: 'mdi-account', title: 'My Files', value: '4', route: '/learning'},
-              {icon: 'mdi-star', title: 'Starred', value: '5'}
+              {icon: 'mdi-account', title: 'Quản lý tài khoản', value: '4', route: '/account'}
             ]
         }
     },

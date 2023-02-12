@@ -37,8 +37,8 @@
                     <br>
 
                     <v-btn color="primary" width="100px">Học</v-btn>
-                    <v-btn color="primary" @click="abc()">
-                        <v-icon>mdi-menu</v-icon>
+                    <v-btn color="primary" @click=" this.showOption = !this.showOption">
+                        <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
                 </div>
             </div>
@@ -47,45 +47,45 @@
 
         <div class="topic-cover">
 
-<div class="header-info">
-    <div class="image-topic">
-        <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
-    </div>
+        <div class="header-info">
+            <div class="image-topic">
+                <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
+            </div>
 
-    <div class="info-topic">
+            <div class="info-topic">
 
-        <h1>Tên chủ đề</h1>
-        <h1> 1/200 từ đã học</h1>
-    
-        <v-progress-linear
-        v-model="value"
-        :buffer-value="bufferValue"
-        height="20"
-        value="20"
-        rounded
-        ></v-progress-linear>
-    </div>
-</div>
+                <h1>Tên chủ đề</h1>
+                <h1> 1/200 từ đã học</h1>
+            
+                <v-progress-linear
+                v-model="value"
+                :buffer-value="bufferValue"
+                height="20"
+                value="20"
+                rounded
+                ></v-progress-linear>
+            </div>
+        </div>
 
-<div class="body-info">
-    <div class="temporary"></div>
-    <div class="action-info">
-        <h1 title="Từ cần ôn tập">
-            <v-icon>mdi-history</v-icon> 10 
-        </h1>
+        <div class="body-info">
+            <div class="temporary"></div>
+            <div class="action-info">
+                <h1 title="Từ cần ôn tập">
+                    <v-icon>mdi-history</v-icon> 10 
+                </h1>
 
-        <h1 title="Từ khó">
-            <v-icon>mdi-alert-circle</v-icon> 20
-        </h1>           
-        
-        <br>
+                <h1 title="Từ khó">
+                    <v-icon>mdi-alert-circle</v-icon> 20
+                </h1>           
+                
+                <br>
 
-        <v-btn color="primary" width="100px">Học</v-btn>
-        <v-btn color="primary" @click="abc()">
-            <v-icon>mdi-menu</v-icon>
-        </v-btn>
-    </div>
-</div>
+                <v-btn color="primary" width="100px">Học</v-btn>
+                <v-btn color="primary" @click="abc()">
+                    <v-icon>mdi-menu</v-icon>
+                </v-btn>
+            </div>
+        </div>
 
         </div>
 
@@ -135,6 +135,8 @@
 
         <div class="topic-cover">
 
+
+
 <div class="header-info">
     <div class="image-topic">
         <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
@@ -176,19 +178,27 @@
 </div>
 
         </div>
+
+        <OptionLearning  v-if="showOption"
+            @close-option = this.closeOptionBox()
+        />
         
     </div>
 </template>
 
 <script>
+import OptionLearning from './OptionLearning.vue';
+
 export default {
+    components: {OptionLearning},
     data(){
-        value: 10;
-        bufferValue: 100
+        return{
+            showOption: false
+        }
     },
     methods:{
-        abc(){
-            console.log("topic: test")
+        closeOptionBox(){
+            this.showOption = false
         }
     }
 }
@@ -197,11 +207,13 @@ export default {
 <style lang="scss" scoped>
 
 .container{
+    position: relative;
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    height: 100vh;
 }
 
 

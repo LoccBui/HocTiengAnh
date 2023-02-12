@@ -8,11 +8,15 @@
 
 <script>
 export default {
-    beforeMount(){
+    mounted(){
+        this.changeTitle()
 
     },
 
     methods:{
+      changeTitle(){
+        document.title = "Tra từ"
+      },
 
     }
 }
