@@ -22,7 +22,7 @@ const routes = [
   {path: '/login',  component: Login},
   {path: '/register',  component: Register},
   {path: '/forgot',  component: ForgotPassword},
-  {path: '/detail',  component: TopicDetail},
+  {path: '/test',  component: TestComponent},
   {
     path: '/home',
     component: MainLayout,

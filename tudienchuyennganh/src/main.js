@@ -14,13 +14,14 @@ import GAuth from 'vue3-google-oauth2'
 
 const app = createApp(App)
 
+let gAuthClientId = '257245199825-6d2huvrs5vcta8ech2po7kni4dgtlv57.apps.googleusercontent.com'
+
 
 // Google Authentication
 const gAuthOptions = { 
-    clientId: '257245199825-6d2huvrs5vcta8ech2po7kni4dgtlv57.apps.googleusercontent.com', 
-    scope: 'profile email', 
+    clientId: gAuthClientId, 
+    scope: 'email', 
     prompt: 'consent', 
-    fetch_basic_profile: true ,
     plugin_name: 'HocTiengAnh'
 }
 app.use(GAuth, gAuthOptions)

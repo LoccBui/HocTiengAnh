@@ -11,6 +11,17 @@
 
                 <div class="frame-right">
                     <h1 class="heading-text"> ĐĂNG NHẬP </h1>
+
+
+                    <div class="google-btn hover-pointer" @click="auth()" >
+                        <div class="google-icon-wrapper">
+                        <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                        </div>
+                        <p class="btn-text"><b>Đăng nhập với Google</b></p>
+                    </div>
+
+                    <h1 class="sub-text"> hoặc </h1>
+
                     <v-form
                         ref="form"
                         v-model="valid"
@@ -51,7 +62,8 @@
                             to="/forgot"> Quên mật khẩu  </router-link>   
                         </h3>
 
-                        <v-btn color="primary" @click="auth()">Đăng kí google</v-btn>
+                        <h1>{{ Vue3GoogleOauth.isInit }}</h1>
+                        <h1>{{ Vue3GoogleOauth.isAuthorized }}</h1>
                     
                     </v-form>
 
@@ -78,14 +90,26 @@
 
 <script>
 import DialogBox from "../layouts/DialogBox.vue"
-import axiosInstance from '../axios';
+import axiosInstance from '../axios'
 
 import axios from 'axios'
-import router from "@/router";
+import router from "@/router"
 
-import {EventBus} from '@/EventBus'
+import { inject, toRefs } from "vue"
+
 
 export default {
+
+    setup(props) {
+      const { isSignIn } = toRefs(props);
+
+        const Vue3GoogleOauth = inject("Vue3GoogleOauth");
+            return{
+                Vue3GoogleOauth, isSignIn
+            }
+
+    },
+
     name: "Login",
     components: {DialogBox},
     data() {
@@ -126,11 +150,25 @@ export default {
         },
 
         async auth(){
-            const googleAuth = await this.$gAuth.signIn()
-            console.log(googleAuth.qv)
-            EventBus.$emit('hello', 123)
+            try {
+                const googleUser = await this.$gAuth.signIn();
+                if (!googleUser) {
+                    return null;
+                }
+                
+                router.push('/topic')
+                
+                    
+            } 
+            catch (error) {
+                //on fail do something
+                console.error(error);
+                return null;
+            }
+                
+            // EventBus.$emit('hello', 123)
 
-             router.push('/topic')
+            //  router.push('/topic')
         },
 
         async login1() {
@@ -175,6 +213,48 @@ export default {
     align-items: center;
 }
 
+// google buton
+.google-btn {
+  width: 100%;
+  height: 42px;
+  background-color: #4285f4;
+  border-radius: 2px;
+  box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+
+
+  .google-icon-wrapper {
+    position: absolute;
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 2px;
+    background-color: #fff;
+  }
+  .google-icon {
+    position: absolute;
+    margin-top: 11px;
+    margin-left: 11px;
+    width: 18px;
+    height: 18px;
+  }
+  .btn-text {
+    text-align: center;
+    margin: 11px 11px 0 0;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    font-family: "Roboto";
+  }
+  &:hover {
+    box-shadow: 0 0 6px #4285f4;
+  }
+  &:active {
+    background: #1669F2;
+  }
+}
+//end google buton
+
 #frame-cover{
     width: 100%;
     min-height: 80%;
@@ -202,6 +282,13 @@ export default {
 
     .heading-text{
         font-size: 40px;
+        color: var(--main-color);
+        text-align: center;
+        cursor: default;
+    }
+
+    .sub-text{
+        font-size: 20px;
         color: var(--main-color);
         text-align: center;
         cursor: default;

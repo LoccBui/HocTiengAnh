@@ -14,10 +14,11 @@
                     <h1> 1/200 từ đã học</h1>
                 
                     <v-progress-linear
-                    v-model="value"
+                    model-value= 80
                     :buffer-value="bufferValue"
                     height="20"
                     value="20"
+                    color="#0038FF"
                     rounded
                     ></v-progress-linear>
                 </div>
@@ -58,12 +59,12 @@
                 <h1> 1/200 từ đã học</h1>
             
                 <v-progress-linear
-                v-model="value"
-                :buffer-value="bufferValue"
-                height="20"
-                value="20"
-                rounded
-                ></v-progress-linear>
+                    model-value= 80
+                    :buffer-value="bufferValue"
+                    height="20"
+                    value="20"
+                    rounded
+                    ></v-progress-linear>
             </div>
         </div>
 
@@ -179,6 +180,8 @@
 
         </div>
 
+       
+
         <OptionLearning  v-if="showOption"
             @close-option = this.closeOptionBox()
         />
@@ -188,21 +191,36 @@
 
 <script>
 import OptionLearning from './OptionLearning.vue';
-import {EventBus} from '../EventBus.js'
+import { inject, toRefs } from "vue";
+import router from "@/router";
+
+import {authenticate} from '@/GlobalFunction/Authenticate.js'
+
 
 
 export default {
+    setup(props) {
+        const { isSignIn } = toRefs(props);
+
+        const Vue3GoogleOauth = inject("Vue3GoogleOauth");
+        return{
+            Vue3GoogleOauth,
+            isSignIn
+        }
+
+    },
+    mixins: [authenticate], 
     components: {OptionLearning},
     data(){
         return{
-            showOption: false
+            showOption: false,
         }
     },
 
     created() { 
-        EventBus.$on("hello", data=>{
-            console.log(data)
-        })
+        // EventBus.$on("hello", data=>{
+        //     console.log(data)
+        // })
         
         // Listening the event hello
     },
@@ -210,14 +228,12 @@ export default {
         // Stop listening the event hello with handler
     },
     mounted(){
-        console.log(this.$gAuth.qv)
-
-
     },
     methods:{
         closeOptionBox(){
             this.showOption = false
-        }
+        },
+
     }
 }
 </script>

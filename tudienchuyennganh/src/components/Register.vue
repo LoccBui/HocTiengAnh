@@ -42,11 +42,6 @@
                             :class="btn-login"
                             > Đăng nhập  
                         </v-btn>
-
-                        <h3 class="forgot-pass-text"> 
-                            <a href="#"> Quên mật khẩu </a>
-                        </h3>
-                    
                     </v-form>
 
                     <span class="navigate">
@@ -127,12 +122,6 @@ export default {
         color: var(--main-color);
         text-align: center;
         cursor: default;
-    }
-
-    .forgot-pass-text{
-        padding: 5% 0px;
-        color: var(--gray-text);
-        text-align: end;
     }
 
     .navigate{

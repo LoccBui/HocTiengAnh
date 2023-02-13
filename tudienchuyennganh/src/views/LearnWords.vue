@@ -43,7 +43,7 @@
 
 <script>
 
-import {func} from '@/Function/script.js'
+import {func} from '@/GlobalFunction/script.js'
  
 export default {
   data(){
