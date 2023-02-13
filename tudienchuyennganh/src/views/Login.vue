@@ -50,6 +50,8 @@
                             <router-link class="forgot-pass-text" 
                             to="/forgot"> Quên mật khẩu  </router-link>   
                         </h3>
+
+                        <v-btn color="primary" @click="auth()">Đăng kí google</v-btn>
                     
                     </v-form>
 
@@ -76,8 +78,12 @@
 
 <script>
 import DialogBox from "../layouts/DialogBox.vue"
-import axios from 'axios'
 import axiosInstance from '../axios';
+
+import axios from 'axios'
+import router from "@/router";
+
+import {EventBus} from '@/EventBus'
 
 export default {
     name: "Login",
@@ -117,6 +123,14 @@ export default {
         login(){
             axiosInstance.get('/SelectAllUser')
             .then(res => console.log(res.data))
+        },
+
+        async auth(){
+            const googleAuth = await this.$gAuth.signIn()
+            console.log(googleAuth.qv)
+            EventBus.$emit('hello', 123)
+
+             router.push('/topic')
         },
 
         async login1() {

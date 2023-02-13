@@ -9,7 +9,22 @@ import { createApp } from 'vue'
 // Plugins
 import { registerPlugins } from '@/plugins'
 
+
+import GAuth from 'vue3-google-oauth2'
+
 const app = createApp(App)
+
+
+// Google Authentication
+const gAuthOptions = { 
+    clientId: '257245199825-6d2huvrs5vcta8ech2po7kni4dgtlv57.apps.googleusercontent.com', 
+    scope: 'profile email', 
+    prompt: 'consent', 
+    fetch_basic_profile: true ,
+    plugin_name: 'HocTiengAnh'
+}
+app.use(GAuth, gAuthOptions)
+
 
 registerPlugins(app)
 

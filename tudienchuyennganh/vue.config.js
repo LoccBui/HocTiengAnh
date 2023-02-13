@@ -1,8 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 
-module.exports = defineConfig(
-  {
-    publicPath: '/tudienchuyennganh/',
+module.exports = defineConfig({
+    publicPath: '/hoctienganh/',
     devServer: {
       proxy: {
         // '/api': {
@@ -20,5 +19,5 @@ module.exports = defineConfig(
         }
      }
     }
-  }
-)
+    
+})

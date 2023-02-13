@@ -188,6 +188,8 @@
 
 <script>
 import OptionLearning from './OptionLearning.vue';
+import {EventBus} from '../EventBus.js'
+
 
 export default {
     components: {OptionLearning},
@@ -195,6 +197,22 @@ export default {
         return{
             showOption: false
         }
+    },
+
+    created() { 
+        EventBus.$on("hello", data=>{
+            console.log(data)
+        })
+        
+        // Listening the event hello
+    },
+    destroyed() {
+        // Stop listening the event hello with handler
+    },
+    mounted(){
+        console.log(this.$gAuth.qv)
+
+
     },
     methods:{
         closeOptionBox(){
