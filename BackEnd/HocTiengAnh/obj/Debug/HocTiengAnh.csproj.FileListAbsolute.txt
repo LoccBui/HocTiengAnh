@@ -80,4 +80,9 @@ C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Antlr3.Runtime.p
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.dll
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.pdb
-C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Cors.dll
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.Cors.dll
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.Cors.xml
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
