@@ -13,6 +13,7 @@ import LearnWords from '../views/LearnWords.vue'
 import Searching from '../views/Searching.vue'
 import Topic from '../views/Topic.vue'
 import TopicDetail from '../views/TopicDetail.vue'
+import ManageClass from '../views/ManageClass.vue'
 
 // views
 import Login from '../views/Login.vue'
@@ -38,6 +39,10 @@ const routes = [
       {
         path: '/learning',
         component: LearnWords
+      },
+      {
+        path: '/class',
+        component: ManageClass
       }
   ]
   },

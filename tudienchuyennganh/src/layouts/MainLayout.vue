@@ -66,7 +66,7 @@ export default {
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
               {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
               {icon: 'mdi-account', title: 'Quản lý tài khoản', value: '4', route: '/account'},
-              {icon: 'mdi-account-group ', title: 'Quản lý lớp', value: '4', route: '/account'},
+              {icon: 'mdi-account-group ', title: 'Quản lý lớp', value: '4', route: '/class'},
               {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut' }
             ]
         }
