@@ -13,6 +13,13 @@
   --main-color: #0038FF;
   --light-blue-90: #e6ebff;
   --gray-text: #888888;
+
+  --tints-80: #ccd7ff;
+  --tints-90: #e6ebff;
+
+  --success: #28A745;
+  --error: #FF0000;
+  --normal: #888888;
 }
 
 *{ 

@@ -1,23 +1,20 @@
 <template>
     <div class="container">
 
-        <div class="topic-cover">
-
-            <div class="header-info">
+        <div class="topic-cover" v-for="topic in dataTopicsAPI[0]" :key="topic.TopicID">
+            <div class="header-info" >
                 <div class="image-topic">
                     <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
                 </div>
 
                 <div class="info-topic">
-
-                    <h1>Tên chủ đề</h1>
-                    <h1> 1/200 từ đã học</h1>
+                    <h1>{{ topic.TopicName }}</h1>
+                    <h1> 1/ {{ topic.QuantityWords }} từ đã học</h1>
                 
                     <v-progress-linear
-                    model-value= 80
+                    model-value= 30
                     :buffer-value="bufferValue"
                     height="20"
-                    value="20"
                     color="#0038FF"
                     rounded
                     ></v-progress-linear>
@@ -37,7 +34,7 @@
                     
                     <br>
 
-                    <v-btn color="primary" width="100px">Học</v-btn>
+                    <v-btn color="primary" width="100px" @click="learnTopic(topic.TopicID)">Học</v-btn>
                     <v-btn color="primary" @click=" this.showOption = !this.showOption">
                         <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
@@ -46,141 +43,6 @@
 
         </div>
 
-        <div class="topic-cover">
-
-        <div class="header-info">
-            <div class="image-topic">
-                <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
-            </div>
-
-            <div class="info-topic">
-
-                <h1>Tên chủ đề</h1>
-                <h1> 1/200 từ đã học</h1>
-            
-                <v-progress-linear
-                    model-value= 80
-                    :buffer-value="bufferValue"
-                    height="20"
-                    value="20"
-                    rounded
-                    ></v-progress-linear>
-            </div>
-        </div>
-
-        <div class="body-info">
-            <div class="temporary"></div>
-            <div class="action-info">
-                <h1 title="Từ cần ôn tập">
-                    <v-icon>mdi-history</v-icon> 10 
-                </h1>
-
-                <h1 title="Từ khó">
-                    <v-icon>mdi-alert-circle</v-icon> 20
-                </h1>           
-                
-                <br>
-
-                <v-btn color="primary" width="100px">Học</v-btn>
-                <v-btn color="primary" @click="abc()">
-                    <v-icon>mdi-menu</v-icon>
-                </v-btn>
-            </div>
-        </div>
-
-        </div>
-
-        <div class="topic-cover">
-
-<div class="header-info">
-    <div class="image-topic">
-        <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
-    </div>
-
-    <div class="info-topic">
-
-        <h1>Tên chủ đề</h1>
-        <h1> 1/200 từ đã học</h1>
-    
-        <v-progress-linear
-        v-model="value"
-        :buffer-value="bufferValue"
-        height="20"
-        value="20"
-        rounded
-        ></v-progress-linear>
-    </div>
-</div>
-
-<div class="body-info">
-    <div class="temporary"></div>
-    <div class="action-info">
-        <h1 title="Từ cần ôn tập">
-            <v-icon>mdi-history</v-icon> 10 
-        </h1>
-
-        <h1 title="Từ khó">
-            <v-icon>mdi-alert-circle</v-icon> 20
-        </h1>           
-        
-        <br>
-
-        <v-btn color="primary" width="100px">Học</v-btn>
-        <v-btn color="primary" @click="abc()">
-            <v-icon>mdi-menu</v-icon>
-        </v-btn>
-    </div>
-</div>
-
-        </div>
-
-        <div class="topic-cover">
-
-
-
-<div class="header-info">
-    <div class="image-topic">
-        <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
-    </div>
-
-    <div class="info-topic">
-
-        <h1>Tên chủ đề</h1>
-        <h1> 1/200 từ đã học</h1>
-    
-        <v-progress-linear
-        v-model="value"
-        :buffer-value="bufferValue"
-        height="20"
-        value="20"
-        rounded
-        ></v-progress-linear>
-    </div>
-</div>
-
-<div class="body-info">
-    <div class="temporary"></div>
-    <div class="action-info">
-        <h1 title="Từ cần ôn tập">
-            <v-icon>mdi-history</v-icon> 10 
-        </h1>
-
-        <h1 title="Từ khó">
-            <v-icon>mdi-alert-circle</v-icon> 20
-        </h1>           
-        
-        <br>
-
-        <v-btn color="primary" width="100px">Học</v-btn>
-        <v-btn color="primary" @click="abc()">
-            <v-icon>mdi-menu</v-icon>
-        </v-btn>
-    </div>
-</div>
-
-        </div>
-
-       
 
         <OptionLearning  v-if="showOption"
             @close-option = this.closeOptionBox()
@@ -191,11 +53,10 @@
 
 <script>
 import OptionLearning from './OptionLearning.vue';
-import { inject, toRefs } from "vue";
-import router from "@/router";
-
 import {authenticate} from '@/GlobalFunction/Authenticate.js'
-
+import { inject, toRefs } from "vue";
+import axiosInstance from '../axios'
+import router from "@/router"
 
 
 export default {
@@ -214,25 +75,42 @@ export default {
     data(){
         return{
             showOption: false,
+            dataTopicsAPI: []
         }
     },
 
     created() { 
-        // EventBus.$on("hello", data=>{
-        //     console.log(data)
-        // })
-        
-        // Listening the event hello
+
     },
-    destroyed() {
-        // Stop listening the event hello with handler
-    },
+
     mounted(){
+        this.changeTitle()
+
+        this.getDataTopic()
     },
     methods:{
+        changeTitle(){
+            document.title = "Chủ đề"
+        },
+        
         closeOptionBox(){
             this.showOption = false
         },
+
+        async getDataTopic(){
+            axiosInstance.get('/selectalltopics')
+            .then(res => this.handleData(res.data))
+        },
+
+        handleData(dataAPI){
+            this.dataTopicsAPI.push(dataAPI)
+
+        },
+        
+        learnTopic(TopicID){
+            alert(TopicID)
+        }
+
 
     }
 }

@@ -31,9 +31,9 @@
                         <v-text-field
                         v-model="username" :rules="usernameRules"
                             :counter="10"
-                            label="Nhập email của bạn"    
-                            suffix="@gmail.com"
+                            label="Nhập tài khoản của bạn"    
                             required
+                            @keyup.enter="login()"
                             >
                         </v-text-field>
 
@@ -45,6 +45,7 @@
                             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                             hint="At least 8 characters"
                             @click:append="showPass = !showPass"  
+                            @keyup.enter="login()"
                             required
                             >
                         </v-text-field>
@@ -92,7 +93,6 @@
 import DialogBox from "../layouts/DialogBox.vue"
 import axiosInstance from '../axios'
 
-import axios from 'axios'
 import router from "@/router"
 
 import { inject, toRefs } from "vue"
@@ -144,9 +144,36 @@ export default {
             document.title = "Đăng Nhập"
         },
 
-        login(){
-            axiosInstance.get('/SelectAllUser')
-            .then(res => console.log(res.data))
+        async login(){
+
+            if (this.username != '' && this.password != '') {
+
+                let result = await axiosInstance.post(`/login/${this.username}/${this.password}`)
+                if (result.status == 200 && result.data.length > 0) {
+
+                    var hasAccount = Object.values(result.data[0])
+                    console.log(hasAccount)
+
+                    if(hasAccount == 1){
+                        router.push('/searching')
+                    }
+                    else {
+                        alert("wrong ")
+                    }
+
+                    
+                }
+                else {
+                    console.log(result.status)
+                }
+            }
+            else {
+                // turn on warning validate
+
+                const { valid } = await this.$refs.form.validate()
+            }
+            
+         
         },
 
         async auth(){
@@ -166,39 +193,8 @@ export default {
                 return null;
             }
                 
-            // EventBus.$emit('hello', 123)
-
-            //  router.push('/topic')
-        },
-
-        async login1() {
-            if (this.username != '' && this.password != '') {
-                let result = await axiosInstance.get(`/AuthLogin/${this.username}/${this.password}`)
-    
-                if (result.status == 200 && result.data.length > 0) {
-                    console.log("1ok")
-                    alert("ok")
-                    this.userID = result.data[0].UserID
-                    this.authUser()
-                    window.localStorage.setItem("user-info", JSON.stringify(result.data[0]))
-                }
-                else {
-                    console.log("2not ok")
-
-                    alert("false")
-
-                    this.errorLoginToast = true
-                    this.alert = true
-                    setTimeout(() => {
-                        this.errorLoginToast = false
-                        this.alert = false
-                    }, 2000)
-                }
-            }
-            else {
-                const { valid } = await this.$refs.form.validate()
-            }
         }
+
     }
 }   
 </script>
