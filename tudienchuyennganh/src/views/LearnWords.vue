@@ -54,6 +54,7 @@ export default {
   components: {LearnByMeaningVue},
   data(){
     return {
+      idTopic: this.$route.params.id,
       englishWords : '',
       vietnameseMean : 'chọn',
 
@@ -74,7 +75,7 @@ export default {
   mounted(){
     this.changeTitle()
 
-    this.getVocabulary()
+    this.getVocabularyByTopicID(this.idTopic)
   },
 
   beforeMount() {
@@ -89,13 +90,14 @@ export default {
       func.speakWord(`${englishWords}`)
     },
 
-    getVocabulary(){
-      axiosInstance.get('/SelectAllTuVung')
+    getVocabularyByTopicID(topicID){
+      axiosInstance.get(`/learning/topicid=${topicID}`)
             .then(res => this.handleData(res.data))
             
     },
 
     handleData(dataAPI){
+      console.log("datA",dataAPI)
         this.dataAPI = dataAPI
         this.vocabLength = dataAPI.length
 

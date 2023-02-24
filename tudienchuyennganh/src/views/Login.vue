@@ -12,8 +12,10 @@
                 <div class="frame-right">
                     <h1 class="heading-text"> ĐĂNG NHẬP </h1>
 
+                    
 
                     <div class="google-btn hover-pointer" @click="auth()" >
+                        
                         <div class="google-icon-wrapper">
                         <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
                         </div>
@@ -27,6 +29,14 @@
                         v-model="valid"
                         lazy-validation
                     >
+                    
+                    <v-alert
+                    v-if="showAlert"
+                    type="error"
+                    text="Sai tài khoản hoặc mật khẩu"
+                    >
+                    </v-alert>
+
 
                         <v-text-field
                         v-model="username" :rules="usernameRules"
@@ -131,7 +141,7 @@ export default {
                 v => !!v || 'Bạn cần nhập tài khoản',
                 v => (v && v.length > 0) || 'Tài khoản không được để trống',
             ],
-            
+            showAlert: false
         }
     },
 
@@ -155,10 +165,15 @@ export default {
                     console.log(hasAccount)
 
                     if(hasAccount == 1){
-                        router.push('/searching')
+                        router.push('/topic')
                     }
-                    else {
-                        alert("wrong ")
+                    else 
+                    {
+                        this.showAlert = true 
+
+                        setTimeout(() => {
+                            this.showAlert = false 
+                        }, 3000);
                     }
 
                     
@@ -301,6 +316,7 @@ export default {
         justify-content: space-evenly;
     }
 }
+
 
 @media screen and (max-width: 900px){
     #frame-cover{

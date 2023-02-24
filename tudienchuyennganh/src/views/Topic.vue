@@ -34,7 +34,13 @@
                     
                     <br>
 
-                    <v-btn color="primary" width="100px" @click="learnTopic(topic.TopicID)">Học</v-btn>
+                    <v-btn color="primary" width="100px" 
+                    router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
+                    >
+
+                    Học
+                    </v-btn>
+
                     <v-btn color="primary" @click=" this.showOption = !this.showOption">
                         <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
@@ -107,10 +113,6 @@ export default {
 
         },
         
-        learnTopic(TopicID){
-            alert(TopicID)
-        }
-
 
     }
 }

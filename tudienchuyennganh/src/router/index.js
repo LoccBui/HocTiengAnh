@@ -37,7 +37,8 @@ const routes = [
         component: Topic
       },
       {
-        path: '/learning',
+        name: 'LearnTopic',
+        path: '/learning/topicid=:id',
         component: LearnWords
       },
       {
