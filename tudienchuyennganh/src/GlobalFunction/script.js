@@ -11,10 +11,12 @@ export const func = {
         });
      },
 
-    
-     
  }
 
+ export const dataUser = {
+    email: '',
+    name: ''
+ }
 
 
   

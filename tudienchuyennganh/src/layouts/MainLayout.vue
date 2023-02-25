@@ -7,9 +7,8 @@
         >
           <v-list>
             <v-list-item
-              prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-              title="Sandra Adams"
-              subtitle="sandra_a88@gmailcom"
+              :title="nameUser"
+              :subtitle="emailUser"             
             ></v-list-item>
           </v-list>
   
@@ -39,11 +38,13 @@
   
 
 <script>
+import axiosInstance from '../axios'
 
 import { inject, toRefs  } from "vue";
 import router from "@/router";
 
 import {authenticate} from '@/GlobalFunction/Authenticate.js'
+import {dataUser} from '@/GlobalFunction/script.js'
 
 export default {
   
@@ -57,10 +58,14 @@ export default {
           }
 
       },
-    mixins: [authenticate], 
+
+    mixins: [dataUser],  // get userData from global function
 
     data(){
+        
         return {
+            emailUser: '',
+            nameUser: '',
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
@@ -73,8 +78,14 @@ export default {
     },
 
     mounted(){
-      // this.checkAuth()   
-       
+    },
+
+    created(){
+      var dataUser = JSON.parse(localStorage.getItem('dataUser'))
+      
+      
+      this.emailUser = dataUser.email
+      this.nameUser = dataUser.name
     },
 
     methods:{
@@ -85,17 +96,13 @@ export default {
       },
 
       logOut(){
-        this.Vue3GoogleOauth.isAuthorized = !this.Vue3GoogleOauth.isAuthorized
-        
-        localStorage.removeItem("authorized");
+        this.Vue3GoogleOauth.isAuthorized = !this.Vue3GoogleOauth.isAuthorized  
         router.push('/login')
       },
 
-      checkAuth(){
-        let auth = localStorage.getItem("authorized")
-        
-        authenticate.auth(auth, 'topic', 'register')
-       }
+      getDataUser(){
+          
+      }
 
 
     }

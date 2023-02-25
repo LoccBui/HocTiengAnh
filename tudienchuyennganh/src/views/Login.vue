@@ -30,12 +30,12 @@
                         lazy-validation
                     >
                     
-                    <v-alert
-                    v-if="showAlert"
-                    type="error"
-                    text="Sai tài khoản hoặc mật khẩu"
-                    >
-                    </v-alert>
+                        <v-alert
+                        v-if="showAlert"
+                        type="error"
+                        text="Sai tài khoản hoặc mật khẩu"
+                        >
+                        </v-alert>
 
 
                         <v-text-field
@@ -106,6 +106,7 @@ import axiosInstance from '../axios'
 import router from "@/router"
 
 import { inject, toRefs } from "vue"
+import {dataUser} from '@/GlobalFunction/script.js'
 
 
 export default {
@@ -119,7 +120,7 @@ export default {
             }
 
     },
-
+    mixins: [dataUser],  // get userData from global function
     name: "Login",
     components: {DialogBox},
     data() {
@@ -161,10 +162,11 @@ export default {
                 let result = await axiosInstance.post(`/login/${this.username}/${this.password}`)
                 if (result.status == 200 && result.data.length > 0) {
 
-                    var hasAccount = Object.values(result.data[0])
-                    console.log(hasAccount)
+                    // Account has in database
+                    var hasAccountID = Object.values(result.data[0])
+                    if(hasAccountID != 0){
+                        this.getDataUser(hasAccountID)
 
-                    if(hasAccount == 1){
                         router.push('/topic')
                     }
                     else 
@@ -189,6 +191,20 @@ export default {
             }
             
          
+        },
+        getDataUser(idUser){
+            axiosInstance.get(`/user/id=${idUser}`)
+            .then((res) => {
+
+                var dataUser = {
+                    email: '',
+                    name: '',
+                }
+                dataUser.email = res.data[0].Email
+                dataUser.name = res.data[0].Name
+
+                localStorage.setItem('dataUser', JSON.stringify(dataUser))
+            })
         },
 
         async auth(){

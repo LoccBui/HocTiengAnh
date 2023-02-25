@@ -22,7 +22,6 @@
                             :counter="10"
                             :rules="nameRules"
                             label="Nhập email của bạn"    
-                            suffix="@gmail.com"
                             required
                             >
                         </v-text-field>
@@ -31,6 +30,7 @@
                             color="primary"
                             block
                             :class="btn-login"
+                            @click="sendEmailVerification()"
                             > Lấy lại mật khẩu  
                         </v-btn>
                     
@@ -51,6 +51,8 @@
 
 <script>
 import router from "@/router";
+import emailjs from '@emailjs/browser';
+
 
 export default {
     data() {
@@ -68,6 +70,24 @@ export default {
 
         moveToLogin(){
              router.push('/')
+        },
+        
+        sendEmailVerification(){
+
+            //1. check email có tồn tại trong hệ thống không  ( != 0 là tồn tại) => lấy thêm username
+            //2. Nếu có thì lấy dữ liệu từ input, axios get OTP 
+
+            var emailParams = {
+                user_name: 123,
+                otp_code: "54682",
+                from_name: "Học từ vựng Tiếng Anh",
+                user_email: "buihuuloc2001@gmail.com",
+            }
+            
+            emailjs.send("service_81htiyl", "template_xlb5x07", emailParams, "yK8NsvhsljFaNfjrb")
+                .then(function(response) {
+                    alert("status" + response.status)
+                })
         }
     }
 }   
