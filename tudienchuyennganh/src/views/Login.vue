@@ -6,7 +6,7 @@
             <div id="frame-cover">
 
                 <div class="frame-left">
-                    <img class="brand-logo-img" src="../assets/gif/time-learn-en.gif" alt="LHU logo">
+                    <img class="brand-logo-img" src="../../assets/gif/time-learn-en.gif" alt="LHU logo">
                 </div>
 
                 <div class="frame-right">
@@ -103,10 +103,11 @@
 import DialogBox from "../layouts/DialogBox.vue"
 import axiosInstance from '../axios'
 
-import router from "@/router"
 
 import { inject, toRefs } from "vue"
-import {dataUser} from '@/GlobalFunction/script.js'
+
+import emitter from '../eventBus.js'
+
 
 
 export default {
@@ -120,7 +121,6 @@ export default {
             }
 
     },
-    mixins: [dataUser],  // get userData from global function
     name: "Login",
     components: {DialogBox},
     data() {
@@ -167,7 +167,7 @@ export default {
                     if(hasAccountID != 0){
                         this.getDataUser(hasAccountID)
 
-                        router.push('/topic')
+                        this.$router.push('/topic')
                     }
                     else 
                     {
@@ -192,6 +192,7 @@ export default {
             
          
         },
+
         getDataUser(idUser){
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
@@ -203,7 +204,7 @@ export default {
                 dataUser.email = res.data[0].Email
                 dataUser.name = res.data[0].Name
 
-                localStorage.setItem('dataUser', JSON.stringify(dataUser))
+                emitter.emit('data', dataUser);
             })
         },
 
@@ -214,7 +215,7 @@ export default {
                     return null;
                 }
                 
-                router.push('/topic')
+                this.$router.push('/topic')
                 
                     
             } 

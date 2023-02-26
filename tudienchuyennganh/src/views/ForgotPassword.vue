@@ -6,11 +6,11 @@
             <div id="frame-cover">
 
                 <div class="frame-left">
-                    <img class="brand-logo-img" src="../assets/gif/forgot-pass.gif" alt="LHU logo">
+                    <img class="brand-logo-img" src="../../assets/gif/forgot-pass.gif" alt="LHU logo">
                 </div>
 
                 <div class="frame-right">
-                    <h1 class="heading-text"> ĐĂNG KÍ </h1>
+                    <h1 class="heading-text"> QUÊN MẬT KHẨU </h1>
                     <v-form
                         ref="form"
                         v-model="valid"
@@ -26,30 +26,20 @@
                             >
                         </v-text-field>
 
-                        <v-text-field
-                            v-model="password"
-                            :counter="10"
-                            :rules="nameRules"
-                            label="Nhập mật khẩu của bạn"    
-                            required
-                            >
-                        </v-text-field>
-
-
                         <v-btn
                             color="primary"
                             block
                             :class="btn-login"
-                            > Đăng nhập  
+                            @click="sendEmailVerification()"
+                            > Lấy lại mật khẩu  
                         </v-btn>
+                    
                     </v-form>
 
                     <span class="navigate">
                         <h3>
-                            <span class="no-hover-pointer"> Đã có tài khoản ? </span>  
-                        </h3>
-                        <h3>
-                            <a class="primary-text-color" href="#" @click="moveToLogin"> Đăng nhập </a>  
+                            <a class="primary-text-color hover-pointer"
+                            @click="moveToLogin"> Quay về trang đăng nhập </a>  
                         </h3>
                     </span>
                 </div>
@@ -60,7 +50,8 @@
 </template>
 
 <script>
-import router from "@/router";
+import emailjs from '@emailjs/browser';
+
 
 export default {
     data() {
@@ -73,11 +64,33 @@ export default {
 
     methods:{
         changeTitle(){
-            document.title = "Đăng kí"
+            document.title = "Quên mật khẩu"
         },
 
         moveToLogin(){
-             router.push('/')
+            this.$router.push('/')
+        },
+        
+        sendEmailVerification(){
+
+            //1. check email có tồn tại trong hệ thống không  ( != 0 là tồn tại) => lấy thêm username
+            //2. Nếu có thì lấy dữ liệu từ input, axios get OTP 
+
+            var emailParams = {
+                user_name: 123,
+                otp_code: "54682",
+                from_name: "Học từ vựng Tiếng Anh",
+                user_email: "buihuuloc2001@gmail.com",
+            }
+            
+            emailjs.send(
+                `${import.meta.env.VITE_SERVICE_ID}`,
+                `${import.meta.env.VITE_TEMPLATE_ID}`, 
+                 emailParams, 
+                 `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
+                .then(function(response) {
+                    alert("status" + response.status)
+                })
         }
     }
 }   
@@ -122,6 +135,12 @@ export default {
         color: var(--main-color);
         text-align: center;
         cursor: default;
+    }
+
+    .forgot-pass-text{
+        padding: 5% 0px;
+        color: var(--gray-text);
+        text-align: end;
     }
 
     .navigate{

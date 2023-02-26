@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import router from "@/router";
 
 export default {
     mounted() {
@@ -31,7 +30,7 @@ export default {
         },
 
         backToHomePage(){
-            router.push('/')
+            this.$router.push('/')
         }
         
     }

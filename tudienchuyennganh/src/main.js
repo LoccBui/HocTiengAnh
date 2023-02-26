@@ -1,4 +1,5 @@
 
+
 // Components
 import App from './App.vue'
 
@@ -26,6 +27,7 @@ const gAuthOptions = {
     plugin_name: 'HocTiengAnh'
 }
 app.use(GAuth, gAuthOptions)
+
 
 
 registerPlugins(app)

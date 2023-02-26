@@ -4,7 +4,7 @@
         <div class="topic-cover" v-for="topic in dataTopicsAPI[0]" :key="topic.TopicID">
             <div class="header-info" >
                 <div class="image-topic">
-                    <img src="../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
+                    <img src="../../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
                 </div>
 
                 <div class="info-topic">
@@ -124,14 +124,15 @@ export default {
     position: relative;
     padding: 20px;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     flex-wrap: wrap;
     height: 100vh;
 }
 
 
 .topic-cover{
-    flex-basis: 500px;
+    
+    flex-basis: 400px;
     max-height: 200px;
     margin: 20px;
     padding: 10px;

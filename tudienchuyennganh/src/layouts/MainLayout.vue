@@ -38,31 +38,10 @@
   
 
 <script>
-import axiosInstance from '../axios'
-
-import { inject, toRefs  } from "vue";
-import router from "@/router";
-
-import {authenticate} from '@/GlobalFunction/Authenticate.js'
-import {dataUser} from '@/GlobalFunction/script.js'
+import emitter from '../eventBus.js'
 
 export default {
-  
-    setup(props) {
-      const { isSignIn } = toRefs(props);
-
-      const Vue3GoogleOauth = inject("Vue3GoogleOauth");
-          return{
-              Vue3GoogleOauth,
-              isSignIn
-          }
-
-      },
-
-    mixins: [dataUser],  // get userData from global function
-
-    data(){
-        
+    data(){     
         return {
             emailUser: '',
             nameUser: '',
@@ -78,14 +57,11 @@ export default {
     },
 
     mounted(){
+      emitter.on('data', this.getDataUser);
     },
 
-    created(){
-      var dataUser = JSON.parse(localStorage.getItem('dataUser'))
-      
-      
-      this.emailUser = dataUser.email
-      this.nameUser = dataUser.name
+    beforeDestroy() {
+      emitter.off('data')
     },
 
     methods:{
@@ -95,16 +71,15 @@ export default {
         }
       },
 
-      logOut(){
-        this.Vue3GoogleOauth.isAuthorized = !this.Vue3GoogleOauth.isAuthorized  
-        router.push('/login')
+      getDataUser(data){
+        console.log("data emit", data)
+        this.emailUser = data.email
+        this.nameUser = data.name   
       },
 
-      getDataUser(){
-          
-      }
-
-
+      logOut(){
+        window.location.href = '/login'
+      },
     }
   
 }

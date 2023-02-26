@@ -14,8 +14,11 @@ export const func = {
  }
 
  export const dataUser = {
-    email: '',
-    name: ''
+    data(){
+        return{
+            email: ''
+        }
+    }
  }
 
 

@@ -1,22 +1,21 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Register from '../components/Register.vue'
 import PageNotFound from '../components/PageNotFound.vue'
-import ForgotPassword from '../components/ForgotPassword.vue'
 
 import MainLayout from '../layouts/MainLayout.vue'
 import TestComponent from '../layouts/TestComponent.vue'
-import Title from '../layouts/Title.vue'
 
+
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
+import Topic from '../views/Topic.vue'
 import LearnWords from '../views/LearnWords.vue'
 import Searching from '../views/Searching.vue'
-import Topic from '../views/Topic.vue'
-import TopicDetail from '../views/TopicDetail.vue'
 import ManageClass from '../views/ManageClass.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
 
-// views
-import Login from '../views/Login.vue'
+import TopicDetail from '../views/TopicDetail.vue'
 
 const routes = [
   {path: '/',  component: Login},
