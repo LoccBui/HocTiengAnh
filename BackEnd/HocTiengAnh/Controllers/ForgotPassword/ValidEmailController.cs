@@ -8,20 +8,19 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace HocTiengAnh.Controllers.ForgotPassword
+namespace HocTiengAnh.Controllers
 {
-    [Route("valid/{email}")]
+    [Route("getEmail/{email}")]
     [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
 
-    public class CheckValidEmailController : ApiController
+    public class ValidEmailController : ApiController
     {
-        [HttpPost, HttpGet]
-
-        public IHttpActionResult CheckValidEmail(string email)
+        [HttpGet]
+        public IHttpActionResult ValidEmail(string email)
         {
             SqlParameter[] param = new SqlParameter[] {
-                new SqlParameter("@Email", email)
-            };
+                    new SqlParameter("@Email", email)
+                };
             var result = new DB().GetDataReader("sp_CheckEmailValid", param);
 
             return Json(result);

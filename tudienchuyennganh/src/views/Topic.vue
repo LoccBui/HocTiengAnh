@@ -88,7 +88,7 @@ export default {
     },
 
     beforeDestroy() {
-      emitter.off('data')
+        emitter.off('data')
     },
 
     methods:{

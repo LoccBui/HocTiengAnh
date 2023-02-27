@@ -146,7 +146,7 @@ BEGIN
     WHERE ID = SCOPE_IDENTITY();
 END
 
---exec generateOTP 1
+--exec sp_GenerateOTP 1
 
 go
 
@@ -155,23 +155,34 @@ alter procedure sp_CheckEmailValid
 @Email varchar(100)
 as
 BEGIN
-	if EXISTS (SELECT * from TAIKHOAN where Email = @Email )
+	DECLARE @result varchar(100)
+		SET @result = @Email + '@gmail.com' 
+
+
+	if EXISTS (SELECT * from TAIKHOAN  where lower(Email) like @result )
 		begin
-			select AccountID 
-			from TAIKHOAN where Email = @Email
+			select AccountID
+			from TAIKHOAN 
+			where lower(Email) like  @result
 		end
 	else
 		begin
-			select 0 as AccountID 
+			select 0
+			as AccountID 
 		end
 END
 
---exec sp_CheckEmailValid "buihuuloc2001@gmail.com"
+exec sp_CheckEmailValid @Email='buihuuloc2001a@gmail.com'
 
 ----------------- TESTING AREA
+-- xóa xong hãy check otp
+select  TOP 1  OTPCODE 
+from OTP
+where AccountID = 1 and ExpiredAt > CreatedAt
+order by CreatedAt DESC
 
-
-
+select * 
+from OTP
 
 
 

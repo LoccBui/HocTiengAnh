@@ -43,6 +43,7 @@
                             :counter="10"
                             label="Nhập tài khoản của bạn"    
                             required
+                            autofocus
                             @keyup.enter="login()"
                             >
                         </v-text-field>

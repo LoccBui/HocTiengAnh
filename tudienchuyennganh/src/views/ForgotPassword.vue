@@ -12,27 +12,34 @@
                 <div class="frame-right">
                     <h1 class="heading-text"> QUÊN MẬT KHẨU </h1>
 
+                    <v-alert
+                    v-if="alertNotHaveEmail"
+                    color="error"
+                    icon="$success"
+                    text="Email của bạn chưa được đăng kí trong hệ thống"
+                    ></v-alert>
+
                     <v-form
                         ref="form"
                         v-model="valid"
-                        lazy-validation
+                        @submit.prevent="handleEmail()"
                     >
 
                         <v-text-field
-                            v-model="email"
-                            :counter="10"
-                            :rules="emailRules"
+                            v-model="emailInput" :rules="emailRules"
+                            :counter="10"            
                             label="Nhập email của bạn"    
                             required
-                            @keyup.enter="sendEmailVerification()"
+                            autofocus
+
+                            @keyup.enter="handleEmail()"
                             >
                         </v-text-field>
 
                         <v-btn
                             color="primary"
                             block
-                            :class="btn-login"
-                            @click="sendEmailVerification()"
+                            @click="handleEmail()"
                             > Lấy lại mật khẩu  
                         </v-btn>
                     
@@ -59,11 +66,17 @@ import axiosInstance from '../axios'
 export default {
     data() {
         return {
-            valid: true, 
-            email: '',
+            valid: false, 
+            alertNotHaveEmail: false,
+            emailInput: '', 
+            emailFilter: '',
+            accountID: '',
+            emailTail: '@gmail.com',
             emailRules: [
                 v => !!v || 'Bạn cần nhập email',
                 v => (v && v.length > 0) || 'Email không được để trống',
+                v => (v && v.length > 10) || 'Email không được dưới 10 kí tự',
+                v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Email không hợp lệ'
             ],
         }
     },
@@ -80,26 +93,50 @@ export default {
         moveToLogin(){
             this.$router.push('/')
         },
-        
-        async sendEmailVerification(){
-            console.log("sendEmailVerification")
-            console.log(this.email)
 
-
-            if (this.email != '') {
-                let result = await axiosInstance.get('/valid/' + encodeURIComponent(`${this.email}`))
-                console.log(result.data)
+        async handleEmail(){
+            // Điều kiện: - Form not break rule, not empty input, match email suffix
+            if (this.valid && this.emailInput != '' && this.emailInput.matchAll('@gmail.com')) {
+                this.emailFilter = this.emailInput.replace('@gmail.com', '') 
+                    this.sendEmailVerification()   
             }
+
             else {
                 const { valid } = await this.$refs.form.validate()
             }
+        },
+  
+        
+        async sendEmailVerification(){
+            let result = await axiosInstance.get(`getEmail/${this.emailFilter}`)
+            if(result.status == 200){
+                this.accountID = result.data[0].AccountID
+                //Have account in database
+                if(this.accountID != 0){
+                    this.generateOTPForEmail(this.accountID)
+                }
+                else{
+                    this.alertNotHaveEmail = true
 
+                    setTimeout(() => {
+                        this.alertNotHaveEmail = false 
+                    }, 3000);
+                }
+            }
+        },
 
+        async generateOTPForEmail(accountID){
+            let result = await axiosInstance.get(`generateOTP/${accountID}`)
+            if(result.status == 200){
+                console.log(result.data[0].OTPCode)
+            }   
 
+        }
 
-            //1. check email có tồn tại trong hệ thống không  ( != 0 là tồn tại) => lấy thêm username
-            //2. Nếu có thì lấy dữ liệu từ input, axios get OTP 
+            
+            // Generate OTP for account -> sp_GenerateOTP
 
+            // Send OTP to email have verified 
             // var emailParams = {
             //     user_name: 123,
             //     otp_code: "54682",
@@ -115,7 +152,6 @@ export default {
             //     .then(function(response) {
             //         alert("status" + response.status)
             //     })
-        }
     }
 }   
 </script>
