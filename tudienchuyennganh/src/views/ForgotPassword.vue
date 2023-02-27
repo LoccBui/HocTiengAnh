@@ -11,6 +11,7 @@
 
                 <div class="frame-right">
                     <h1 class="heading-text"> QUÊN MẬT KHẨU </h1>
+
                     <v-form
                         ref="form"
                         v-model="valid"
@@ -18,11 +19,12 @@
                     >
 
                         <v-text-field
-                            v-model="name"
+                            v-model="email"
                             :counter="10"
-                            :rules="nameRules"
+                            :rules="emailRules"
                             label="Nhập email của bạn"    
                             required
+                            @keyup.enter="sendEmailVerification()"
                             >
                         </v-text-field>
 
@@ -51,11 +53,19 @@
 
 <script>
 import emailjs from '@emailjs/browser';
+import axiosInstance from '../axios'
 
 
 export default {
     data() {
-        return {}
+        return {
+            valid: true, 
+            email: '',
+            emailRules: [
+                v => !!v || 'Bạn cần nhập email',
+                v => (v && v.length > 0) || 'Email không được để trống',
+            ],
+        }
     },
 
     mounted() {
@@ -71,26 +81,40 @@ export default {
             this.$router.push('/')
         },
         
-        sendEmailVerification(){
+        async sendEmailVerification(){
+            console.log("sendEmailVerification")
+            console.log(this.email)
+
+
+            if (this.email != '') {
+                let result = await axiosInstance.get('/valid/' + encodeURIComponent(`${this.email}`))
+                console.log(result.data)
+            }
+            else {
+                const { valid } = await this.$refs.form.validate()
+            }
+
+
+
 
             //1. check email có tồn tại trong hệ thống không  ( != 0 là tồn tại) => lấy thêm username
             //2. Nếu có thì lấy dữ liệu từ input, axios get OTP 
 
-            var emailParams = {
-                user_name: 123,
-                otp_code: "54682",
-                from_name: "Học từ vựng Tiếng Anh",
-                user_email: "buihuuloc2001@gmail.com",
-            }
+            // var emailParams = {
+            //     user_name: 123,
+            //     otp_code: "54682",
+            //     from_name: "Học từ vựng Tiếng Anh",
+            //     user_email: "buihuuloc2001@gmail.com",
+            // }
             
-            emailjs.send(
-                `${import.meta.env.VITE_SERVICE_ID}`,
-                `${import.meta.env.VITE_TEMPLATE_ID}`, 
-                 emailParams, 
-                 `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
-                .then(function(response) {
-                    alert("status" + response.status)
-                })
+            // emailjs.send(
+            //     `${import.meta.env.VITE_SERVICE_ID}`,
+            //     `${import.meta.env.VITE_TEMPLATE_ID}`, 
+            //      emailParams, 
+            //      `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
+            //     .then(function(response) {
+            //         alert("status" + response.status)
+            //     })
         }
     }
 }   

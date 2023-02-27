@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace QuanLySach.Database
+namespace HocTiengAnh.Database
 {
     public class DB
     {
@@ -14,7 +14,7 @@ namespace QuanLySach.Database
         String connStr;
 
         public DB() {
-            connStr = @"Data Source=LOCNE\SQLEXPRESS;Initial Catalog=QLSach;Integrated Security=True";
+            connStr = @"Data Source=LOCNE\SQLEXPRESS;Initial Catalog=HocTiengAnh;Integrated Security=True";
             con = new SqlConnection(connStr);
         }
 

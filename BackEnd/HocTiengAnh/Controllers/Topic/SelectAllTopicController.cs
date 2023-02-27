@@ -1,4 +1,4 @@
-﻿using QuanLySach.Database;
+﻿using HocTiengAnh.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +7,18 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace QuanLySach.Controllers
+namespace HocTiengAnh.Controllers.Topic
 {
-    [Route("SelectAllUser")]
+    [Route("SelectAllTopics")]
     [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
-
-    public class ShowAllUserController : ApiController
+    public class SelectAllTopicController : ApiController
     {
         [HttpGet]
         public IHttpActionResult JsonResult()
         {
-            var result = new DB().GetDataReader("spUser_SelectAll");
+            var result = new DB().GetDataReader("sp_ShowAllTopic");
+
             return Json(result);
-        }  
+        }
     }
 }

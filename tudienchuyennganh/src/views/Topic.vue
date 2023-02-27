@@ -59,29 +59,21 @@
 
 <script>
 import OptionLearning from './OptionLearning.vue';
-import {authenticate} from '@/GlobalFunction/Authenticate.js'
 import { inject, toRefs } from "vue";
 import axiosInstance from '../axios'
-import router from "@/router"
+
+
+import emitter from '../eventBus.js'
 
 
 export default {
-    setup(props) {
-        const { isSignIn } = toRefs(props);
-
-        const Vue3GoogleOauth = inject("Vue3GoogleOauth");
-        return{
-            Vue3GoogleOauth,
-            isSignIn
-        }
-
-    },
-    mixins: [authenticate], 
     components: {OptionLearning},
     data(){
         return{
             showOption: false,
-            dataTopicsAPI: []
+            dataTopicsAPI: [],
+            accountID: '',
+
         }
     },
 
@@ -91,26 +83,38 @@ export default {
 
     mounted(){
         this.changeTitle()
+        emitter.on('data', this.handleDataUser);
 
-        this.getDataTopic()
     },
+
+    beforeDestroy() {
+      emitter.off('data')
+    },
+
     methods:{
         changeTitle(){
             document.title = "Chủ đề"
         },
         
-        closeOptionBox(){
-            this.showOption = false
+        //lấy data từ emitter
+        handleDataUser(data){
+            this.accountID = data.accountID   
+            this.getDataTopic(this.accountID)
         },
 
-        async getDataTopic(){
-            axiosInstance.get('/selectalltopics')
+        // lấy data topic theo id khoa nhận từ emmitter
+        getDataTopic(id){
+            axiosInstance.get(`getTopic/${id}`)
             .then(res => this.handleData(res.data))
         },
 
+        // lấy data topic 
         handleData(dataAPI){
             this.dataTopicsAPI.push(dataAPI)
+        },
 
+        closeOptionBox(){
+            this.showOption = false
         },
         
 

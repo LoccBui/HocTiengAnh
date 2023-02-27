@@ -83,6 +83,5 @@ C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAn
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Cors.dll
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.Cors.dll
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.Cors.xml
-C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete

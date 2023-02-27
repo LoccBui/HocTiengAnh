@@ -7,6 +7,6 @@ namespace WebApplication.DB
 {
     public class DBConnection
     {
-        public static string DBConnect = @"Data Source=.;Initial Catalog=QLSach;Integrated Security=True";
+        public static string DBConnect = @"Data Source=LOCNE\SQLEXPRESS;Initial Catalog=HocTiengAnh;Integrated Security=True";
     }
 }

@@ -4,6 +4,7 @@
         <v-navigation-drawer
           expand-on-hover
           rail
+          permanent 
         >
           <v-list>
             <v-list-item
@@ -14,7 +15,10 @@
   
           <v-divider></v-divider>
   
-          <v-list density="compact" nav  v-for="item in menuListItem" :key="item.value"  @click="menuActionClick(item.action)" >
+          <v-list 
+          density="comfortable" nav  v-for="item in menuListItem" :key="item.value"  @click="menuActionClick(item.action)" 
+          
+          >
               <v-list-item 
               :prepend-icon="`${item.icon}`" 
               :title="`${item.title}`" 
@@ -23,6 +27,7 @@
               @click="`${item.func}`">
             </v-list-item> 
           </v-list>
+
         </v-navigation-drawer>
   
 
@@ -39,12 +44,14 @@
 
 <script>
 import emitter from '../eventBus.js'
+import axiosInstance from '../axios'
 
 export default {
     data(){     
         return {
             emailUser: '',
             nameUser: '',
+
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
@@ -57,12 +64,14 @@ export default {
     },
 
     mounted(){
-      emitter.on('data', this.getDataUser);
+      emitter.on('data', this.handleDataUser);
+
+      // this.getTopic()
     },
 
-    beforeDestroy() {
-      emitter.off('data')
-    },
+    // beforeDestroy() {
+    //   emitter.off('data')
+    // },
 
     methods:{
       menuActionClick(action){
@@ -71,10 +80,16 @@ export default {
         }
       },
 
-      getDataUser(data){
-        console.log("data emit", data)
+      handleDataUser(data){
+        
         this.emailUser = data.email
         this.nameUser = data.name   
+      },
+
+      getTopic(){
+        axiosInstance.get(`getTopic/id=${this.accountID}`)
+          .then(res => console.log(res))
+
       },
 
       logOut(){

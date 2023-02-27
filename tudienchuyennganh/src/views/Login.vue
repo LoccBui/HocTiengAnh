@@ -156,7 +156,6 @@ export default {
         },
 
         async login(){
-
             if (this.username != '' && this.password != '') {
 
                 let result = await axiosInstance.post(`/login/${this.username}/${this.password}`)
@@ -198,12 +197,14 @@ export default {
             .then((res) => {
 
                 var dataUser = {
+                    accountID: '',
                     email: '',
-                    name: '',
+                    name: ''
                 }
+                
+                dataUser.accountID = res.data[0].AccountID
                 dataUser.email = res.data[0].Email
                 dataUser.name = res.data[0].Name
-
                 emitter.emit('data', dataUser);
             })
         },
