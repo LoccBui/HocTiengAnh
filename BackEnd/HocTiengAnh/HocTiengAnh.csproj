@@ -163,6 +163,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ForgotPassword\GenerateOTPForEmailController.cs" />
     <Compile Include="Controllers\ForgotPassword\ValidEmailController.cs" />
+    <Compile Include="Controllers\ForgotPassword\VerifyOTPCodeController.cs" />
     <Compile Include="Controllers\Login\GetDataUserByIDController.cs" />
     <Compile Include="Controllers\Login\LoginController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />

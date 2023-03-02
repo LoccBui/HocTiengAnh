@@ -174,12 +174,51 @@ END
 
 exec sp_CheckEmailValid @Email='buihuuloc2001a@gmail.com'
 
+
+go
+
+-- xóa xong lấy mã code mới nhất theo id account và so sánh với mã nhập vào
+alter procedure sp_confirmOTPCode
+@OTPCODE int,
+@AccountID int
+as 
+BEGIN
+	DECLARE @lastestCode INT
+
+	DELETE FROM OTP WHERE ExpiredAt < GETDATE();
+
+	SET @lastestCode = (select  TOP 1 OTPCODE
+	from OTP
+	where AccountID = @AccountID and ExpiredAt > CreatedAt
+	order by CreatedAt DESC	)
+
+	if(@lastestCode = @OTPCODE)
+		begin 
+			select '200' as VerifyStatus
+		end
+	else
+		begin 
+			select '404' as VerifyStatus
+		end	
+END
+
+exec sp_confirmOTPCode 910588, 3
+
+
 ----------------- TESTING AREA
+
+
+
 -- xóa xong hãy check otp
+
+  DELETE FROM OTP WHERE ExpiredAt < GETDATE();
 select  TOP 1  OTPCODE 
 from OTP
-where AccountID = 1 and ExpiredAt > CreatedAt
+where AccountID = 3 and ExpiredAt > CreatedAt
 order by CreatedAt DESC
+
+
+--exec sp_GenerateOTP 1
 
 select * 
 from OTP
