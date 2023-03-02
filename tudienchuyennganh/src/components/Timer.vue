@@ -14,7 +14,7 @@
                 ref="otpInput"
                 input-classes="otp-input"
                 separator="-"
-                :num-inputs="4"
+                :num-inputs="6"
                 :should-auto-focus="true"
                 :is-input-num="true"
                 :conditionalClass="['one', 'two', 'three', 'four']"
@@ -22,7 +22,7 @@
                 @on-change="handleOnChange"
                 @on-complete="handleOnComplete"
             />
-            <v-btn color="primary" @click="clearInput()"> Clear </v-btn>
+            <v-btn color="primary" @click="clearInput()"> Xóaz </v-btn>
         </div>
     
         <div class="resend-otp-area">
@@ -30,7 +30,10 @@
             <a class="primary-text-color hover-pointer" @click="this.resendOTP()"> Gửi lại mã </a>
         </div>
 
-        <v-btn color="primary" block> Xác nhận </v-btn>
+        <v-btn color="primary" block
+        @click="confirmOTP()"
+        > Xác nhận </v-btn> 
+
     </div>
 </template>
 
@@ -45,18 +48,21 @@ export default {
     props: {
         time: {
             type: Number,
-            default: 0
+            default: 0,
+            inputOTP: ''
         }
     },
     setup() {
         const otpInput = ref(null)
 
             const handleOnComplete = (value) => {
-                console.log('OTP completed: ', value);
+                console.log('OTP completed: ', value)
+                console.log('OTP completed nef')
             };
 
             const handleOnChange = (value) => {
                 console.log('OTP changed: ', value);
+             
             };
 
             const clearInput = () => {
@@ -72,7 +78,9 @@ export default {
             minutes: '--',
             seconds: '--',
             interval: 0,
-            token: '1234'
+            token: '1234',
+
+            otpInputCode: []
         }
     },
     mounted: function () {
@@ -94,7 +102,7 @@ export default {
             if (this.total <= 0) {
                 clearInterval(this.interval)
                 this.$emit('timer-stop')
-                alert('hết giờ nha')
+                console.log('hết giờ nha')
             }
 
             this.total -= 1           
@@ -102,6 +110,14 @@ export default {
 
         resendOTP(){
             this.$emit('resendOTP')
+        },
+
+        confirmOTP(){
+            var arrOTP= [].concat(this.otpInput.otp).join("")
+            console.log(arrOTP)
+
+            this.$emit('confirm-OTP', arrOTP)
+
         }
     },
 

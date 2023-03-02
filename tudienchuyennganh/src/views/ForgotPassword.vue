@@ -56,7 +56,9 @@
                     </div>
 
                     <div  v-else>
-                        <Timer :time="120" />
+                        <Timer :time="120"
+                        @confirm-OTP="confirmOTP"
+                        />
 
                         <div class="navigate-otp">
                             <h3>
@@ -153,10 +155,22 @@ export default {
         async generateOTPForEmail(accountID){
             let result = await axiosInstance.get(`generateOTP/${accountID}`)
             if(result.status == 200){
-                console.log(result.data[0].OTPCode)
+                console.log('otp created successfully')
+
                 this.notShowTimer = !this.notShowTimer
-            }   
+            }             
+        },
+
+        async confirmOTP(data){
+            console.log(data)
+
+            let result = await axiosInstance.get(`verify/${this.accountID}/${data}`)
+
+            if(result.status == 200){
+                console.log(result.data)
             
+            }
+
 
         }
 
