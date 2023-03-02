@@ -12,6 +12,8 @@ import { createApp } from 'vue'
 import { registerPlugins } from '@/plugins'
 
 
+
+
 import GAuth from 'vue3-google-oauth2'
 
 const app = createApp(App)
@@ -27,6 +29,8 @@ const gAuthOptions = {
     plugin_name: 'HocTiengAnh'
 }
 app.use(GAuth, gAuthOptions)
+
+// app.component('v-otp-input', VOtpInput).mount(#app')// format when use other plugins
 
 
 

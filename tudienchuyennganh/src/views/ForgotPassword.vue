@@ -1,7 +1,6 @@
 <template>
     <v-app>
         <div id="container">
-
             <!-- Khung bao img và form -->
             <div id="frame-cover">
 
@@ -12,47 +11,66 @@
                 <div class="frame-right">
                     <h1 class="heading-text"> QUÊN MẬT KHẨU </h1>
 
-                    <v-alert
-                    v-if="alertNotHaveEmail"
-                    color="error"
-                    icon="$success"
-                    text="Email của bạn chưa được đăng kí trong hệ thống"
-                    ></v-alert>
+                    <div v-if="notShowTimer">
 
-                    <v-form
-                        ref="form"
-                        v-model="valid"
-                        @submit.prevent="handleEmail()"
-                    >
+                        <v-alert
+                            v-if="alertNotHaveEmail"
+                            color="error"
+                            icon="$success"
+                            text="Email của bạn chưa được đăng kí trong hệ thống"
+                            max-height="70px"
+                        ></v-alert>
 
-                        <v-text-field
-                            v-model="emailInput" :rules="emailRules"
-                            :counter="10"            
-                            label="Nhập email của bạn"    
-                            required
-                            autofocus
+                        <v-form
+                            ref="form"
+                            v-model="valid"
+                            @submit.prevent="handleEmail()"
+                        >
 
-                            @keyup.enter="handleEmail()"
-                            >
-                        </v-text-field>
+                            <v-text-field
+                                v-model="emailInput" :rules="emailRules"
+                                :counter="10"            
+                                label="Nhập email của bạn"    
+                                required
+                                autofocus
 
-                        <v-btn
-                            color="primary"
-                            block
-                            @click="handleEmail()"
-                            > Lấy lại mật khẩu  
-                        </v-btn>
-                    
-                    </v-form>
+                                @keyup.enter="handleEmail()"
+                                >
+                            </v-text-field>
 
-                    <span class="navigate">
-                        <h3>
-                            <a class="primary-text-color hover-pointer"
-                            @click="moveToLogin"> Quay về trang đăng nhập </a>  
-                        </h3>
-                    </span>
+                            <v-btn
+                                color="primary"
+                                block
+                                @click="handleEmail()"
+                                > Lấy lại mật khẩu  
+                            </v-btn>
+                        
+                        </v-form>
+
+                        <span class="navigate">
+                            <h3>
+                                <a class="primary-text-color hover-pointer"
+                                @click="moveToLogin"> Quay về trang đăng nhập </a>  
+                            </h3>
+                        </span>     
+                    </div>
+
+                    <div  v-else>
+                        <Timer :time="120" />
+
+                        <div class="navigate-otp">
+                            <h3>
+                                <a class="primary-text-color hover-pointer"
+                                @click="moveToLogin"> Quay về trang đăng nhập </a>  
+                            </h3>
+                        </div>  
+                    </div>
                 </div>
+
+                
+                
             </div>
+            
         </div>
     </v-app>
 
@@ -62,8 +80,11 @@
 import emailjs from '@emailjs/browser';
 import axiosInstance from '../axios'
 
+import Timer from '@/components/Timer.vue';
+
 
 export default {
+    components: {Timer},
     data() {
         return {
             valid: false, 
@@ -78,6 +99,9 @@ export default {
                 v => (v && v.length > 10) || 'Email không được dưới 10 kí tự',
                 v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Email không hợp lệ'
             ],
+
+            // timer
+            notShowTimer: true
         }
     },
 
@@ -114,6 +138,7 @@ export default {
                 //Have account in database
                 if(this.accountID != 0){
                     this.generateOTPForEmail(this.accountID)
+                    
                 }
                 else{
                     this.alertNotHaveEmail = true
@@ -129,7 +154,9 @@ export default {
             let result = await axiosInstance.get(`generateOTP/${accountID}`)
             if(result.status == 200){
                 console.log(result.data[0].OTPCode)
+                this.notShowTimer = !this.notShowTimer
             }   
+            
 
         }
 
@@ -188,9 +215,9 @@ export default {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-
+    justify-content: center;
     .heading-text{
+        margin-bottom: 10%;
         font-size: 40px;
         color: var(--main-color);
         text-align: center;
@@ -207,6 +234,12 @@ export default {
         display: flex;
         justify-content: space-evenly;
     }
+}
+
+.navigate-otp{
+    width: 100%;
+    margin-top: 50px;
+    text-align: center;
 }
 
 
@@ -226,5 +259,6 @@ export default {
         }
     }   
 }
+
 
 </style>

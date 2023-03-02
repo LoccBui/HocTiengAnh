@@ -124,7 +124,7 @@ go
 
 
 --Tạo mã OTP
-create PROCEDURE sp_GenerateOTP
+alter PROCEDURE sp_GenerateOTP
     @AccountID INT
 AS
 BEGIN
@@ -135,7 +135,7 @@ BEGIN
 
     -- Thêm OTP vào bảng
     INSERT INTO OTP (AccountID, OTPCode, ExpiredAt) 
-    VALUES (@AccountID, @OTP, DATEADD(MINUTE, 1, GETDATE()));
+    VALUES (@AccountID, @OTP, DATEADD(MINUTE, 2, GETDATE()));
 
     -- Xóa các mã OTP đã hết hạn
     DELETE FROM OTP WHERE ExpiredAt < GETDATE();
