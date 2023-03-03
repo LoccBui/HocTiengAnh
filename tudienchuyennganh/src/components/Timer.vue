@@ -22,17 +22,25 @@
                 @on-change="handleOnChange"
                 @on-complete="handleOnComplete"
             />
-            <v-btn color="primary" @click="clearInput()"> Xóaz </v-btn>
+            <v-btn color="primary" @click="clearInput()"> Xóa </v-btn>
         </div>
     
         <div class="resend-otp-area">
             <span class="no-hover-pointer">Không nhận được mã OTP ? </span>
-            <a class="primary-text-color hover-pointer" @click="this.resendOTP()"> Gửi lại mã </a>
+            <a class="primary-text-color hover-pointer" @click="this.generateOTPForEmail()"> Gửi lại mã </a>
         </div>
 
-        <v-btn color="primary" block
+        <v-btn color="primary" 
+        :disabled="hiddenConfirmOTP"
+        block
         @click="confirmOTP()"
         > Xác nhận </v-btn> 
+
+        <br>
+
+        <v-alert v-if="showAlertWrongOTP" color="error" icon="$error" min-width="100%">
+            Mã OTP không chính xác, bạn còn a {{ tryTimes }}  cho lần thử nữa.
+        </v-alert>
 
     </div>
 </template>
@@ -40,18 +48,32 @@
 <script>
 import VOtpInput from 'vue3-otp-input';
 import { ref } from 'vue';
+import axiosInstance from '../axios'
 
 export default {
-    components: {
-        VOtpInput,
-    },
+    components: { VOtpInput },
     props: {
         time: {
             type: Number,
             default: 0,
             inputOTP: ''
+        },
+        accountID: {
+            type: Number,
+            default: 0
+        },
+
+        wrongOTP: {
+            type: Number,
+            default: 0
         }
     },
+    watch:{
+        wrongOTP: function(){
+           this.handleWrongOTP()
+        }
+    },
+
     setup() {
         const otpInput = ref(null)
 
@@ -80,10 +102,14 @@ export default {
             interval: 0,
             token: '1234',
 
+            tryTimes: 10,
+            showAlertWrongOTP: false,
+
             otpInputCode: []
         }
     },
     mounted: function () {
+        console.log(this.accountID)
         this.total = parseInt(this.time, 10)
         this.interval = setInterval(() => {
             this.tick()
@@ -105,11 +131,7 @@ export default {
                 console.log('hết giờ nha')
             }
 
-            this.total -= 1           
-        },
-
-        resendOTP(){
-            this.$emit('resendOTP')
+            this.total -= 1          
         },
 
         confirmOTP(){
@@ -118,7 +140,31 @@ export default {
 
             this.$emit('confirm-OTP', arrOTP)
 
+        },
+
+        async generateOTPForEmail(){
+            let result = await axiosInstance.get(`generateOTP/${this.accountID}`)
+            if(result.status == 200){
+                console.log('otp created successfully')
+
+            }             
+        },
+
+        handleWrongOTP(){
+            console.log(this.wrongOTP)
+
+            if(this.wrongOTP != 0){
+                this.showAlertWrongOTP = true
+
+                this.hiddenConfirmOTP = false
+                setTimeout(() => {
+                    this.hiddenConfirmOTP = true
+                }, 2000)
+            }
         }
+
+
+
     },
 
     

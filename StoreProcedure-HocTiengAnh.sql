@@ -202,8 +202,10 @@ BEGIN
 		end	
 END
 
-exec sp_confirmOTPCode 910588, 3
+go
+exec sp_confirmOTPCode 977704, 1
 
+go
 
 ----------------- TESTING AREA
 
@@ -211,17 +213,17 @@ exec sp_confirmOTPCode 910588, 3
 
 -- xóa xong hãy check otp
 
-  DELETE FROM OTP WHERE ExpiredAt < GETDATE();
+DELETE FROM OTP WHERE ExpiredAt < GETDATE();
 select  TOP 1  OTPCODE 
 from OTP
 where AccountID = 3 and ExpiredAt > CreatedAt
 order by CreatedAt DESC
 
 
---exec sp_GenerateOTP 1
-
+--exec sp_GenerateOTP 3
 select * 
 from OTP
+
 
 
 

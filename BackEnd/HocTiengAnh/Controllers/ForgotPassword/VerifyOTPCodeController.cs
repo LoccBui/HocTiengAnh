@@ -18,8 +18,8 @@ namespace HocTiengAnh.Controllers.ForgotPassword
         public IHttpActionResult VerifyOTPCode(int id, int otpcode)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@OTPCODE", id),
-                    new SqlParameter("@AccountID",otpcode)
+                    new SqlParameter("@OTPCODE", otpcode),
+                    new SqlParameter("@AccountID",id)
                 };
             var result = new DB().GetDataReader("sp_confirmOTPCode", param);
 

@@ -58,6 +58,8 @@
                     <div  v-else>
                         <Timer :time="120"
                         @confirm-OTP="confirmOTP"
+                        :accountID ="this.accountID"
+                        :wrongOTP="this.wrongOTP"
                         />
 
                         <div class="navigate-otp">
@@ -66,8 +68,10 @@
                                 @click="moveToLogin"> Quay về trang đăng nhập </a>  
                             </h3>
                         </div>  
+                        
                     </div>
                 </div>
+
 
                 
                 
@@ -103,7 +107,10 @@ export default {
             ],
 
             // timer
-            notShowTimer: true
+            notShowTimer: true,
+
+            //otp
+            wrongOTP: 0
         }
     },
 
@@ -161,13 +168,20 @@ export default {
             }             
         },
 
-        async confirmOTP(data){
-            console.log(data)
 
+        async confirmOTP(data){
             let result = await axiosInstance.get(`verify/${this.accountID}/${data}`)
 
             if(result.status == 200){
-                console.log(result.data)
+
+                if(result.data[0].VerifyStatus == 200){
+                    alert('move to change password')
+                }
+                else{
+                    alert('wrong otp')
+                    this.wrongOTP+=1
+                    console.log(this.wrongOTP)
+                }
             
             }
 
