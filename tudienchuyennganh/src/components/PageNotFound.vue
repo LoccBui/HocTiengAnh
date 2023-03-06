@@ -8,11 +8,12 @@
                 height="50px"
                 rounded
                 @click="backToHomePage"
-            >Quay về trang chủ</v-btn>
+            >Quay về trang chủ
+            </v-btn>
         </div>
 
         <div class="frame-image">
-            <img class="img-not-found" src="../assets/img/PageNotFound.png" alt="Page Not Found">
+            <img class="img-not-found" src="../../assets/img/PageNotFound.png" alt="Page Not Found">
         </div>
     </div>
 </template>
@@ -30,7 +31,7 @@ export default {
         },
 
         backToHomePage(){
-            this.$router.push('/')
+            this.$router.push('/topic')
         }
         
     }

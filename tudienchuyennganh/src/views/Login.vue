@@ -200,12 +200,15 @@ export default {
                 var dataUser = {
                     accountID: '',
                     email: '',
-                    name: ''
+                    name: '',
+                    MaGV: ''
                 }
                 
                 dataUser.accountID = res.data[0].AccountID
                 dataUser.email = res.data[0].Email
                 dataUser.name = res.data[0].Name
+                dataUser.MaGV = res.data[0].MaGV || 0
+
                 emitter.emit('data', dataUser);
             })
         },

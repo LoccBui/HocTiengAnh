@@ -27,13 +27,14 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.Name, TK.Email from GIAOVIEN GV
+			select GV.AccountID, GV.MaGV, GV.Name, TK.Email 
+			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			where GV.AccountID = @AccountID
 		end
 	else 
 		begin 
-			select SV.AccountID, SV.Name, TK.Email from SINHVIEN SV
+			select SV.AccountID, SV.MaSV, SV.Name, TK.Email from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			where SV.AccountID = @AccountID
 		end
@@ -201,11 +202,20 @@ BEGIN
 			select '404' as VerifyStatus
 		end	
 END
+--exec sp_confirmOTPCode 977704, 1
 
 go
-exec sp_confirmOTPCode 977704, 1
 
-go
+--Show all class -  ADMIN ROLE
+create procedure sp_ShowAllClass
+as
+BEGIN
+	select L.IDCLASS, L.ClassName, K.FacultyName
+	from LOP L
+	inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+END
+
+
 
 ----------------- TESTING AREA
 
@@ -224,12 +234,23 @@ order by CreatedAt DESC
 select * 
 from OTP
 
+----- sp not used yet
+select *  from LOP
+select * from KHOA
 
 
 
 
 
+exec sp_ShowAllClassTeacher 
 
+
+
+
+
+select * from TAIKHOAN
+select * from GIAOVIEN
+select * from SINHVIEN
 
 
 

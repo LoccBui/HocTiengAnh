@@ -51,13 +51,19 @@ export default {
         return {
             emailUser: '',
             nameUser: '',
+            accountID: '',
 
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
               {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
-              {icon: 'mdi-account', title: 'Quản lý tài khoản', value: '4', route: '/account'},
-              {icon: 'mdi-account-group ', title: 'Quản lý lớp', value: '4', route: '/class'},
+              {icon: 'mdi-account', title: 'Quản lý tài khoản -  GV and SV', value: '4', route: '/account'},
+              {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/class'},
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/vocab'},
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: '7', route: '/manage/vocab'},
+
+              // maybe more
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: '8', route: '/manage/vocab'},
               {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut' }
             ]
         }
@@ -69,9 +75,9 @@ export default {
       // this.getTopic()
     },
 
-    // beforeDestroy() {
-    //   emitter.off('data')
-    // },
+    beforeDestroy() {
+      emitter.off('data')
+    },
 
     methods:{
       menuActionClick(action){
@@ -81,9 +87,28 @@ export default {
       },
 
       handleDataUser(data){
+
+        let dataUser = {
+            MaGV: '',
+            accountID: '',
+            email: '',
+            name: ''
+        }
         
-        this.emailUser = data.email
-        this.nameUser = data.name   
+        dataUser.MaGV = data.MaGV 
+        dataUser.accountID= this.accountID = data.accountID 
+        dataUser.email = this.emailUser = data.email
+        dataUser.name = this.nameUser = data.name   
+
+        localStorage.setItem('userInfo', JSON.stringify(dataUser))
+
+
+       
+
+
+
+        console.log("main",data)
+
       },
 
       getTopic(){

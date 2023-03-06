@@ -14,8 +14,10 @@ import LearnWords from '../views/LearnWords.vue'
 import Searching from '../views/Searching.vue'
 import ManageClass from '../views/ManageClass.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
+import ManageVocab from '../views/ManageVocab.vue'
 
 import TopicDetail from '../views/TopicDetail.vue'
+
 
 const routes = [
   {path: '/',  component: Login},
@@ -43,7 +45,13 @@ const routes = [
       {
         path: '/class',
         component: ManageClass
-      }
+      },
+      {
+        path: '/manage/vocab',
+        component: ManageVocab
+      },
+
+      
   ]
   },
 

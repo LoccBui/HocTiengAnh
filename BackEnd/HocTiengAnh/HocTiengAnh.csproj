@@ -166,6 +166,7 @@
     <Compile Include="Controllers\ForgotPassword\VerifyOTPCodeController.cs" />
     <Compile Include="Controllers\Login\GetDataUserByIDController.cs" />
     <Compile Include="Controllers\Login\LoginController.cs" />
+    <Compile Include="Controllers\Manage Class\ShowAllClassController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />
     <Compile Include="Controllers\Topic\SelectAllTopicController.cs" />

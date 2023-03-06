@@ -32,7 +32,7 @@
     <span> AUDIO </span>
     <div class="audio-wrapper">
       <button type="button"  id='myvoice' @click="this.speak()">
-        <img src="../assets/icon/ic_audio.png" class="size-icon-48px" alt="Audio">
+        <img src="../../assets/icon/ic_audio.png" class="size-icon-48px" alt="Audio">
       </button> 
     </div>
 

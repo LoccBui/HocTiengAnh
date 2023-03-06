@@ -39,7 +39,7 @@
         <br>
 
         <v-alert v-if="showAlertWrongOTP" color="error" icon="$error" min-width="100%">
-            Mã OTP không chính xác, bạn còn a {{ tryTimes }}  cho lần thử nữa.
+            Mã OTP không chính xác, bạn còn a    {{ tryTimes }}  cho lần thử nữa.
         </v-alert>
 
     </div>
