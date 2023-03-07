@@ -85,3 +85,4 @@ C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.Cors.xml
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
+C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache

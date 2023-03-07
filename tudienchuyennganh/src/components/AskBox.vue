@@ -12,6 +12,7 @@
             <v-btn variant="flat" color="primary" @click="confirm()">Xác nhận </v-btn>
             <v-btn variant="flat" color="error" @click="close()">Đóng</v-btn>
         </v-card-actions>
+        
         </v-card>
     </v-dialog>
   </div>
@@ -40,6 +41,6 @@ export default {
 }
 </script>
 
-<style>
+<style  lang="scss" scoped>
 
 </style>

@@ -81,7 +81,7 @@
             <v-select
               v-show="showSelectTeacherFaculty"
               label="Giáo viên chủ nhiệm"
-              :items="facultyList"
+              :items="teacherList"
             ></v-select>
 
             <v-btn color="primary" block>Thêm</v-btn>
@@ -120,7 +120,7 @@ import AskBox from '@/components/AskBox.vue'
         dataClass: [],
         facultyList: [],
         idClassDelete: '',
-
+        teacherList: [],
         showAskBox: false,
         showSelectTeacherFaculty: false
         
@@ -178,10 +178,18 @@ import AskBox from '@/components/AskBox.vue'
               }
             })
       },
-
+      
       selectFaculty(data){
-        console.log(data)
         this.showSelectTeacherFaculty = true
+        axiosInstance.post(`getTeacherByFaculty/${data}`)
+        .then((res)=> {
+          this.teacherList.length = 0
+          for(let i = 0; i < res.data.length; i++){
+              this.teacherList.push(res.data[i].Name)
+          
+           }
+        })
+         
       }
 
       

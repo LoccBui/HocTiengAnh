@@ -240,7 +240,7 @@ END
 go
 
 --Thêm Class mới
-alter procedure sp_AddNewClass
+create procedure sp_AddNewClass
 @ClassName varchar(50),
 @MaGV int,
 @IDFaculty int
@@ -266,41 +266,23 @@ exec sp_AddNewClass '19MD222', 1, 2
 
 ----------------- TESTING AREA
 
+select * from SINHVIEN
+select * from TAIKHOAN
 
-
--- xóa xong hãy check otp
-
-DELETE FROM OTP WHERE ExpiredAt < GETDATE();
-select  TOP 1  OTPCODE 
-from OTP
-where AccountID = 3 and ExpiredAt > CreatedAt
-order by CreatedAt DESC
-
-
---exec sp_GenerateOTP 3
-select * 
-from OTP
-
------ sp not used yet
-select *  from LOP
+select * from LOP
+select * from GIAOVIEN
 select * from KHOA
 
+go
 
-
-
-
-exec sp_ShowAllClassTeacher 
-
-
-
-
-
-select * from TAIKHOAN
-select * from GIAOVIEN
-select * from SINHVIEN
-select * from LOP
-
-
-
-
-
+create procedure sp_ShowTeacherNameByFaculty
+@FacultyName nvarchar(100)
+as
+BEGIN
+	select DISTINCT GV.Name
+	from GIAOVIEN GV
+	inner join LOP L on L.MaGV = GV.MaGV
+	inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+	where FacultyName like  N'%'+@FacultyName+'%'
+END
+exec sp_ShowTeacherNameByFaculty 'Dược'
