@@ -42,11 +42,18 @@
         <td>{{ item.ClassName }}</td>    
         <td>{{ item.FacultyName  }}</td>    
         <td>
-          <v-btn color="red" @click="deleteClass(item.IDCLASS)"> Xóa </v-btn>
+          <v-btn color="error" @click="handleDeleteClass(item.IDCLASS)"> Xóa </v-btn>
         </td>
       </tr>
     </tbody>
   </v-table>
+
+  <AskBox 
+      v-if="showAskBox"
+      :title="'Bạn có muốn xóa lớp này ?'"
+      @confirm="deleteClass"
+      @close="this.showAskBox = false"
+  />
 
 
   <div>
@@ -68,15 +75,22 @@
              <v-select
               label="Chọn khoa"
               :items="facultyList"
+              @update:modelValue="selectFaculty"
+            ></v-select>
+
+            <v-select
+              v-show="showSelectTeacherFaculty"
+              label="Giáo viên chủ nhiệm"
+              :items="facultyList"
             ></v-select>
 
             <v-btn color="primary" block>Thêm</v-btn>
-            <v-btn color="success" block>Import Excel</v-btn>
+            <v-btn  color="success" block>Import Excel</v-btn>
 
           </v-card-text>
 
           <v-card-actions>          
-            <v-btn color="error" block @click="dialog = false">Đóng</v-btn>
+            <v-btn color="error" variant="flat" block @click="dialog = false">Đóng</v-btn>
           </v-card-actions>
         </v-card>
     </v-dialog>
@@ -87,9 +101,10 @@
 
 <script>
 import axiosInstance from '../axios'
-
+import AskBox from '@/components/AskBox.vue'
 
   export default {
+    components: {AskBox},
     data () {
       return {
         idTeacher: '',
@@ -103,13 +118,11 @@ import axiosInstance from '../axios'
         ],
 
         dataClass: [],
+        facultyList: [],
+        idClassDelete: '',
 
-        facultyList: [
-            'CNTT',
-            'Dược',
-            'Marketing'
-        ]
-
+        showAskBox: false,
+        showSelectTeacherFaculty: false
         
       }
         
@@ -117,9 +130,7 @@ import axiosInstance from '../axios'
 
     mounted(){
       this.getAllClasses()
-
-
-
+      this.getAllFaculty()
     },
 
     methods:{
@@ -133,19 +144,44 @@ import axiosInstance from '../axios'
       },
 
 
-      handleData(data){
-        console.log("data", data)
-        
+      //set data for v-table
+      handleData(data){        
           this.dataClass.push(...data)
-          console.log(this.dataClass)
       },
 
-      deleteClass(idClass){
-        alert(idClass)
+      handleDeleteClass(idClassChoose){
+        this.idClassDelete = idClassChoose
+        this.showAskBox = true
       },
+
+      async deleteClass(){
+
+        let result = await axiosInstance.delete(`/DeleteClass/${this.idClassDelete}`)
+            
+        if (result.status == 200) {
+            location.reload()
+        }
+       
+      },
+
 
       addNewClass(){
         this.dialog = true
+      },
+
+      getAllFaculty(){
+        // add faculty name to v-select
+        axiosInstance.get('SelectAllFaculty')
+            .then((res) => {
+              for(let i = 0; i < res.data.length; i++){
+                this.facultyList.push(res.data[i].FacultyName)
+              }
+            })
+      },
+
+      selectFaculty(data){
+        console.log(data)
+        this.showSelectTeacherFaculty = true
       }
 
       

@@ -2,7 +2,11 @@ import axios from "axios";
 // axios.defaults.baseURL = 'http://localhost:8000';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8090/'
+  baseURL: 'http://localhost:8090/',
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT'
+  }
 });
 
 // Add a request interceptor

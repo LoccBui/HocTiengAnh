@@ -215,6 +215,53 @@ BEGIN
 	inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 END
 
+go
+
+-- Show Faculty on Select Box - Manage Class Component
+create procedure sp_SelectAllFaculty
+as
+BEGIN
+	SELECT * FROM KHOA
+END
+
+go
+
+-- Xóa Class theo ID
+create procedure sp_DeleteClassByID
+@IDClass int
+as 
+BEGIN
+	delete 
+	from LOP
+	where IDCLASS = @IDClass
+	SELECT @@ROWCOUNT as RowDelete
+END
+
+go
+
+--Thêm Class mới
+alter procedure sp_AddNewClass
+@ClassName varchar(50),
+@MaGV int,
+@IDFaculty int
+as 
+BEGIN
+	declare @lastestID int
+	
+	set @lastestID = (SELECT MAX(IDCLASS) FROM LOP) + 1
+
+	SET IDENTITY_INSERT LOP ON 
+	
+	INSERT INTO LOP(IDCLASS, ClassName, MaGV, IDFACULTY)
+	VALUES(@lastestID, @ClassName, @MaGV, @IDFaculty)
+
+
+	SELECT @@ROWCOUNT as RowAdd
+END
+
+exec sp_AddNewClass '19MD222', 1, 2
+
+
 
 
 ----------------- TESTING AREA
@@ -251,6 +298,7 @@ exec sp_ShowAllClassTeacher
 select * from TAIKHOAN
 select * from GIAOVIEN
 select * from SINHVIEN
+select * from LOP
 
 
 
