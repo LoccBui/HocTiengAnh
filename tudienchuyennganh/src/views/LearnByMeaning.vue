@@ -28,21 +28,26 @@
             <h1>Chính xác</h1>
         </div>
 
+        <el-button :type="statusAnswer">ok</el-button>
+
     </div>
 
     <div class="main-word">
-        <h1 class="current-word">Trời ơi</h1>
+        <h1 class="current-word">{{ titleQuestion }}</h1>
         <div class="temporary"></div>
     </div>
 
 
-    <div class="body">
+    <div class="options-choose-cover">
         
         <div class="result-cover">
-            <button type="button" class="option">1 xác</button>
-            <button type="button" class="option">2 xác</button>
-            <button type="button" class="option">3 xác</button>
-            <button type="button" class="option">4 xác</button>
+            <button 
+                type="button" 
+                class="option" 
+                v-for="option in listWord" :key="option"
+                @click="this.chooseAnswer(option.Word)"
+                >{{ option.Word }}
+            </button>
         </div>
 
         <div class="levels">
@@ -55,15 +60,57 @@
 
 <script>
 export default {
+    props: ['listWord'],
     data(){
         return{
-            currentScore: '100'
+            currentScore: '100',
+            titleQuestion: '',
+            statusAnswer: 'default',
+        }
+    },
+
+    mounted(){
+        this.randomQuestion()
+    },
+
+
+    methods:{
+        chooseAnswer(chooseAnswer){
+            console.log("choose", chooseAnswer)
+            console.log("answer", this.titleQuestion)
+
+
+            if(chooseAnswer === this.titleQuestion){
+                this.statusAnswer = 'success'
+                setTimeout(() => {
+                    this.randomQuestion()
+                },1000)
+            }else{
+                this.statusAnswer = 'danger'
+                setTimeout(() => {
+                    this.randomQuestion()
+                },1000)
+
+            }
+        },
+
+        randomQuestion(){
+            this.statusAnswer = 'default'
+
+            const random = Math.floor(Math.random() * this.listWord.length);
+            this.titleQuestion = this.listWord[random].Word 
+
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.container{
+    width: 100%;
+    height: 100vh;
+}
+
 .header{
     display: flex;
     align-items: center;
@@ -111,41 +158,43 @@ export default {
     width: 10%;
 }
 
-.body{
+.options-choose-cover{
+    width: 100%;
+    height: auto;
+    padding: 20px;
     display: flex;
+    background-color: cadetblue;
+
 
     .result-cover{
+        width: 90%;
+        background-color: yellowgreen;
+        height: auto;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: space-evenly;
-        
-        background-color: aquamarine;
-        height: 200px;
-        width: 90%;
-
+        justify-content: space-around;
     }
 
     .option{
+        width: 35%;
         height: 60px;
         border-radius: 20px;
-        width: 500px;   
         border: 1px solid var(--normal);
         background-color: var(--tints-90);
-        transition: all 500ms;
+        transition: all 200ms;
 
         &:hover{
             font-size: 25px;
-
-        }
+        }     
     }
 
     .levels{
-        flex: 1;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
+        width: 10%;
+        height: 200px;
         border-radius: 10px;
+        background-color: blueviolet;
+        ;
     }
     
 }

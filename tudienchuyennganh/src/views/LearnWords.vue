@@ -39,7 +39,9 @@
   
   </div>
 
-    <LearnByMeaningVue v-if="learnByMeaning"/>
+    <LearnByMeaningVue v-if="learnByMeaning"
+      :listWord="dataAPI"
+    />
   
   </div>
 </template>

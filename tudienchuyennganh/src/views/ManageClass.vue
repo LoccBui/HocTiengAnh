@@ -1,52 +1,40 @@
 <template>
   <div class="container">
- 
-    <div>
-      <v-btn color="primary" @click="addNewClass()">Thêm lớp mới</v-btn>
-    </div>
-
-    <v-card
-    class="mx-auto"
-    color="grey-lighten-3"
-    max-width="400"
+    
+  <el-table 
+    :data="dataClass" 
+    :default-sort="{ prop: 'IDCLASS', order: 'ascending' }"
   >
-    <v-card-text>
-      <v-text-field
-        :loading="loading"
-        density="compact"
-        variant="solo"
-        label="Search templates"
-        append-inner-icon="mdi-magnify"
-        single-line
-        hide-details
-        @click:append-inner="onClick"
-      ></v-text-field>
-    </v-card-text>
-  </v-card>
 
-    <v-table>
-    <thead>
-      <tr>
+    <el-table-column label="Mã lớp" prop="IDCLASS" sortable/>
+    <el-table-column label="Tên lớp" prop="ClassName"  />
+    <el-table-column label="Khoa" prop="FacultyName" sortable/>
 
-        <th class="text-left" v-for="item in headers" :key="item">
-          {{ item.title }}
-        </th>
+    <el-table-column align="center">
 
-      </tr>
-    </thead>
+      <template #header>
+        <el-input v-model="search" size="large" placeholder="Type to search" />
+      </template>
 
-    <tbody>
-      <tr v-for="item in dataClass"
-        :key="item.IDCLASS"> 
-        <td>{{ item.IDCLASS}}</td>  
-        <td>{{ item.ClassName }}</td>    
-        <td>{{ item.FacultyName  }}</td>    
-        <td>
-          <v-btn color="error" @click="handleDeleteClass(item.IDCLASS)"> Xóa </v-btn>
-        </td>
-      </tr>
-    </tbody>
-  </v-table>
+      <template #default="scope">
+        <el-button type="success" size="large" @click="handleABC(scope.$index, scope.$row)"
+          >Sửa
+        </el-button>
+        <el-button
+          size="large"
+          type="danger"
+          @click="handleDeleteClass(scope.row.IDCLASS)"
+          >Xóa
+        </el-button>
+      </template>
+
+    </el-table-column>
+  </el-table>
+
+  <el-button class="mt-4" type="primary" @click="addNewClass()"
+    >Thêm lớp</el-button> 
+
+  <el-divider></el-divider>
 
   <AskBox 
       v-if="showAskBox"
@@ -96,17 +84,20 @@
     </v-dialog>
   </div>
 
+
+  
+
   </div>
 </template>
 
 <script>
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
-
   export default {
     components: {AskBox},
     data () {
       return {
+        search: '',
         idTeacher: '',
         searchString: "",
         dialog: false,
@@ -126,6 +117,10 @@ import AskBox from '@/components/AskBox.vue'
         
       }
         
+    },
+
+    computed:{
+     
     },
 
     mounted(){
@@ -163,6 +158,12 @@ import AskBox from '@/components/AskBox.vue'
         }
        
       },
+      handleABC(index, row){
+        console.log("chạy nè",index, row)
+
+          console.log(index,row)
+      },
+
 
 
       addNewClass(){
@@ -190,6 +191,10 @@ import AskBox from '@/components/AskBox.vue'
            }
         })
          
+      },
+
+      handleEdit(index, row){
+        console.log("chạy nè",index, row)
       }
 
       
