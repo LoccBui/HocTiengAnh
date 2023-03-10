@@ -76,7 +76,7 @@ create procedure sp_ShowTopicByFaculty
 @IDFACULTY int
 as
 BEGIN
-	select CD.TopicID, CD.TopicName, CD.CreatedBy, CD.QuantityWords
+	select CD.TopicID, CD.TopicDescribe, CD.TopicName, CD.CreatedBy, CD.QuantityWords
 	from CHUDE CD
 	where CD.IDFACULTY = @IDFACULTY
 END

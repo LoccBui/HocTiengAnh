@@ -1,19 +1,33 @@
 <template>
   <div class="container">
-    
+   
+    <el-button class="mt-4" type="primary" @click="addNewClass()"
+    >Thêm lớp</el-button> 
+
+
   <el-table 
     :data="dataClass" 
     :default-sort="{ prop: 'IDCLASS', order: 'ascending' }"
   >
 
-    <el-table-column label="Mã lớp" prop="IDCLASS" sortable/>
-    <el-table-column label="Tên lớp" prop="ClassName"  />
-    <el-table-column label="Khoa" prop="FacultyName" sortable/>
+    <el-table-column label="Mã lớp" prop="IDCLASS" width="150" sortable/>
+    <el-table-column label="Tên lớp" prop="ClassName" />
+    <el-table-column 
+      label="Khoa" 
+      prop="FacultyName" 
+      sortable
+      :filters="[
+        { text: 'CNTT', value: 'CNTT' },
+        { text: 'Dược', value: 'Dược' }
+      ]"
+      :filter-method="filterHandler"
+
+      />
 
     <el-table-column align="center">
 
       <template #header>
-        <el-input v-model="search" size="large" placeholder="Type to search" />
+        <el-input v-model="search" size="large" placeholder="Nhập tên lớp" />
       </template>
 
       <template #default="scope">
@@ -31,8 +45,7 @@
     </el-table-column>
   </el-table>
 
-  <el-button class="mt-4" type="primary" @click="addNewClass()"
-    >Thêm lớp</el-button> 
+
 
   <el-divider></el-divider>
 
@@ -82,15 +95,14 @@
           </v-card-actions>
         </v-card>
     </v-dialog>
-  </div>
 
-
-  
+  </div> 
 
   </div>
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
   export default {
@@ -141,6 +153,7 @@ import AskBox from '@/components/AskBox.vue'
 
       //set data for v-table
       handleData(data){        
+        this.dataClass.length =0
           this.dataClass.push(...data)
       },
 
@@ -154,7 +167,10 @@ import AskBox from '@/components/AskBox.vue'
         let result = await axiosInstance.delete(`/DeleteClass/${this.idClassDelete}`)
             
         if (result.status == 200) {
-            location.reload()
+           this.getAllClasses()
+          this.showAskBox = false
+          this.showMessage('Xóa thành công', 'success')
+
         }
        
       },
@@ -195,6 +211,20 @@ import AskBox from '@/components/AskBox.vue'
 
       handleEdit(index, row){
         console.log("chạy nè",index, row)
+      },
+
+      filterHandler(value, row){
+          // console.log(value, row.FacultyName)
+          // console.log(value.FacultyName === value )
+          return row.FacultyName === value 
+      },
+
+      showMessage(message, type){
+        ElMessage({
+          message: `${message}`,
+          type: `${type}`,
+          effect:"dark"
+        })
       }
 
       

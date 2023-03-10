@@ -59,9 +59,7 @@
 
 <script>
 import OptionLearning from './OptionLearning.vue';
-import { inject, toRefs } from "vue";
 import axiosInstance from '../axios'
-
 
 import emitter from '../eventBus.js'
 
@@ -75,10 +73,6 @@ export default {
             accountID: '',
 
         }
-    },
-
-    created() { 
-
     },
 
     mounted(){

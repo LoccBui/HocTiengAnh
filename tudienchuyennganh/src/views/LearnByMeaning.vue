@@ -2,21 +2,12 @@
   <div class="container">
 
     <div class="header">
-
-        <v-progress-linear
-            model-value= 80
-            :buffer-value="bufferValue"
-            height="50"
-            value="20"
-            color="#0038FF"
-            rounded
-            >
-        </v-progress-linear>
+        <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
 
         <div class="temporary"></div>
 
        <div class="score-cover">
-            {{ currentScore }}
+            {{ totalScore }}
        </div>
 
     </div>
@@ -24,12 +15,8 @@
     <div class="sub-header">
         <span class="sub-header-text"> Chọn kết quả đúng nhất</span>
         <div class="status-learn">
-            <v-icon>mdi-check</v-icon>
-            <h1>Chính xác</h1>
+            <el-alert :title="statusText" :type="statusAnswer" :closable="false" effect="dark" show-icon />
         </div>
-
-        <el-button :type="statusAnswer">ok</el-button>
-
     </div>
 
     <div class="main-word">
@@ -41,17 +28,17 @@
     <div class="options-choose-cover">
         
         <div class="result-cover">
-            <button 
+            <button
                 type="button" 
                 class="option" 
                 v-for="option in listWord" :key="option"
                 @click="this.chooseAnswer(option.Word)"
-                >{{ option.Word }}
+                >{{ option.Vietnamese }}
             </button>
         </div>
 
         <div class="levels">
-            level 1
+            {{ titleQuestion.Level }}
         </div>
     </div>
     
@@ -63,39 +50,60 @@ export default {
     props: ['listWord'],
     data(){
         return{
-            currentScore: '100',
+            totalScore: 0,
             titleQuestion: '',
-            statusAnswer: 'default',
+            statusAnswer: 'info',
+            statusText: 'Kết quả',
+
+            progressLength: '',
+            progressPercent: 0
         }
     },
 
     mounted(){
         this.randomQuestion()
+        this.progressLength = this.listWord.length
     },
 
 
     methods:{
-        chooseAnswer(chooseAnswer){
+        chooseAnswer(chooseAnswer, id){
             console.log("choose", chooseAnswer)
             console.log("answer", this.titleQuestion)
 
 
             if(chooseAnswer === this.titleQuestion){
                 this.statusAnswer = 'success'
-                setTimeout(() => {
-                    this.randomQuestion()
-                },1000)
-            }else{
-                this.statusAnswer = 'danger'
+                this.statusText = 'Chính xác'
+
+                this.progressPercent += ( 100 / this.progressLength ) 
+                this.totalScore += 100
+                console.log("SOCRE", this.totalScore)
+
+                if(this.progressPercent == 100){
+                    alert('correct all')
+                }
+
                 setTimeout(() => {
                     this.randomQuestion()
                 },1000)
 
             }
+            else{
+                this.statusAnswer = 'error'
+                this.statusText = 'Không đúng'
+
+
+
+                setTimeout(() => {
+                    this.randomQuestion()
+                },1000)
+            }
         },
 
         randomQuestion(){
-            this.statusAnswer = 'default'
+            this.statusAnswer = 'info'
+            this.statusText = 'Kết quả'
 
             const random = Math.floor(Math.random() * this.listWord.length);
             this.titleQuestion = this.listWord[random].Word 
@@ -123,6 +131,10 @@ export default {
         text-align: center;
         width: 12%;
     }
+
+    .el-progress{
+        width: 100%;
+    }
 }
 
 .sub-header{
@@ -135,13 +147,18 @@ export default {
     }
 
     .status-learn{
-        background-color: var(--success);
-        padding: 40px;
+        background-color: var(--tints-80);
+        height: 200px;
         width: 10%;
         text-align: center;
         color: var(--light-blue-90);
         border-radius: 10px;
+        z-index: 10;
         
+    }
+
+    .el-alert {
+        height: 100%;
     }
 
 }
@@ -174,18 +191,21 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-around;
+        
     }
 
     .option{
         width: 35%;
-        height: 60px;
+        height: 70px;
         border-radius: 20px;
         border: 1px solid var(--normal);
         background-color: var(--tints-90);
+        word-break: keep-all;
+        text-align: center;
         transition: all 200ms;
 
         &:hover{
-            font-size: 25px;
+            font-size: 20px;
         }     
     }
 
