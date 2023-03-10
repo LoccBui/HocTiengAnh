@@ -21,7 +21,7 @@
       </template>
 
       <template #default="scope">
-        <el-button type="success" size="large" @click="handleDetail(scope.row)"
+        <el-button type="primary" size="large" @click="handleDetail(scope.row)"
           >Chi tiết
         </el-button>
         <el-button
@@ -81,7 +81,7 @@ import DetailVocab from '@/components/DetailVocab.vue'
         showDetailBox: false,
         detailDataTopic: '',
         inputTopicName: '',
-        inputTopicDescribe: ''
+        inputTopicDescribe: '',
         
       }
         
