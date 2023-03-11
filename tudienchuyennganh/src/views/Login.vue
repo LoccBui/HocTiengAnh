@@ -171,6 +171,7 @@ export default {
                     var hasAccountID = Object.values(result.data[0])
                     if(hasAccountID != 0){
                         this.getDataUser(hasAccountID)
+                    
 
                         this.$router.push('/topic')
                     }
@@ -198,7 +199,7 @@ export default {
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
 
-                var dataUser = {
+                let dataUser = {
                     accountID: '',
                     email: '',
                     name: '',
@@ -209,6 +210,11 @@ export default {
                 dataUser.email = res.data[0].Email
                 dataUser.name = res.data[0].Name
                 dataUser.MaGV = res.data[0].MaGV || 0
+
+                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+
+                console.log(dataUser)
+
 
                 emitter.emit('data', dataUser);
             })

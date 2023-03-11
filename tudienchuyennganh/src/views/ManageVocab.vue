@@ -2,7 +2,7 @@
   <div class="container">
    
     <el-button class="mt-4" type="primary" @click="addNewClass()"
-    >Thêm lớp</el-button> 
+    >Thêm từ vựng</el-button> 
 
     <el-table 
       :data="dataTopicsAPI" 

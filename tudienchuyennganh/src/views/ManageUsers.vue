@@ -1,9 +1,8 @@
 <template>
     <div class="container">
      
-      <el-button class="mt-4" type="primary" @click="addNewClass()">Thêm lớp</el-button>
+      <el-button class="mt-4" type="primary" @click="this.optionsAdd = true">Thêm tài khoản mới</el-button>
      
-  
       <el-table 
         :data="dataUsersAPI" 
         :default-sort="{ prop: 'AccountID', order: 'ascending' }"
@@ -20,7 +19,6 @@
         </template> 
       </el-table-column>
 
-      <!-- :type="scope.row.RoleID === '1' ? '' : 'success'" -->
 
       <el-table-column 
         label="Vai trò" 
@@ -61,13 +59,99 @@
   
       </el-table-column>
     </el-table>
-  
+
+
+    <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
+      <div class="options-container">
+        <div class="option-area">
+          <el-button type="success" @click="openWith('excel')">
+            <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
+            Thêm qua excel
+          </el-button>
+        </div>
+
+        <div class="option-area">
+          <el-button type="primary" @click="openWith('default')">
+            <v-icon class="option-icon">mdi-plus-thick</v-icon>
+            Thêm thủ công
+          </el-button>         
+        </div>
+      </div>
+  </el-dialog>
+
+
+  <!-- Add By Excel -->
+  <template>
+    <el-dialog
+        v-model="addByExcel"
+        width="50%"
+        title="Thêm bằng Excel"
+        append-to-body
+      >
+
+      <el-upload
+        class="upload-demo"
+        :limit="1"
+        drag
+        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+        @change="loadUploadedFile"
+      >
+        <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
+
+        <div class="el-upload__text">
+          Thả file ở đây hoặc <em>chọn file</em>
+        </div>
+
+        <template #tip>
+          <div class="el-upload__tip">
+            Chỉ chọn 1 file (dạng xls)
+          </div>
+        </template>
+
+      </el-upload>
+
+    </el-dialog>
+  </template>
+
+  <!-- Add By default -->
+  <template>
+    <el-dialog
+        v-model="addByDefault"
+        width="50%"
+        title="Thêm thủ công"
+        append-to-body
+      >
+     
+      <el-input v-model="search" size="large" placeholder="Nhập tài khoản" />
+      <el-input v-model="search" size="large" placeholder="Nhập mật khẩu" />
+
+      
+      <div>
+        <el-select  v-model="value"  placeholder="Quyền truy cập" size="large" clearable >
+        <el-option
+          v-for="item in optionsRole"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      </div>
+
+      <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" size="large" > Thêm </el-button>
+      </div>
+    </template>
+
+
+    </el-dialog>
+  </template>
   
   
   
     <AskBox 
         v-if="showAskBox"
-        :title="'Bạn có muốn xóa lớp này ?'"
+        :title="'Bạn có muốn xóa tài khoản này ?'"
         @confirm="deleteClass"
         @close="this.showAskBox = false"
     />
@@ -105,7 +189,24 @@
           detailDataTopic: '',
           inputTopicName: '',
           inputTopicDescribe: '',
-          
+          optionsAdd: false,
+          addByExcel: false,
+          addByDefault: false,
+
+          optionsRole: [
+            {
+              value: 'admin',
+              label: 'Admin',
+            },
+            {
+              value: 'user',
+              label: 'Sinh viên',
+            },
+            {
+              value: 'teacher',
+              label: 'Giáo viên',
+            },
+          ] 
         }
           
       },
@@ -165,6 +266,19 @@
 
         searchUser(){  
             return this.dataUsersAPI == this.search
+        },
+
+        openWith(typeOpen){
+            if(typeOpen == 'excel'){
+              this.addByExcel = true
+            }
+            else{
+              this.addByDefault = true
+            }
+        },
+
+        loadUploadedFile(file){
+            console.log(file)
         },
 
         // ------------------
@@ -284,6 +398,49 @@
       margin-top: 20px;
     }
   }
+
+  .options-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100% ;
+    height: 200px;
+  }
+
+  .option-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    font-size: 50px;
+
+
+    .el-button{
+      width: 100%;
+      height: 100%;
+    }
+
+    .option-icon{
+      font-size: 50px;
+     
+    }
+  }
+
+  .el-select{
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .dialog-footer{
+
+
+    .el-button{
+      width: 100%;
+    }
+  }
+  
   
   
   

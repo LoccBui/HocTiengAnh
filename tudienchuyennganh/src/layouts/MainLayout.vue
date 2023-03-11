@@ -53,14 +53,16 @@ export default {
             nameUser: '',
             accountID: '',
 
+            checkStorage: [],
+
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
               {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
               {icon: 'mdi-account', title: 'Tài khoản -  GV and SV', value: '4', route: '/manage/users'},
               {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/manage/class'},
-              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/users'},
-              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: '7', route: '/manage/vocab'},
+              {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/users'},
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: '7', route: '/manage/vocab'},
 
               // maybe more
               {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut' }
@@ -74,9 +76,11 @@ export default {
       }
     },
 
-
     mounted(){  
-      this.getDataUser()
+      emitter.on('data', this.handleDataUser);
+
+
+       this.getDataUser()
     },
 
     beforeDestroy() {
@@ -105,7 +109,6 @@ export default {
       },
 
       handleDataUser(data){
-
         let dataUser = {
             MaGV: '',
             accountID: '',
@@ -117,11 +120,7 @@ export default {
         dataUser.accountID= this.accountID = data.accountID 
         dataUser.email = this.emailUser = data.email
         dataUser.name = this.nameUser = data.name   
-
         localStorage.setItem('userInfo', JSON.stringify(dataUser))
-        console.log(this.accountID)
-
-        console.log("main",data)
 
       },
 
@@ -132,6 +131,7 @@ export default {
       },
 
       logOut(){
+        // localStorage.removeItem('userInfo')
         window.location.href = '/login'
       },
     }
