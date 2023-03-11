@@ -261,6 +261,15 @@ END
 
 exec sp_AddNewClass '19MD222', 1, 2
 
+go
+--- lấy tất cả thông tin tài khoản
+create procedure sp_SelectAllUsers
+as
+BEGIN
+	select AccountID, UserName, Email, Active, RoleID
+	from TAIKHOAN
+END
+
 
 
 

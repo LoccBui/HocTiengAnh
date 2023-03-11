@@ -29,14 +29,7 @@
                         v-model="valid"
                         lazy-validation
                     >
-                    
-                        <v-alert
-                        v-if="showAlert"
-                        type="error"
-                        text="Sai tài khoản hoặc mật khẩu"
-                        >
-                        </v-alert>
-
+                
 
                         <v-text-field
                         v-model="username" :rules="usernameRules"
@@ -106,6 +99,7 @@
 import DialogBox from "../layouts/DialogBox.vue"
 import axiosInstance from '../axios'
 
+import { ElNotification } from 'element-plus'
 
 
 
@@ -147,7 +141,6 @@ export default {
                 v => !!v || 'Bạn cần nhập tài khoản',
                 v => (v && v.length > 0) || 'Tài khoản không được để trống',
             ],
-            showAlert: false
         }
     },
 
@@ -158,6 +151,14 @@ export default {
     methods:{
         changeTitle(){
             document.title = "Đăng Nhập"
+        },
+
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
         },
 
         async login(){
@@ -175,11 +176,7 @@ export default {
                     }
                     else 
                     {
-                        this.showAlert = true 
-
-                        setTimeout(() => {
-                            this.showAlert = false 
-                        }, 3000);
+                        this.showNotification('Thông báo', 'Tài khoản hoặc mật khẩu không chính xác', 'error')
                     }
 
                     

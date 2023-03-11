@@ -170,6 +170,7 @@
     <Compile Include="Controllers\Manage Class\SelectAllFacultyController.cs" />
     <Compile Include="Controllers\Manage Class\ShowAllClassController.cs" />
     <Compile Include="Controllers\Manage Class\ShowTeacherByFacultyController.cs" />
+    <Compile Include="Controllers\Manage Users\ManageUsersController.cs" />
     <Compile Include="Controllers\ManageTopic\ManageTopicController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />

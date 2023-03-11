@@ -15,6 +15,7 @@ import Searching from '../views/Searching.vue'
 import ManageClass from '../views/ManageClass.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import ManageVocab from '../views/ManageVocab.vue'
+import ManageUsers from '../views/ManageUsers.vue'
 
 import TopicDetail from '../views/TopicDetail.vue'
 
@@ -43,12 +44,16 @@ const routes = [
         component: LearnWords
       },
       {
-        path: '/class',
+        path: '/manage/class',
         component: ManageClass
       },
       {
         path: '/manage/vocab',
         component: ManageVocab
+      },
+      {
+        path: '/manage/users',
+        component: ManageUsers
       },
 
       

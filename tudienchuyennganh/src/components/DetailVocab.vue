@@ -66,18 +66,66 @@
         title="Chi tiết từ"
         append-to-body
       >
-      <el-input v-model="dataDetailVocab.Word"  />
-      <el-input v-model="dataDetailVocab.Vietnamese"  />
-      <el-input v-model="dataDetailVocab.VN_Example"  />
-      <el-input v-model="dataDetailVocab.Position"  />
-      <el-input v-model="dataDetailVocab.Lemma"  />
-      <el-input v-model="dataDetailVocab.Label"  />
-      <el-input v-model="dataDetailVocab.IPA"  />
-      <el-input v-model="dataDetailVocab.Example"  />
-      <el-input v-model="dataDetailVocab.Active"  />
-      <el-input v-model="dataDetailVocab.Cluster"  />
-      <el-input v-model="dataDetailVocab.Resources"  />
 
+       <el-form
+       label-width="130px"
+      :label-position="labelPosition">
+ 
+
+      <el-form-item  label="Từ vựng"> 
+        <el-input v-model="dataDetailVocab.Word"  />
+      </el-form-item>
+
+      <el-form-item label="Nghĩa">
+        <el-input v-model="dataDetailVocab.Vietnamese" />
+      </el-form-item>
+
+    
+      <el-form-item label="Ví dụ tiếng việt">
+        <el-input 
+        type="textarea"
+        v-model="dataDetailVocab.VN_Example" />
+      </el-form-item>
+    
+      <el-form-item label="Vị trí">
+        <el-input v-model="dataDetailVocab.Position" />
+      </el-form-item>
+
+       
+      <el-form-item label="Lemma">
+        <el-input v-model="dataDetailVocab.Lemma" />
+      </el-form-item>
+
+      <el-form-item label="Loại">
+        <el-input v-model="dataDetailVocab.Label" />
+      </el-form-item>
+      
+      
+      <el-form-item label="Phát âm">
+        <el-input v-model="dataDetailVocab.IPA" />
+      </el-form-item>
+
+      
+      <el-form-item label="Câu ví dụ">
+        <el-input type="textarea" v-model="dataDetailVocab.Example" />
+      </el-form-item>
+
+   
+      <el-form-item label="Active">
+        <el-switch v-model="dataDetailVocab.Active" />
+      </el-form-item>
+      
+     
+      
+      <el-form-item label="Cụm từ">
+        <el-input v-model="dataDetailVocab.Cluster" />
+      </el-form-item>
+       
+       
+      <el-form-item label="Nguồn tham khảo">
+        <el-input type="textarea" v-model="dataDetailVocab.Resources" />
+      </el-form-item>
+    </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="this.innerVisible = false">Đóng</el-button>
@@ -112,6 +160,7 @@ export default {
             innerVisible: false,
 
             detailVocab: '',
+            labelPosition: 'left',
 
             dataDetailVocab: {
               Word: '',

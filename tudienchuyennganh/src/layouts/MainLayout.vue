@@ -57,22 +57,26 @@ export default {
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
               {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
               {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
-              {icon: 'mdi-account', title: 'Quản lý tài khoản -  GV and SV', value: '4', route: '/account'},
-              {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/class'},
-              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/vocab'},
+              {icon: 'mdi-account', title: 'Tài khoản -  GV and SV', value: '4', route: '/manage/users'},
+              {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/manage/class'},
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/users'},
               {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: '7', route: '/manage/vocab'},
 
               // maybe more
-              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: '8', route: '/manage/vocab'},
               {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut' }
             ]
         }
     },
 
-    mounted(){
-      emitter.on('data', this.handleDataUser);
+    computed:{
+      search(){
+        console.log(123)
+      }
+    },
 
-      // this.getTopic()
+
+    mounted(){  
+      this.getDataUser()
     },
 
     beforeDestroy() {
@@ -84,6 +88,20 @@ export default {
         if(action == 'logOut'){
           this.logOut()
         }
+      },
+
+      getDataUser(){
+        //lắng nghe tín hiệu, nếu có chạy thì chạy tín hiệu, không(đã có từ trước) thì load local lấy data
+        var listenEmitter = emitter.on('data', this.handleDataUser);
+        if(!listenEmitter){
+          let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+          this.emailUser = dataUser.email
+          this.nameUser = dataUser.name
+        }
+        else{
+          emitter.on('data', this.handleDataUser);
+        }
+          
       },
 
       handleDataUser(data){
@@ -101,11 +119,7 @@ export default {
         dataUser.name = this.nameUser = data.name   
 
         localStorage.setItem('userInfo', JSON.stringify(dataUser))
-
-
-       
-
-
+        console.log(this.accountID)
 
         console.log("main",data)
 
