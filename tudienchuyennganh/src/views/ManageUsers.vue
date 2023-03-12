@@ -90,11 +90,13 @@
       >
 
       <el-upload
+        ref="upload"
         class="upload-demo"
         :limit="1"
         drag
-        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-        @change="loadUploadedFile"
+        action=""
+      :on-change="handleUpload"
+      :before-upload="beforeUpload"
       >
         <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
 
@@ -109,6 +111,19 @@
         </template>
 
       </el-upload>
+
+      <el-table :data="tableData" style="width: 100%">
+      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="name" label="Name"></el-table-column>
+      <el-table-column prop="age" label="Age"></el-table-column>
+      <el-table-column prop="gender" label="Gender"></el-table-column>
+    </el-table>
+
+     <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" size="large" > Thêm </el-button>
+        </div>
+      </template>
 
     </el-dialog>
   </template>
@@ -138,10 +153,10 @@
       </div>
 
       <template #footer>
-      <div class="dialog-footer">
-        <el-button type="primary" size="large" > Thêm </el-button>
-      </div>
-    </template>
+        <div class="dialog-footer">
+          <el-button type="primary" size="large" > Thêm </el-button>
+        </div>
+      </template>
 
 
     </el-dialog>
@@ -163,9 +178,13 @@
   
   <script>
   import { ElMessage } from 'element-plus'
+  import { ElNotification } from 'element-plus'
+
   import axiosInstance from '../axios'
   import AskBox from '@/components/AskBox.vue'
   import DetailVocab from '@/components/DetailVocab.vue'
+  import * as XLSX from 'xlsx';
+
     export default {
       components: {AskBox, DetailVocab},
       data () {
@@ -192,6 +211,7 @@
           optionsAdd: false,
           addByExcel: false,
           addByDefault: false,
+          tableData: [],
 
           optionsRole: [
             {
@@ -224,6 +244,14 @@
       methods:{
         changeTitle(){
           document.title = "Quản lý người dùng"
+        },
+
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
         },
   
         //lấy topic theo id user
@@ -299,6 +327,33 @@
         detailHasClosed(){
           this.showDetailBox = false
   
+        },
+
+        // Handle upload file 
+        handleUpload(file) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result)
+            const workbook = XLSX.read(data, { type: 'array' })
+            const sheetName = workbook.SheetNames[0]
+            const worksheet = workbook.Sheets[sheetName]
+            const jsonData = XLSX.utils.sheet_to_json(worksheet)
+            this.tableData = jsonData
+            console.log(this.tableData)
+          }
+          reader.readAsArrayBuffer(file.raw)
+        },
+        
+        //handle file is excel or not
+        beforeUpload(file) {
+          const isExcel =
+            file.type === 'application/vnd.ms-excel' ||
+            file.type ===
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          if (!isExcel) {
+            this.showNotification('Hệ thống','Chỉ chấp nhận định dạng Excel', 'error')
+          }
+          return isExcel
         },
   
         // ---------------
