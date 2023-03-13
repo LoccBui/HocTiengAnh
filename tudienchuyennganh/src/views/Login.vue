@@ -168,12 +168,14 @@ export default {
                 if (result.status == 200 && result.data.length > 0) {
 
                     // Account has in database
-                    var hasAccountID = Object.values(result.data[0])
+                    let hasAccountID = Object.values(result.data[0])
+                    console.log(hasAccountID)
                     if(hasAccountID != 0){
                         this.getDataUser(hasAccountID)
                     
 
-                        this.$router.push('/topic')
+                        // this.$router.push('/topic')
+                        // window.location.href = '/topic'
                     }
                     else 
                     {
@@ -198,6 +200,7 @@ export default {
         getDataUser(idUser){
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
+                console.log(res)
 
                 let dataUser = {
                     accountID: '',
@@ -213,10 +216,6 @@ export default {
 
                 localStorage.setItem('userInfo', JSON.stringify(dataUser))
 
-                console.log(dataUser)
-
-
-                emitter.emit('data', dataUser);
             })
         },
 

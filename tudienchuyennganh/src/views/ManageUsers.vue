@@ -121,7 +121,7 @@
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" > Thêm </el-button>
+          <el-button type="primary" size="large" @click="addNewUserByDefault()" > Thêm </el-button>
         </div>
       </template>
 
@@ -137,8 +137,9 @@
         append-to-body
       >
      
-      <el-input v-model="search" size="large" placeholder="Nhập tài khoản" />
-      <el-input v-model="search" size="large" placeholder="Nhập mật khẩu" />
+      <el-input v-model="inputNewUsername" size="large" placeholder="Nhập tài khoản" />
+      <el-input v-model="inputNewPassword" size="large" placeholder="Nhập mật khẩu" />
+      <el-input v-model="inputNewEmail" size="large" placeholder="Nhập email" />
 
       
       <div>
@@ -154,7 +155,7 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" > Thêm </el-button>
+          <el-button type="primary" size="large" @click="addNewUserByDefault()"> Thêm </el-button>
         </div>
       </template>
 
@@ -212,6 +213,11 @@
           addByExcel: false,
           addByDefault: false,
           tableData: [],
+
+          inputNewEmail: '',
+          inputNewPassword: '',
+          inputNewRoleID: '1',
+          inputNewUsername: '',
 
           optionsRole: [
             {
@@ -307,6 +313,22 @@
 
         loadUploadedFile(file){
             console.log(file)
+        },
+
+        async addNewUserByDefault(){
+          let result = await axiosInstance.post('/addNewUser',{
+              "Username": `${this.inputNewUsername}`,
+              "Password": `${this.inputNewPassword}`,
+              "Email": `${this.inputNewEmail}`,
+              "RoleID": `${this.inputNewRoleID}`
+          })
+
+          if(result.status == 200){
+              this.showNotification('Thông báo', 'Thêm tài khoản mới thành công', 'success')
+              this.getAllUsers()
+              this.inputNewEmail = this.inputNewPassword = this.inputNewUsername = ''
+          }
+
         },
 
         // ------------------

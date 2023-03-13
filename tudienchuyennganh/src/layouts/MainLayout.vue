@@ -43,7 +43,6 @@
   
 
 <script>
-import emitter from '../eventBus.js'
 import axiosInstance from '../axios'
 
 export default {
@@ -77,15 +76,11 @@ export default {
     },
 
     mounted(){  
-      emitter.on('data', this.handleDataUser);
 
 
        this.getDataUser()
     },
 
-    beforeDestroy() {
-      emitter.off('data')
-    },
 
     methods:{
       menuActionClick(action){
@@ -95,32 +90,12 @@ export default {
       },
 
       getDataUser(){
-        //lắng nghe tín hiệu, nếu có chạy thì chạy tín hiệu, không(đã có từ trước) thì load local lấy data
-        var listenEmitter = emitter.on('data', this.handleDataUser);
-        if(!listenEmitter){
           let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+          console.log(dataUser)
+          this.accountID = dataUser.accountID 
+
           this.emailUser = dataUser.email
           this.nameUser = dataUser.name
-        }
-        else{
-          emitter.on('data', this.handleDataUser);
-        }
-          
-      },
-
-      handleDataUser(data){
-        let dataUser = {
-            MaGV: '',
-            accountID: '',
-            email: '',
-            name: ''
-        }
-        
-        dataUser.MaGV = data.MaGV 
-        dataUser.accountID= this.accountID = data.accountID 
-        dataUser.email = this.emailUser = data.email
-        dataUser.name = this.nameUser = data.name   
-        localStorage.setItem('userInfo', JSON.stringify(dataUser))
 
       },
 
@@ -131,7 +106,7 @@ export default {
       },
 
       logOut(){
-        // localStorage.removeItem('userInfo')
+        localStorage.removeItem('userInfo')
         window.location.href = '/login'
       },
     }
