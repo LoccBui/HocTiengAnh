@@ -10,7 +10,7 @@ go
 
 
 create table NHOMTK (
-	RoleID int IDENTITY(1,1),
+	RoleID smallint IDENTITY(1,1),
 	Priority tinyint,
 	RoleName nvarchar(10),
 
@@ -24,7 +24,7 @@ create table TAIKHOAN (
 	Password varbinary(100),
 	Email varchar(100) UNIQUE,
 	Active bit,
-	RoleID int,
+	RoleID smallint,
 
 
 	PRIMARY KEY (AccountID),

@@ -1,4 +1,5 @@
 ﻿using HocTiengAnh.Database;
+using HocTiengAnh.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -19,8 +20,28 @@ namespace HocTiengAnh.Controllers.Manage_Users
         public IHttpActionResult JsonResult()
         {
             var result = new DB().GetDataReader("sp_SelectAllUsers");
+            return Json(result);
+
+        }
+
+
+        [HttpPost]
+        [Route("addNewUser")]
+        public IHttpActionResult AddNewUser(AccountModel account)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@Username", account.Username),
+                    new SqlParameter("@Password",account.Password),
+                    new SqlParameter("@Email",account.Email),
+                    new SqlParameter("@RoleID", account.RoleID)
+            };
+
+            var result = new DB().GetDataReader("sp_InsertNewAccount", param);
 
             return Json(result);
         }
+
+
+
     }
 }

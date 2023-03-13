@@ -270,8 +270,29 @@ BEGIN
 	from TAIKHOAN
 END
 
+go
 
+-- thêm tài khoản mới
+alter PROCEDURE sp_InsertNewAccount
+    @Username varchar(50),
+	@Password varchar(50),
+	@Email varchar(100),
+	@RoleID smallint
+as
+BEGIN
+    DECLARE @password_binary VARBINARY(100)
 
+    -- Chuyển đổi mật khẩu sang kiểu varbinary
+    SET @password_binary = PWDENCRYPT(@Password)
+
+	INSERT INTO TAIKHOAN(Username, Password, Email, Active, RoleID)
+	VALUES(@Username, @password_binary, @Email, 1, @RoleID)
+
+END
+
+exec sp_InsertNewAccount '11', '1', '1@gmail.com', 1 
+
+select * from TAIKHOAN
 
 ----------------- TESTING AREA
 
