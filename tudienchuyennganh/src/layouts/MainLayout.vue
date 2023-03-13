@@ -16,16 +16,21 @@
           <v-divider></v-divider>
   
           <v-list 
-          density="comfortable" nav  v-for="item in menuListItem" :key="item.value"  @click="menuActionClick(item.action)" 
-          
+            density="compact"
+            nav  
+            v-for="item in menuListItem" 
+            :key="item"  
+            @click="menuActionClick(item.action)"          
           >
               <v-list-item 
-              :prepend-icon="`${item.icon}`" 
-              :title="`${item.title}`" 
-              :value="`${item.value}`" 
-              router :to="`${item.route}`"
-              @click="`${item.func}`">
+                :key="`${item.value}`" 
+                :prepend-icon="`${item.icon}`" 
+                :title="`${item.title}`" 
+                :value="`${item.value}`" 
+                @click="directTo(`${item.route}`)"
+              >
             </v-list-item> 
+
           </v-list>
 
         </v-navigation-drawer>
@@ -56,9 +61,8 @@ export default {
 
             menuListItem: [
               {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
-              {icon: 'mdi-school', title: 'Học từ', value: '2', route: '/learning'},
-              {icon: 'mdi-bookshelf', title: 'Chủ đề', value: '3', route: '/topic'},
-              {icon: 'mdi-account', title: 'Tài khoản -  GV and SV', value: '4', route: '/manage/users'},
+              {icon: 'mdi-bookshelf', title: 'Học từ', value: '2', route: '/topic'},
+              {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: '4', route: '/account/setting'},
               {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/manage/class'},
               {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/users'},
               {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: '7', route: '/manage/vocab'},
@@ -91,18 +95,15 @@ export default {
 
       getDataUser(){
           let dataUser = JSON.parse(localStorage.getItem('userInfo'))
-          console.log(dataUser)
+          
           this.accountID = dataUser.accountID 
-
-          this.emailUser = dataUser.email
+          this.emailUser = dataUser.email 
           this.nameUser = dataUser.name
 
       },
 
-      getTopic(){
-        axiosInstance.get(`getTopic/id=${this.accountID}`)
-          .then(res => console.log(res))
-
+      directTo(path){
+          this.$router.push(`${path}`)
       },
 
       logOut(){

@@ -16,6 +16,7 @@ import ManageClass from '../views/ManageClass.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import ManageVocab from '../views/ManageVocab.vue'
 import ManageUsers from '../views/ManageUsers.vue'
+import SettingAccount from '../views/SettingAccount.vue'
 
 import TopicDetail from '../views/TopicDetail.vue'
 
@@ -37,6 +38,10 @@ const routes = [
       {
         path: '/topic',
         component: Topic
+      },
+      {
+        path: '/account/setting',
+        component: SettingAccount
       },
       {
         name: 'LearnTopic',

@@ -61,8 +61,6 @@
 import OptionLearning from './OptionLearning.vue';
 import axiosInstance from '../axios'
 
-import emitter from '../eventBus.js'
-
 
 export default {
     components: {OptionLearning},
@@ -77,12 +75,8 @@ export default {
 
     mounted(){
         this.changeTitle()
-        emitter.on('data', this.handleDataUser);
+        this.getDataTopic()
 
-    },
-
-    beforeDestroy() {
-        emitter.off('data')
     },
 
     methods:{
@@ -97,9 +91,12 @@ export default {
         },
 
         // lấy data topic theo id khoa nhận từ emmitter
-        getDataTopic(id){
-            axiosInstance.get(`getTopic/${id}`)
-            .then(res => this.handleData(res.data))
+        getDataTopic(){
+            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            this.accountID = dataUser.accountID
+            
+            axiosInstance.get(`getTopic/${this.accountID}`)
+                .then(res => this.handleData(res.data))
         },
 
         // lấy data topic 

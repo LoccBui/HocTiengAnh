@@ -12,18 +12,6 @@
                 <div class="frame-right">
                     <h1 class="heading-text"> ĐĂNG NHẬP </h1>
 
-                    
-
-                    <div class="google-btn hover-pointer" @click="auth()" >
-                        
-                        <div class="google-icon-wrapper">
-                        <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-                        </div>
-                        <p class="btn-text"><b>Đăng nhập với Google</b></p>
-                    </div>
-
-                    <h1 class="sub-text"> hoặc </h1>
-
                     <v-form
                         ref="form"
                         v-model="valid"
@@ -66,9 +54,6 @@
                             <router-link class="forgot-pass-text" 
                             to="/forgot"> Quên mật khẩu  </router-link>   
                         </h3>
-
-                        <h1>{{ Vue3GoogleOauth.isInit }}</h1>
-                        <h1>{{ Vue3GoogleOauth.isAuthorized }}</h1>
                     
                     </v-form>
 
@@ -103,23 +88,8 @@ import { ElNotification } from 'element-plus'
 
 
 
-import { inject, toRefs } from "vue"
-
-import emitter from '../eventBus.js'
-
-
-
 export default {
 
-    setup(props) {
-      const { isSignIn } = toRefs(props);
-
-        const Vue3GoogleOauth = inject("Vue3GoogleOauth");
-            return{
-                Vue3GoogleOauth, isSignIn
-            }
-
-    },
     name: "Login",
     components: {DialogBox},
     data() {
@@ -164,33 +134,30 @@ export default {
         async login(){
             if (this.username != '' && this.password != '') {
 
-                let result = await axiosInstance.post(`/login/${this.username}/${this.password}`)
-                if (result.status == 200 && result.data.length > 0) {
+                try{
+                    let result = await axiosInstance.post(`/login/${this.username}/${this.password}`)
+                    if (result.status == 200 && result.data.length > 0) {
 
-                    // Account has in database
-                    let hasAccountID = Object.values(result.data[0])
-                    console.log(hasAccountID)
-                    if(hasAccountID != 0){
-                        this.getDataUser(hasAccountID)
+                        // Account has in database
+                        let hasAccountID = Object.values(result.data[0])
+                        console.log(hasAccountID)
+                        if(hasAccountID != 0){
+                            this.getDataUser(hasAccountID)
+                            window.location.href = '/topic'
+                        }
+                        else 
+                        {
+                            this.showNotification('Thông báo', 'Tài khoản hoặc mật khẩu không chính xác', 'error')
+                        }
                     
-
-                        // this.$router.push('/topic')
-                        // window.location.href = '/topic'
                     }
-                    else 
-                    {
-                        this.showNotification('Thông báo', 'Tài khoản hoặc mật khẩu không chính xác', 'error')
-                    }
-
-                    
-                }
-                else {
-                    console.log(result.status)
-                }
+                }       
+                catch{
+                    this.showNotification('Thông báo', 'Tài khoản hoặc mật khẩu không chính xác', 'error')
+                }        
             }
             else {
                 // turn on warning validate
-
                 const { valid } = await this.$refs.form.validate()
             }
             
@@ -217,27 +184,7 @@ export default {
                 localStorage.setItem('userInfo', JSON.stringify(dataUser))
 
             })
-        },
-
-        async auth(){
-            try {
-                const googleUser = await this.$gAuth.signIn();
-                if (!googleUser) {
-                    return null;
-                }
-                
-                this.$router.push('/topic')
-                
-                    
-            } 
-            catch (error) {
-                //on fail do something
-                console.error(error);
-                return null;
-            }
-                
-        }
-
+        },  
     }
 }   
 </script>
@@ -252,47 +199,6 @@ export default {
     align-items: center;
 }
 
-// google buton
-.google-btn {
-  width: 100%;
-  height: 42px;
-  background-color: #4285f4;
-  border-radius: 2px;
-  box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
-
-
-  .google-icon-wrapper {
-    position: absolute;
-    margin-top: 1px;
-    margin-left: 1px;
-    width: 40px;
-    height: 40px;
-    border-radius: 2px;
-    background-color: #fff;
-  }
-  .google-icon {
-    position: absolute;
-    margin-top: 11px;
-    margin-left: 11px;
-    width: 18px;
-    height: 18px;
-  }
-  .btn-text {
-    text-align: center;
-    margin: 11px 11px 0 0;
-    color: #fff;
-    font-size: 14px;
-    letter-spacing: 0.2px;
-    font-family: "Roboto";
-  }
-  &:hover {
-    box-shadow: 0 0 6px #4285f4;
-  }
-  &:active {
-    background: #1669F2;
-  }
-}
-//end google buton
 
 #frame-cover{
     width: 100%;

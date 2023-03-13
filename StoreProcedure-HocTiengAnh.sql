@@ -259,7 +259,7 @@ BEGIN
 	SELECT @@ROWCOUNT as RowAdd
 END
 
-exec sp_AddNewClass '19MD222', 1, 2
+--exec sp_AddNewClass '19MD222', 1, 2
 
 go
 --- lấy tất cả thông tin tài khoản
@@ -275,7 +275,7 @@ go
 -- thêm tài khoản mới
 alter PROCEDURE sp_InsertNewAccount
     @Username varchar(50),
-	@Password varchar(50),
+	@Password varchar(100),
 	@Email varchar(100),
 	@RoleID smallint
 as
@@ -287,32 +287,32 @@ BEGIN
 
 	INSERT INTO TAIKHOAN(Username, Password, Email, Active, RoleID)
 	VALUES(@Username, @password_binary, @Email, 1, @RoleID)
-
 END
 
-exec sp_InsertNewAccount '11', '1', '1@gmail.com', 1 
+go
+--- xóa Account theo id
+create procedure sp_DeleteUser
+@AccountID int
+as 
+BEGIN
+	delete 
+	from TAIKHOAN
+	where AccountID = @AccountID
+	SELECT @@ROWCOUNT as RowDelete
+END
+exec sp_DeleteUser 35
+
 
 select * from TAIKHOAN
+
 
 ----------------- TESTING AREA
 
-select * from SINHVIEN
-select * from TAIKHOAN
 
-select * from LOP
 select * from GIAOVIEN
 select * from KHOA
 
-go
+select * from LOP
+select * from SINHVIEN
+select * from TAIKHOAN
 
-create procedure sp_ShowTeacherNameByFaculty
-@FacultyName nvarchar(100)
-as
-BEGIN
-	select DISTINCT GV.Name
-	from GIAOVIEN GV
-	inner join LOP L on L.MaGV = GV.MaGV
-	inner join KHOA K on K.IDFACULTY = L.IDFACULTY
-	where FacultyName like  N'%'+@FacultyName+'%'
-END
-exec sp_ShowTeacherNameByFaculty 'Dược'

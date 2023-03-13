@@ -52,7 +52,7 @@
           <el-button
             size="large"
             type="danger"
-            @click="handleDeleteClass(scope.row.IDCLASS)"
+            @click="handleDeleteUser(scope.row.AccountID)"
             >Xóa
           </el-button>
         </template>
@@ -168,7 +168,7 @@
     <AskBox 
         v-if="showAskBox"
         :title="'Bạn có muốn xóa tài khoản này ?'"
-        @confirm="deleteClass"
+        @confirm="deleteUser"
         @close="this.showAskBox = false"
     />
   
@@ -218,6 +218,8 @@
           inputNewPassword: '',
           inputNewRoleID: '1',
           inputNewUsername: '',
+
+          idNeedDelete: '',
 
           optionsRole: [
             {
@@ -314,6 +316,30 @@
         loadUploadedFile(file){
             console.log(file)
         },
+
+        handleDeleteUser(idChoose){
+          this.idNeedDelete = idChoose
+          this.showAskBox = true
+          
+        }, 
+
+        async deleteUser(){
+          try{
+              axiosInstance.delete(`/DeleteUser/${this.idNeedDelete}`)
+              .then((res) => {
+                  if(res.status == 200) {
+                    this.showNotification('Thông báo', 'Xóa thành công', 'success')
+                    this.showAskBox = false
+                    this.getAllUsers()
+                  }       
+              })
+
+          }
+          catch{
+            this.showNotification('Thông báo', 'Xóa không thành công', 'error')
+          }
+
+        },  
 
         async addNewUserByDefault(){
           let result = await axiosInstance.post('/addNewUser',{

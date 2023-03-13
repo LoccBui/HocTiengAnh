@@ -27,6 +27,7 @@ namespace HocTiengAnh.Controllers.Manage_Users
 
         [HttpPost]
         [Route("addNewUser")]
+
         public IHttpActionResult AddNewUser(AccountModel account)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -37,6 +38,19 @@ namespace HocTiengAnh.Controllers.Manage_Users
             };
 
             var result = new DB().GetDataReader("sp_InsertNewAccount", param);
+
+            return Json(result);
+        }
+
+        [HttpDelete]
+        [Route("DeleteUser/{id}")]
+        public IHttpActionResult DeleteUser(string id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", id)
+            };
+
+            var result = new DB().GetDataReader("sp_DeleteUser", param);
 
             return Json(result);
         }
