@@ -50,6 +50,7 @@
         </div>
 
 
+
         <OptionLearning  v-if="showOption"
             @close-option = this.closeOptionBox()
         />
@@ -81,7 +82,7 @@ export default {
 
     methods:{
         changeTitle(){
-            document.title = "Chủ đề"
+            document.title = "Học từ vựng"
         },
         
         //lấy data từ emitter

@@ -11,13 +11,13 @@
       <el-table-column label="ID" prop="AccountID" width="150" sortable/>
       <el-table-column label="Tài khoản" prop="UserName" />
       
-      <el-table-column label="Hoạt động" prop="Active" >
+      <!-- <el-table-column label="Hoạt động" prop="Active" >
         <template #default="scope">
           <el-switch v-model="scope.row.active"
             >Chi tiết
           </el-switch>
         </template> 
-      </el-table-column>
+      </el-table-column> -->
 
 
       <el-table-column 
@@ -241,17 +241,13 @@
   
       mounted(){
         this.changeTitle()
-
         this.getAllUsers()
-        // this.getAllFaculty()
-  
-        // this.getDataLocalStorage()
   
       },
   
       methods:{
         changeTitle(){
-          document.title = "Quản lý người dùng"
+          document.title = "Quản lý tài khoản"
         },
 
         showNotification(title ,message, type){

@@ -76,7 +76,7 @@ export default {
 
   mounted(){
     this.changeTitle()
-
+    this.speak()
     this.getVocabularyByTopicID(this.idTopic)
   },
 
@@ -87,10 +87,25 @@ export default {
     changeTitle(){
         document.title = "Học từ"
     },
+    
+    speak() {
+        //set biến đếm để nói 1 lần        
+        const listenBtn = document.getElementById('myvoice');
+        let numTimesSpoken = 0;
 
-    speak(englishWords){
-      func.speakWord(`${englishWords}`)
-    },
+        listenBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          if (numTimesSpoken < 1) {
+            const msg = new SpeechSynthesisUtterance(`${this.currentVocab[0].Word}`);
+            
+            window.speechSynthesis.speak(msg);
+
+            numTimesSpoken++;
+          }
+        });
+
+     },
 
     getVocabularyByTopicID(topicID){
       axiosInstance.get(`/learning/topicid=${topicID}`)
@@ -99,8 +114,8 @@ export default {
     },
 
     handleData(dataAPI){
-      console.log("datA",dataAPI)
         this.dataAPI = dataAPI
+
         this.vocabLength = dataAPI.length
 
         this.currentVocab.push(this.dataAPI[this.currentIndex])

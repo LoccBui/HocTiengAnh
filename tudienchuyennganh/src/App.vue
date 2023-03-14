@@ -8,6 +8,10 @@
 </script>
 
 <style>
+*{
+  font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
+}
+
 /* color pallete picker: https://imagecolorpicker.com/color-code/0038ff */
 :root{
   --main-color: #0038FF;

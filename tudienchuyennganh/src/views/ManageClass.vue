@@ -136,16 +136,18 @@ import AskBox from '@/components/AskBox.vue'
     },
 
     mounted(){
+      this.changeTitle()
+
       this.getAllClasses()
       this.getAllFaculty()
     },
 
     methods:{
+      changeTitle(){
+          document.title = "Quản lý lớp"
+      },
  
       getAllClasses(){
-        // let dataUser  = JSON.parse(localStorage.getItem('userInfo'))
-        // console.log(dataUser)
-
         axiosInstance.get('SelectAllClasses')
             .then(res => this.handleData(res.data))
       },

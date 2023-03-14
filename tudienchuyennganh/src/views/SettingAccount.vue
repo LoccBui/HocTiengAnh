@@ -55,7 +55,18 @@ export default {
         return{
             inputPassword: '123'
         }
+    },
+
+    mounted(){
+        this.changeTitle()
+    },
+
+    methods: {
+        changeTitle(){
+          document.title = "Cài đặt tài khoản"
+        },
     }
+
 }
 </script>
 
