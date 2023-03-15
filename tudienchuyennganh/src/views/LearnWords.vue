@@ -36,6 +36,13 @@
       </button> 
     </div>
 
+    <el-button @click="randomLearningType()">random</el-button>
+    <h1 v-if="ChooseRightMeaning">step1</h1>
+    <h1 v-if="FillInABlank">step2</h1>
+    <h1 v-if="ListenAndChoose">step3</h1>
+    <h1 v-if="ChooseRightWord">step4</h1>
+    <h1 v-if="CorrectListening">step5</h1>
+
   
   </div>
 
@@ -68,6 +75,38 @@ export default {
 
       reviewWords: true,
       learnByMeaning: false,
+
+      randomHasAppear: [],
+     
+      ChooseRightMeaning: false,
+      FillInABlank: false,
+      ListenAndChoose: false,
+      ChooseRightWord: false,
+      CorrectListening: false,
+        
+
+      learningSteps: [
+        {
+          'id': 1,
+          'name': 'ChooseRightMeaning'
+        },
+        {
+          'id': 2,
+          'name': 'FillInABlank'
+        },
+        {
+          'id': 3,
+          'name': 'ListenAndChoose'
+        },
+        {
+          'id': 4,
+          'name': 'ChooseRightWord'
+        },
+        {
+          'id': 5,
+          'name': 'CorrectListening'
+        }
+      ]
 
     }
   },
@@ -137,12 +176,58 @@ export default {
       else{
         this.reviewWords = false
         this.learnByMeaning = true
+        this.randomLearningType()
       }
 
-    }
-    
+    },
 
-    
+    randomLearningType() {
+        let valueRandom;
+
+        //Random id trong mảng step đã có
+        const random = Math.floor(Math.random() * this.learningSteps.length);
+        valueRandom = this.learningSteps[random].id;
+        console.log('Giá trị random', valueRandom)
+
+
+        //nếu step đã xuất hiện trước đó thì ko push vào -> random lại
+        if (!this.randomHasAppear.includes(valueRandom)) {
+          console.log('Add vào', valueRandom)
+
+          this.randomHasAppear.push(valueRandom);
+          
+          //Lấy name để kiểm tra nếu trùng với v-if component thì cho xuất hiện
+          var component = this.learningSteps.find((item)=>{
+              if(item.id == random + 1){
+                return item.name
+              }
+          })
+
+          if(component){
+            this.ChooseRightMeaning = component.name === 'ChooseRightMeaning'
+            this.FillInABlank = component.name === 'FillInABlank'
+            this.ListenAndChoose = component.name === 'ListenAndChoose'
+            this.ChooseRightWord = component.name === 'ChooseRightWord'
+            this.CorrectListening = component.name === 'CorrectListening'
+          }
+
+        }
+        else{
+          //nếu full mảng -> xóa mảng đã chứa các phần tử trước và random add lại
+          if(this.randomHasAppear.length == this.learningSteps.length){
+            console.warn('Mảng full -> reset', valueRandom)
+            this.randomHasAppear.length = 0
+            this.randomLearningType()
+          }
+          // Giá trị random đã có trong mảng -> random lại
+          else{
+            console.log('Không add ->  random lại', valueRandom)
+            this.randomLearningType()
+          }
+
+        }
+        console.log('Giá trị đã random:', this.randomHasAppear);
+    },
   }
 }
 </script>
@@ -205,4 +290,4 @@ export default {
 
 }
 
-</style>>
+</style>
