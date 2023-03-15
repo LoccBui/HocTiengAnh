@@ -84,7 +84,7 @@ END
 go
 
 -- Lọc ra khoa của User(GV,SV) lưu vào biến @IDFaculty, sau đó chạy thủ tục sau để lấy ra topic của khoa đó
-alter procedure sp_userFalculty
+create procedure sp_userFalculty
 @AccountID int
 as
 BEGIN
@@ -125,7 +125,7 @@ go
 
 
 --Tạo mã OTP
-alter PROCEDURE sp_GenerateOTP
+create PROCEDURE sp_GenerateOTP
     @AccountID INT
 AS
 BEGIN
@@ -152,7 +152,7 @@ END
 go
 
 -- kiểm tra email có tồn tại trong tài khoản ( 0 = không tồn tại, != 0 tồn tại) 
-alter procedure sp_CheckEmailValid
+create procedure sp_CheckEmailValid
 @Email varchar(100)
 as
 BEGIN
@@ -173,13 +173,13 @@ BEGIN
 		end
 END
 
-exec sp_CheckEmailValid @Email='buihuuloc2001a@gmail.com'
+--exec sp_CheckEmailValid @Email='buihuuloc2001a@gmail.com'
 
 
 go
 
 -- xóa xong lấy mã code mới nhất theo id account và so sánh với mã nhập vào
-alter procedure sp_confirmOTPCode
+create procedure sp_confirmOTPCode
 @OTPCODE int,
 @AccountID int
 as 
@@ -273,7 +273,7 @@ END
 go
 
 -- thêm tài khoản mới
-alter PROCEDURE sp_InsertNewAccount
+create PROCEDURE sp_InsertNewAccount
     @Username varchar(50),
 	@Password varchar(100),
 	@Email varchar(100),
@@ -300,19 +300,10 @@ BEGIN
 	where AccountID = @AccountID
 	SELECT @@ROWCOUNT as RowDelete
 END
-exec sp_DeleteUser 35
+--exec sp_DeleteUser 35
 
 
-select * from TAIKHOAN
 
 
 ----------------- TESTING AREA
-
-
-select * from GIAOVIEN
-select * from KHOA
-
-select * from LOP
-select * from SINHVIEN
-select * from TAIKHOAN
 

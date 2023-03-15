@@ -1,8 +1,8 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" type="primary" @click="addNewClass()"
-    >Thêm từ vựng</el-button> 
+    <el-button class="mt-4" type="primary" @click="this.optionsAdd = true"
+    >Thêm chủ đề mới</el-button> 
 
     <el-table 
       :data="dataTopicsAPI" 
@@ -35,6 +35,82 @@
     </el-table-column>
   </el-table>
 
+  <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
+      <div class="options-container">
+        <div class="option-area">
+          <el-button type="success" @click="openWith('excel')">
+            <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
+            Thêm qua excel
+          </el-button>
+        </div>
+
+        <div class="option-area">
+          <el-button type="primary" @click="openWith('default')">
+            <v-icon class="option-icon">mdi-plus-thick</v-icon>
+            Thêm thủ công
+          </el-button>         
+        </div>
+      </div>
+  </el-dialog>
+
+
+    <!-- Add By Excel -->
+    <template>
+    <el-dialog
+        v-model="addByExcel"
+        width="50%"
+        title="Thêm bằng Excel"
+        append-to-body
+        fullscreen
+      >
+      <el-input>Nhập tên chủ đề muốn tạo</el-input>
+      <el-input>Nhập miêu tả chủ đề</el-input>
+
+      <el-upload
+        ref="upload"
+        class="upload-demo"
+        :limit="1"
+        drag
+        action=""
+        :on-change="handleUpload"
+        :before-upload="beforeUpload"
+      >
+        <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
+
+        <div class="el-upload__text">
+          Thả file ở đây hoặc <em>chọn file</em>
+        </div>
+
+        <template #tip>
+          <div class="el-upload__tip">
+            Chỉ chọn 1 file (dạng xls)
+          </div>
+        </template>
+
+      </el-upload>
+
+      <el-table :data="tableData" max-width="1000px" max-height="500px">
+      <el-table-column prop="Word" label="Word"></el-table-column>
+      <el-table-column prop="IPA" label="IPA" ></el-table-column>
+      <el-table-column prop="Label" label="Label"></el-table-column>
+      <el-table-column prop="Lemma" label="Lemma"></el-table-column>
+      <el-table-column prop="Vietnamese" label="Vietnamese" width="250px"></el-table-column>
+      <el-table-column prop="Cluster" label="Cluster"></el-table-column>
+      <el-table-column prop="Position" label="Position"></el-table-column>
+      <el-table-column prop="Example" label="Example" width="400px"	></el-table-column>
+      <el-table-column prop="VN_Example" label="VN_Example" width="400px"></el-table-column>
+      <el-table-column prop="Resources" label="Resources" width="300px"></el-table-column>
+    </el-table>
+
+     <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" size="large" @click="addNewUserByDefault()" > Thêm </el-button>
+        </div>
+      </template>
+
+    </el-dialog>
+  </template>
+
 
 
 
@@ -59,6 +135,9 @@ import { ElMessage } from 'element-plus'
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailVocab from '@/components/DetailVocab.vue'
+import * as XLSX from 'xlsx';
+
+
   export default {
     components: {AskBox, DetailVocab},
     data () {
@@ -82,6 +161,11 @@ import DetailVocab from '@/components/DetailVocab.vue'
         detailDataTopic: '',
         inputTopicName: '',
         inputTopicDescribe: '',
+        optionsAdd: false,
+        addByExcel: false,
+        addByDefault: false,
+        tableData: [],
+
         
       }
         
@@ -205,6 +289,42 @@ import DetailVocab from '@/components/DetailVocab.vue'
           return row.FacultyName === value 
       },
 
+      openWith(typeOpen){
+        if(typeOpen == 'excel'){
+          this.addByExcel = true
+        }
+        else{
+          this.addByDefault = true
+        }
+      },
+
+      // Handle upload file 
+      handleUpload(file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result)
+          const workbook = XLSX.read(data, { type: 'array' })
+          const sheetName = workbook.SheetNames[0]
+          const worksheet = workbook.Sheets[sheetName]
+          const jsonData = XLSX.utils.sheet_to_json(worksheet)
+          this.tableData = jsonData
+          console.log(this.tableData)
+        }
+        reader.readAsArrayBuffer(file.raw)
+      },
+        
+      //handle file is excel or not
+      beforeUpload(file) {
+        const isExcel =
+          file.type === 'application/vnd.ms-excel' ||
+          file.type ===
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        if (!isExcel) {
+          this.showNotification('Hệ thống','Chỉ chấp nhận định dạng Excel', 'error')
+        }
+        return isExcel
+      },
+
       showMessage(message, type){
         ElMessage({
           message: `${message}`,
@@ -230,6 +350,48 @@ import DetailVocab from '@/components/DetailVocab.vue'
     margin-top: 20px;
   }
 }
+
+.options-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100% ;
+    height: 200px;
+  }
+
+  .option-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    font-size: 50px;
+
+
+    .el-button{
+      width: 100%;
+      height: 100%;
+    }
+
+    .option-icon{
+      font-size: 50px;
+     
+    }
+  }
+
+  .el-select{
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .dialog-footer{
+
+
+    .el-button{
+      width: 100%;
+    }
+  }
 
 
 

@@ -37,8 +37,9 @@
             </button>
         </div>
 
+
         <div class="levels">
-            {{ titleQuestion.Level }}
+            {{ titleQuestion.Level }} 1
         </div>
     </div>
     

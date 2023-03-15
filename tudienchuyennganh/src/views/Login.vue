@@ -20,7 +20,7 @@
                 
 
                         <v-text-field
-                        v-model="username" :rules="usernameRules"
+                            v-model="username" :rules="usernameRules"
                             :counter="10"
                             label="Nhập tài khoản của bạn"    
                             required
@@ -35,24 +35,18 @@
                             :type="showPass ? 'text' : 'password'"
                             label="Nhập mật khẩu của bạn"  
                             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                            hint="At least 8 characters"
+                            hint="Tối thiểu 10 kí tự"
                             @click:append="showPass = !showPass"  
                             @keyup.enter="login()"
                             required
                             >
                         </v-text-field>
 
-                        <v-btn
-                            color="primary"
-                            block
-                            :class="btn-login"
-                            @click="login"
-                            > Đăng nhập  
-                        </v-btn>
+                        
+                        <el-button type="primary" class="btn-login" @click="login">Đăng nhập</el-button>
 
-                        <h3> 
-                            <router-link class="forgot-pass-text" 
-                            to="/forgot"> Quên mật khẩu  </router-link>   
+                        <h3 class="forgot-pass-text"> 
+                            <router-link to="/forgot"> Quên mật khẩu  </router-link>   
                         </h3>
                     
                     </v-form>
@@ -224,6 +218,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    padding: 20px 0px;
 
     .heading-text{
         font-size: 40px;
@@ -240,9 +235,15 @@ export default {
     }
 
     .forgot-pass-text{
-        padding: 5% 0px;
         color: var(--gray-text);
-        text-align: end;
+        margin-top: 15px;
+    }
+
+    .btn-login{
+        width: 100%;
+        height: 20%;
+        background-color: var(--main-color);
+
     }
 
     .navigate{

@@ -14,16 +14,10 @@
       </div>
     
       <div class="next-action">
-        <v-btn 
-          color="primary"
-          height="100%"
-          block
-          @click="nextWord()"
-          @keyup.enter="nextWord()"
-          >
+        <el-button type="primary" size="large" @click="nextWord()">
           <v-icon>mdi-arrow-right-thick</v-icon>
           Tiếp theo
-        </v-btn>
+        </el-button>
       </div>
     </div>
     
@@ -252,6 +246,12 @@ export default {
 
   .next-action{
     flex: 1;
+
+    .el-button{
+      width: 100%;
+      height: 100%;
+      background-color: var(--main-color);
+    }
   }
 
   .btn-next{

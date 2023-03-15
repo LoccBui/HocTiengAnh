@@ -94,9 +94,8 @@
         class="upload-demo"
         :limit="1"
         drag
-        action=""
-      :on-change="handleUpload"
-      :before-upload="beforeUpload"
+        :on-change="handleUpload"
+        :before-upload="beforeUpload"
       >
         <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
 
