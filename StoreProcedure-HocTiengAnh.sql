@@ -21,26 +21,30 @@ go
 
 
 -- Phân loại user theo admin hoặc giáo viên hoặc sinh viên
-create procedure sp_AuthUser
+alter procedure sp_AuthUser
 @AccountID int
 as 
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, GV.Name, TK.Email 
+			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
+			inner join LOP L on L.MaGV = GV.MaGV
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			where GV.AccountID = @AccountID
 		end
 	else 
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, TK.Email from SINHVIEN SV
+			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY
+			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
+			inner join LOP L on L.IDCLASS = SV.IDCLASS
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			where SV.AccountID = @AccountID
 		end
 END
-
---exec sp_AuthUser 5
+--exec sp_AuthUser 1
 
 
 go
@@ -300,10 +304,30 @@ BEGIN
 	where AccountID = @AccountID
 	SELECT @@ROWCOUNT as RowDelete
 END
+
 --exec sp_DeleteUser 35
+go
+--Thêm một chủ đề mới
+create procedure sp_AddNewTopic
+@IDFACULTY int,
+@TopicName nvarchar(100), 
+@TopicDescribe nvarchar(200), 
+@QuantityWords smallint, 
+@CreatedBy nvarchar(100)
+as
+BEGIN
+	INSERT INTO CHUDE(IDFACULTY, TopicName, TopicDescribe, QuantityWords,Active, CreatedBy)
+	VALUES(@IDFACULTY, @TopicName, @TopicDescribe, @QuantityWords,1, @CreatedBy)
+
+	SELECT @@ROWCOUNT as RowAdd
+END
+
+--exec sp_AddNewTopic 1,'Topic 2', '123', '20', 'Loc'
+
 
 
 
 
 ----------------- TESTING AREA
-
+select* from CHUDE
+select * from TUVUNG

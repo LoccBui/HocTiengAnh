@@ -90,6 +90,8 @@
       >
 
       <el-upload
+      :auto-upload="false"
+
         ref="upload"
         class="upload-demo"
         :limit="1"

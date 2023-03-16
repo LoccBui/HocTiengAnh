@@ -134,10 +134,9 @@ export default {
 
                         // Account has in database
                         let hasAccountID = Object.values(result.data[0])
-                        console.log(hasAccountID)
+                        console.log('hasAccountID',hasAccountID)
                         if(hasAccountID != 0){
                             this.getDataUser(hasAccountID)
-                            window.location.href = '/topic'
                         }
                         else 
                         {
@@ -159,23 +158,29 @@ export default {
         },
 
         getDataUser(idUser){
+            console.log('idUser',idUser)
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
-                console.log(res)
+                console.log(res.data[0].AccountID)
 
                 let dataUser = {
                     accountID: '',
                     email: '',
                     name: '',
-                    MaGV: ''
+                    MaGV: '',
+                    IDFACULTY: ''
                 }
                 
                 dataUser.accountID = res.data[0].AccountID
                 dataUser.email = res.data[0].Email
                 dataUser.name = res.data[0].Name
                 dataUser.MaGV = res.data[0].MaGV || 0
+                dataUser.IDFACULTY = res.data[0].IDFACULTY
 
                 localStorage.setItem('userInfo', JSON.stringify(dataUser))
+
+                window.location.href = '/topic'
+
 
             })
         },  

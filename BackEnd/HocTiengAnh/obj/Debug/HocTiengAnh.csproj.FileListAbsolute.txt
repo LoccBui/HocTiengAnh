@@ -86,6 +86,7 @@ C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.Http.
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
 C:\Users\User\Desktop\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\HocTiengAnh.dll.config
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\HocTiengAnh.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\HocTiengAnh.pdb
@@ -103,7 +104,6 @@ E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.CodeAnalysis.Scrip
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.CSharp.Core.targets
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.Managed.Core.targets
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.VisualBasic.Core.targets
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\roslyn\Microsoft.Win32.Primitives.dll
@@ -169,7 +169,6 @@ E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.WebPages.Deployment.xml
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\System.Web.WebPages.Razor.xml
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Antlr3.Runtime.pdb
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.dll

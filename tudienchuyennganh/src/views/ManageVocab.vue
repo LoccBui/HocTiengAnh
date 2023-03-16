@@ -63,15 +63,16 @@
         append-to-body
         fullscreen
       >
-      <el-input>Nhập tên chủ đề muốn tạo</el-input>
-      <el-input>Nhập miêu tả chủ đề</el-input>
+      <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề muốn tạo">Nhập tên chủ đề muốn tạo</el-input>
+      <el-input v-model="inputNewDescibe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
+
+      <el-divider />
 
       <el-upload
-        ref="upload"
         class="upload-demo"
+        :auto-upload="false"
         :limit="1"
         drag
-        action=""
         :on-change="handleUpload"
         :before-upload="beforeUpload"
       >
@@ -104,7 +105,7 @@
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewUserByDefault()" > Thêm </el-button>
+          <el-button type="primary" size="large" @click="addNewTopic()" > Thêm </el-button>
         </div>
       </template>
 
@@ -132,6 +133,8 @@
 
 <script>
 import { ElMessage } from 'element-plus'
+import { ElNotification } from 'element-plus'
+
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailVocab from '@/components/DetailVocab.vue'
@@ -165,6 +168,8 @@ import * as XLSX from 'xlsx';
         addByExcel: false,
         addByDefault: false,
         tableData: [],
+        inputNewTopicName: '',
+        inputNewDescibe: '',
 
         
       }
@@ -195,6 +200,7 @@ import * as XLSX from 'xlsx';
       getDataTopic(id){
             axiosInstance.get(`getTopic/${id}`)
             .then((res) => {
+              this.dataTopicsAPI.length = 0
              this.dataTopicsAPI.push(res.data[[0]])
             })
         },
@@ -325,6 +331,43 @@ import * as XLSX from 'xlsx';
         return isExcel
       },
 
+      async addNewTopic(){
+        let quantiyWord = this.tableData.length
+        
+        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+        let createdBy = dataUser.name
+        let idFaculty = dataUser.IDFACULTY
+
+        console.log(idFaculty)
+        console.log(this.inputNewTopicName)
+        console.log(this.inputNewDescibe)
+        console.log(quantiyWord)
+        console.log(createdBy)
+
+        let result = await axiosInstance.post('/addNewTopic',{
+            IDFACULTY: idFaculty,
+            TopicName: `${this.inputNewTopicName}`,
+            TopicDescribe: `${this.inputNewDescibe}`,
+            QuantityWords: quantiyWord,
+            CreatedBy: createdBy
+        })
+
+        if(result.status == 200){
+          console.log(result)
+            this.addByExcel = false
+            this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
+            this.getDataLocalStorage() //recall api for refresh topic
+          }
+      },
+
+      showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },
+
       showMessage(message, type){
         ElMessage({
           message: `${message}`,
@@ -386,10 +429,16 @@ import * as XLSX from 'xlsx';
   }
 
   .dialog-footer{
-
-
     .el-button{
       width: 100%;
+    }
+  }
+  
+  .el-input{
+
+    ::placeholder {
+       text-align: left; 
+       font-weight: 400;
     }
   }
 
