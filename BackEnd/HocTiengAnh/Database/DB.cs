@@ -20,7 +20,7 @@ namespace HocTiengAnh.Database
 
         public DataTable GetDataReader(string spQuery, params SqlParameter[] param)
         {
-            DataTable dataTable = new DataTable();
+            DataTable dataTable = null;
             try
             {
                 con.Open();
@@ -37,6 +37,7 @@ namespace HocTiengAnh.Database
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.HasRows)
                 {
+                    dataTable = new DataTable();
                     dataTable.Load(reader);
                 }
             }
@@ -49,6 +50,7 @@ namespace HocTiengAnh.Database
             }
             return dataTable;
         }
+
     }
-    
+
 }

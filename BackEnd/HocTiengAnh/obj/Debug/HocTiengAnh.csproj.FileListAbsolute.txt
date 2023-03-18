@@ -173,3 +173,4 @@ E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompil
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.pdb
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache

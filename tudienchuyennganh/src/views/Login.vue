@@ -22,7 +22,10 @@
                         <v-text-field
                             v-model="username" :rules="usernameRules"
                             :counter="10"
-                            label="Nhập tài khoản của bạn"    
+                            label="Nhập tài khoản của bạn"  
+                            color="primary"
+                            variant="underlined"
+
                             required
                             autofocus
                             @keyup.enter="login()"
@@ -34,6 +37,8 @@
                             :counter="10"
                             :type="showPass ? 'text' : 'password'"
                             label="Nhập mật khẩu của bạn"  
+                            color="primary"
+                            variant="underlined"
                             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                             hint="Tối thiểu 10 kí tự"
                             @click:append="showPass = !showPass"  
@@ -46,7 +51,10 @@
                         <el-button type="primary" class="btn-login" @click="login">Đăng nhập</el-button>
 
                         <h3 class="forgot-pass-text"> 
-                            <router-link to="/forgot"> Quên mật khẩu  </router-link>   
+                            <router-link to="/forgot"> 
+                            <span style="color: var(--main-color)">
+                                Quên mật khẩu 
+                            </span> </router-link>   
                         </h3>
                     
                     </v-form>
@@ -240,11 +248,12 @@ export default {
     }
 
     .forgot-pass-text{
-        color: var(--gray-text);
+        color: var(--main-color) !important;
         margin-top: 15px;
     }
 
     .btn-login{
+        padding: 0px 0px;
         width: 100%;
         height: 20%;
         background-color: var(--main-color);

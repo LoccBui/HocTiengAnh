@@ -95,10 +95,17 @@ export default {
 
       getDataUser(){
           let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+
+          if(!dataUser){
+            this.$router.push('/login')
+          }
+          else{
+            this.accountID = dataUser.accountID 
+            this.emailUser = dataUser.email 
+            this.nameUser = dataUser.name
+          }
           
-          this.accountID = dataUser.accountID 
-          this.emailUser = dataUser.email 
-          this.nameUser = dataUser.name
+         
 
       },
 

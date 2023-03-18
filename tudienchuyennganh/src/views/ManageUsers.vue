@@ -1,7 +1,6 @@
 <template>
     <div class="container">
-     
-      <el-button class="mt-4" type="primary" @click="this.optionsAdd = true">Thêm tài khoản mới</el-button>
+        <el-button class="mt-4" type="primary" @click="this.optionsAdd = true">Thêm tài khoản mới</el-button>
      
       <el-table 
         :data="dataUsersAPI" 
@@ -10,6 +9,7 @@
   
       <el-table-column label="ID" prop="AccountID" width="150" sortable/>
       <el-table-column label="Tài khoản" prop="UserName" />
+      <el-table-column label="Email" prop="Email" />
       
       <!-- <el-table-column label="Hoạt động" prop="Active" >
         <template #default="scope">

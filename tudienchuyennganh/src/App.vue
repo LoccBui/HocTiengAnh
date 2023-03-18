@@ -7,7 +7,7 @@
       //  console.log = function () {}; 
 </script>
 
-<style>
+<style lang="scss">
 *{
   font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
 }
@@ -73,6 +73,14 @@ a:visited {
 
 .size-icon-48px{
   width: 48px;
+}
+
+// Elemnt ÚI
+.el-input{
+  ::placeholder {
+    text-align: left; 
+    font-weight: 400;
+  }
 }
 
 

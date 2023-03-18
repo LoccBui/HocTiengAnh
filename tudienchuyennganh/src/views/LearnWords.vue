@@ -43,6 +43,32 @@
     <LearnByMeaningVue v-if="learnByMeaning"
       :listWord="dataAPI"
     />
+
+    <ChooseRightMeaning 
+    v-if="ChooseRightMeaning" 
+    :listWord="dataAPI"
+    @finish-learn="handleFinishLearn"
+    />
+
+
+
+    <FillInABlank v-if="FillInABlank"
+    @finish-learn="handleFinishLearn"
+
+    />
+    <ListenAndChoose v-if="ListenAndChoose"
+    @finish-learn="handleFinishLearn"
+    
+    />
+
+    <ChooseRightWord 
+      v-if="ChooseRightWord"
+       @finish-learn="handleFinishLearn"
+    />
+    <CorrectListening v-if="CorrectListening"
+    @finish-learn="handleFinishLearn"
+    
+    />
   
   </div>
 </template>
@@ -51,10 +77,16 @@
 
 import {func} from '@/GlobalFunction/script.js'
 import axiosInstance from '../axios'
+
 import LearnByMeaningVue from './LearnByMeaning.vue'
+import ChooseRightMeaning from './ChooseRightMeaning.vue'
+import FillInABlank from './FillInABlank.vue'
+import ListenAndChoose from './ListenAndChoose.vue'
+import ChooseRightWord from './ChooseRightWord.vue'
+import CorrectListening from './CorrectListening.vue'
  
 export default {
-  components: {LearnByMeaningVue},
+  components: {LearnByMeaningVue, ChooseRightMeaning, FillInABlank, ListenAndChoose, ChooseRightWord, CorrectListening},
   data(){
     return {
       idTopic: this.$route.params.id,
@@ -77,6 +109,8 @@ export default {
       ListenAndChoose: false,
       ChooseRightWord: false,
       CorrectListening: false,
+
+      randomTimes:0,
         
 
       learningSteps: [
@@ -169,10 +203,15 @@ export default {
       }
       else{
         this.reviewWords = false
-        this.learnByMeaning = true
+        // this.learnByMeaning = true
         this.randomLearningType()
       }
 
+    },
+
+    handleFinishLearn(){
+      console.log('finish step -> random  learning type')
+      this.randomLearningType()
     },
 
     randomLearningType() {
@@ -198,11 +237,24 @@ export default {
           })
 
           if(component){
+            console.log(component.name)
+            console.log("this.ChooseRightMeaning", this.ChooseRightMeaning)
+            console.log("this.FillInABlank", this.FillInABlank)
+            console.log("this.ListenAndChoose", this.ListenAndChoose)
+            console.log(" this.ChooseRightWord", this.ChooseRightWord)
+            console.log("this.CorrectListening", this.CorrectListening)
+
+
             this.ChooseRightMeaning = component.name === 'ChooseRightMeaning'
             this.FillInABlank = component.name === 'FillInABlank'
             this.ListenAndChoose = component.name === 'ListenAndChoose'
             this.ChooseRightWord = component.name === 'ChooseRightWord'
             this.CorrectListening = component.name === 'CorrectListening'
+
+            this.randomTimes+=1 
+            //  số lần random max =  số từ * 2 
+            // nếu bằng max -> học xong
+            console.log('random times:', this.randomTimes)
           }
 
         }

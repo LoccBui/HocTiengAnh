@@ -27,7 +27,7 @@ namespace HocTiengAnh.Controllers.Manage_Users
 
         [HttpPost]
         [Route("addNewUser")]
-        public IHttpActionResult AddNewUser(AccountModel account)
+        public IHttpActionResult AddNewUser(AccountModel account) 
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@Username", account.Username),

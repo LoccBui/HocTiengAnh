@@ -304,30 +304,39 @@ BEGIN
 	where AccountID = @AccountID
 	SELECT @@ROWCOUNT as RowDelete
 END
-
 --exec sp_DeleteUser 35
+
 go
+
 --Thêm một chủ đề mới
-create procedure sp_AddNewTopic
-@IDFACULTY int,
+create PROCEDURE sp_AddTopic
+@IdFaculty int,
 @TopicName nvarchar(100), 
 @TopicDescribe nvarchar(200), 
 @QuantityWords smallint, 
 @CreatedBy nvarchar(100)
 as
 BEGIN
-	INSERT INTO CHUDE(IDFACULTY, TopicName, TopicDescribe, QuantityWords,Active, CreatedBy)
-	VALUES(@IDFACULTY, @TopicName, @TopicDescribe, @QuantityWords,1, @CreatedBy)
+    BEGIN TRY
+        INSERT INTO CHUDE(IDFACULTY, TopicName, TopicDescribe, QuantityWords, Active, CreatedBy)
+        VALUES(@IdFaculty, @TopicName, @TopicDescribe, @QuantityWords, 1, @CreatedBy)
 
-	SELECT @@ROWCOUNT as RowAdd
+        SELECT 200 AS status, SCOPE_IDENTITY() AS TopicID
+    END TRY
+    BEGIN CATCH
+        SELECT 404 AS status
+    END CATCH
 END
 
---exec sp_AddNewTopic 1,'Topic 2', '123', '20', 'Loc'
 
+exec sp_AddTopic 1,'Topic 2', '123', 20, 'Loc'
 
+go
 
 
 
 ----------------- TESTING AREA
 select* from CHUDE
 select * from TUVUNG
+
+

@@ -16,8 +16,8 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
     public class ManageTopicController : ApiController
     {
-        [HttpGet]
         [Route("detail/topicid={id}")]
+        [HttpGet]
         public IHttpActionResult SelectTuVungByTopicID(int id)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -27,21 +27,25 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
             return Json(result);
         }
-
-        [HttpPost]
+         
         [Route("addNewTopic")]
+        [HttpPost]
         public IHttpActionResult AddNewTopic(TopicModel topic)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@IDFACULTY", topic.IDFACULTY),
+                    new SqlParameter("@IdFaculty", topic.IDFACULTY),
                     new SqlParameter("@TopicName",topic.TopicName),
                     new SqlParameter("@TopicDescribe",topic.TopicDescribe),
                     new SqlParameter("@QuantityWords", topic.QuantityWords),
                     new SqlParameter("@CreatedBy", topic.CreateBy)
             };
 
-            var result = new DB().GetDataReader("sp_AddNewTopic", param);
+            var result = new DB().GetDataReader("sp_AddTopic", param);
 
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
             return Json(result);
         }
     }

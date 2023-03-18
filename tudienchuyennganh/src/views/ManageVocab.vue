@@ -132,7 +132,6 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus'
 import { ElNotification } from 'element-plus'
 
 import axiosInstance from '../axios'
@@ -145,20 +144,18 @@ import * as XLSX from 'xlsx';
     components: {AskBox, DetailVocab},
     data () {
       return {
-        search: '',
         idTeacher: '',
-        searchString: "",
-        dialog: false,
-
+        
         dataClass: [],
         facultyList: [],
         idClassDelete: '',
         teacherList: [],
         showAskBox: false,
         showSelectTeacherFaculty: false,
-
-
+        
+        
         // ----
+        search: '',
         dataTopicsAPI: [],
         showDetailBox: false,
         detailDataTopic: '',
@@ -245,8 +242,7 @@ import * as XLSX from 'xlsx';
         if (result.status == 200) {
            this.getAllClasses()
           this.showAskBox = false
-          this.showMessage('Xóa thành công', 'success')
-
+          this.showNotification('Hệ thống','Xóa thành công', 'success')
         }
        
       },
@@ -256,11 +252,6 @@ import * as XLSX from 'xlsx';
           console.log(index,row)
       },
 
-
-
-      addNewClass(){
-        this.dialog = true
-      },
 
       getAllFaculty(){
         // add faculty name to v-select
@@ -332,32 +323,30 @@ import * as XLSX from 'xlsx';
       },
 
       async addNewTopic(){
+        console.log('add')
         let quantiyWord = this.tableData.length
         
         let dataUser = JSON.parse(localStorage.getItem('userInfo'))
         let createdBy = dataUser.name
         let idFaculty = dataUser.IDFACULTY
 
-        console.log(idFaculty)
-        console.log(this.inputNewTopicName)
-        console.log(this.inputNewDescibe)
-        console.log(quantiyWord)
-        console.log(createdBy)
+       try{
 
-        let result = await axiosInstance.post('/addNewTopic',{
-            IDFACULTY: idFaculty,
-            TopicName: `${this.inputNewTopicName}`,
-            TopicDescribe: `${this.inputNewDescibe}`,
-            QuantityWords: quantiyWord,
-            CreatedBy: createdBy
-        })
+          let result = await axiosInstance.post('/addNewTopic',{
+              "IdFACULTY": 1,
+              "TopicName": "Topic 2",
+              "TopicDescribe": "Topic 2",
+              "QuantityWords": 20,
+              "CreatedBy": "Loc"
+          })
 
-        if(result.status == 200){
-          console.log(result)
-            this.addByExcel = false
-            this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
-            this.getDataLocalStorage() //recall api for refresh topic
-          }
+          this.addByExcel = this.optionsAdd = false       
+          this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
+          this.getDataLocalStorage() //recall api for refresh topic
+       }
+       catch(e){
+          this.showNotification('Thông báo', 'Thêm chủ đề không thành công', 'error')
+       }
       },
 
       showNotification(title ,message, type){
@@ -366,15 +355,7 @@ import * as XLSX from 'xlsx';
                 message: `${message}`,
                 type: `${type}`,
             })
-        },
-
-      showMessage(message, type){
-        ElMessage({
-          message: `${message}`,
-          type: `${type}`,
-          effect:"dark"
-        })
-      }
+      },
 
       
     }
@@ -434,13 +415,7 @@ import * as XLSX from 'xlsx';
     }
   }
   
-  .el-input{
 
-    ::placeholder {
-       text-align: left; 
-       font-weight: 400;
-    }
-  }
 
 
 
