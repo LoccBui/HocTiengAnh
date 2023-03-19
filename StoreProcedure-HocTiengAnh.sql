@@ -309,7 +309,7 @@ END
 go
 
 --Thêm một chủ đề mới
-create PROCEDURE sp_AddTopic
+alter PROCEDURE sp_AddTopic
 @IdFaculty int,
 @TopicName nvarchar(100), 
 @TopicDescribe nvarchar(200), 
@@ -317,21 +317,109 @@ create PROCEDURE sp_AddTopic
 @CreatedBy nvarchar(100)
 as
 BEGIN
-    BEGIN TRY
-        INSERT INTO CHUDE(IDFACULTY, TopicName, TopicDescribe, QuantityWords, Active, CreatedBy)
-        VALUES(@IdFaculty, @TopicName, @TopicDescribe, @QuantityWords, 1, @CreatedBy)
+    DECLARE @check int
+    DECLARE @TopicID int
 
-        SELECT 200 AS status, SCOPE_IDENTITY() AS TopicID
-    END TRY
-    BEGIN CATCH
-        SELECT 404 AS status
-    END CATCH
+	set @TopicID =  (SELECT MAX(TopicID) FROM CHUDE) + 1
+
+	SET IDENTITY_INSERT CHUDE ON 
+
+
+	INSERT INTO CHUDE(TopicID, IDFACULTY, TopicName, TopicDescribe, QuantityWords, Active, CreatedBy)
+	VALUES(@TopicID ,@IdFaculty, @TopicName, @TopicDescribe, @QuantityWords, 1, @CreatedBy)
+
+	set @check = (select @@ROWCOUNT) 
+
+	IF(@check > 0 )
+	begin 
+		 SELECT MAX(TopicID)  as Data FROM CHUDE
+	end
+	ELSE
+		begin
+			return null
+		end
 END
 
 
-exec sp_AddTopic 1,'Topic 2', '123', 20, 'Loc'
+--exec sp_AddTopic 1,'Topic 2', '123', 20, 'Loc'
 
 go
+
+-- Xóa chủ đề theo id
+ALTER PROCEDURE sp_DeleteTopicByID
+    @TopicID INT
+AS
+BEGIN
+	DECLARE @check int
+
+    BEGIN TRY
+        UPDATE TUVUNG SET TopicID = NULL WHERE TopicID = @TopicID;
+        DELETE FROM CHUDE WHERE TopicID = @TopicID;
+		set @check = (select @@ROWCOUNT) 
+        DELETE FROM TUVUNG WHERE TopicID = @TopicID;
+
+
+		if(@check > 0)
+			BEGIN 
+				SELECT N'Xóa thành công' AS Status;
+			END
+		else 
+			BEGIN 
+				return null
+			END
+    END TRY
+    BEGIN CATCH
+       return null
+    END CATCH
+END
+
+exec sp_DeleteTopicByID 4
+
+go
+
+--Thêm từ vựng vào chủ đề mới tạo
+alter procedure sp_AddVocabToNewTopic
+@TopicID int,
+@Word varchar(50),
+@IPA varchar(100),
+@Label varchar(50),
+@Lemma varchar(200),
+@Vietnamese nvarchar(200),
+@Cluster varchar(100),
+@Position varchar(100),
+@Example varchar(400),
+@VN_Example nvarchar(400),
+@Resources varchar(400)
+as
+BEGIN
+	DECLARE @check int
+
+	DECLARE @lastestID int
+
+	set @lastestID =  (SELECT MAX(VocabID) FROM TUVUNG) + 1
+
+	SET IDENTITY_INSERT TUVUNG ON 
+
+	INSERT INTO TUVUNG(VocabID, TopicID, Frequency, Word, IPA, Label, Lemma, Vietnamese, Cluster, Position, Example, VN_Example, Resources, Active, Learned, Level)
+	VALUES(@lastestID, @TopicID, 0, @Word, @IPA, @Label, @Lemma, @Vietnamese, @Cluster, @Position, @Example, @VN_Example, @Resources, 1, 0, 0)
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT 'Thêm thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+
+END
+
+
+
+
+
 
 
 

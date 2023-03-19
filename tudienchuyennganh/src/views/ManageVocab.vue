@@ -235,6 +235,7 @@ import * as XLSX from 'xlsx';
       },
 
       async deleteTopic(){
+        console.log(this.idTopicDelete)
 
         let result = await axiosInstance.delete(`/DeleteTopic/${this.idTopicDelete}`)
             
@@ -248,6 +249,7 @@ import * as XLSX from 'xlsx';
         }
        
       },
+
       handleABC(index, row){
         console.log("chạy nè",index, row)
 
@@ -343,10 +345,10 @@ import * as XLSX from 'xlsx';
           if(result.status == 200) {
 
             // Nếu tạo chủ đề thành công -> thêm từ vào chủ đề mới tạo
-            this.handleAddVocabToTopic()
+            this.handleAddVocabToTopic(result.data[0].Data)
 
             this.addByExcel = this.optionsAdd = false       
-            this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
+            this.showNotification('Thông báo', 'Thêm thành công', 'success')
             this.getDataLocalStorage() //recall api for refresh topic
           }
           else{
@@ -355,14 +357,40 @@ import * as XLSX from 'xlsx';
 
           
        }
-       catch(e){
+       catch(error){
           this.showNotification('Thông báo', 'Thêm chủ đề không thành công', 'error')
        }
+      }, 
+
+
+      async handleAddVocabToTopic(TopicID){
+        
+
+            for (var i = 0; i < this.tableData.length; i++){
+              console.log(this.tableData[i].Word)
+              try{
+                let result = await axiosInstance.post('/addVocabToNewTopic',{
+                    "TopicID": TopicID,
+                    "Word": `${this.tableData[i].Word}`,
+                    "IPA": `${this.tableData[i].IPA}`,
+                    "Label": `${this.tableData[i].Label}`,
+                    "Lemma": `${this.tableData[i].Lemma}`,
+                    "Vietnamese": `${this.tableData[i].Vietnamese}`,
+                    "Cluster": `${this.tableData[i].Cluster}`,
+                    "Position": `${this.tableData[i].Position}`,
+                    "Example": `${this.tableData[i].Example}`,
+                    "VN_Example": `${this.tableData[i].VN_Example}`,
+                    "Resources": `${this.tableData[i].Resources}`
+                })
+                }
+                catch(error){
+                  this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }
+            }
+
       },
 
-      handleAddVocabToTopic(){
-        console.log(this.tableData)
-      },
+     
 
       showNotification(title ,message, type){
             ElNotification({

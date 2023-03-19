@@ -37,10 +37,56 @@ namespace HocTiengAnh.Controllers.ManageTopic
                     new SqlParameter("@TopicName",topic.TopicName),
                     new SqlParameter("@TopicDescribe",topic.TopicDescribe),
                     new SqlParameter("@QuantityWords", topic.QuantityWords),
-                    new SqlParameter("@CreatedBy", topic.CreateBy)
+                    new SqlParameter("@CreatedBy", topic.CreatedBy)
             };
 
             var result = new DB().GetDataReader("sp_AddTopic", param);
+
+            if (result == null) 
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+
+        [HttpDelete]
+        [Route("DeleteTopic/{id}")]
+        public IHttpActionResult DeleteTopic(string id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@TopicID", id)
+            };
+
+            var result = new DB().GetDataReader("sp_DeleteTopicByID", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+
+        [Route("addVocabToNewTopic")]
+        [HttpPost]
+        public IHttpActionResult AddVocabToNewTopic(WordModel word)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@TopicID", word.TopicID),
+                    new SqlParameter("@Word", word.Word),
+                    new SqlParameter("@IPA", word.IPA),
+                    new SqlParameter("@Label", word.Label),
+                    new SqlParameter("@Lemma", word.Lemma),
+                    new SqlParameter("@Vietnamese", word.Vietnamese),
+                    new SqlParameter("@Cluster",word.Cluster),
+                    new SqlParameter("@Position",word.Position),
+                    new SqlParameter("@Example", word.Example),
+                    new SqlParameter("@VN_Example", word.VN_Example),
+                    new SqlParameter("@Resources", word.Resources)
+            };
+
+            var result = new DB().GetDataReader("sp_AddVocabToNewTopic", param);
 
             if (result == null)
             {

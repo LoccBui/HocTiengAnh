@@ -13,6 +13,6 @@ namespace HocTiengAnh.Models
         public string TopicDescribe { get; set; }
         public int QuantityWords { get; set; }
         public int Active { get; set; }
-        public string CreateBy { get; set; }
+        public string CreatedBy { get; set; }
     }
 }
