@@ -3,7 +3,6 @@
    
     <el-button class="mt-4" type="primary" @click="this.optionsAdd = true"
     >Thêm chủ đề mới</el-button> 
-
     <el-table 
       :data="dataTopicsAPI" 
       :default-sort="{ prop: 'TopicID', order: 'ascending' }"
@@ -17,7 +16,7 @@
     <el-table-column align="center">
 
       <template #header>
-        <el-input v-model="search" size="large" placeholder="Nhập tên lớp" />
+        <el-input v-model="search" size="large" placeholder="Nhập tên chủ đề" />
       </template>
 
       <template #default="scope">
@@ -27,7 +26,7 @@
         <el-button
           size="large"
           type="danger"
-          @click="handleDeleteClass(scope.row.IDCLASS)"
+          @click="handleDeleteTopic(scope.row.TopicID)"
           >Xóa
         </el-button>
       </template>
@@ -117,8 +116,8 @@
 
   <AskBox 
       v-if="showAskBox"
-      :title="'Bạn có muốn xóa lớp này ?'"
-      @confirm="deleteClass"
+      :title="'Bạn có muốn xóa chủ đề này ?'"
+      @confirm="deleteTopic"
       @close="this.showAskBox = false"
   />
 
@@ -148,15 +147,15 @@ import * as XLSX from 'xlsx';
         
         dataClass: [],
         facultyList: [],
-        idClassDelete: '',
         teacherList: [],
         showAskBox: false,
         showSelectTeacherFaculty: false,
         
         
         // ----
+        idTopicDelete: '',
         search: '',
-        dataTopicsAPI: [],
+        dataTopicsAPI: '',
         showDetailBox: false,
         detailDataTopic: '',
         inputTopicName: '',
@@ -197,8 +196,8 @@ import * as XLSX from 'xlsx';
       getDataTopic(id){
             axiosInstance.get(`getTopic/${id}`)
             .then((res) => {
-              this.dataTopicsAPI.length = 0
-             this.dataTopicsAPI.push(res.data[[0]])
+              console.log(res.data)
+             this.dataTopicsAPI = res.data
             })
         },
 
@@ -230,19 +229,22 @@ import * as XLSX from 'xlsx';
           this.dataClass.push(...data)
       },
 
-      handleDeleteClass(idClassChoose){
-        this.idClassDelete = idClassChoose
+      handleDeleteTopic(idTopicChoose){
+        this.idTopicDelete = idTopicChoose
         this.showAskBox = true
       },
 
-      async deleteClass(){
+      async deleteTopic(){
 
-        let result = await axiosInstance.delete(`/DeleteClass/${this.idClassDelete}`)
+        let result = await axiosInstance.delete(`/DeleteTopic/${this.idTopicDelete}`)
             
         if (result.status == 200) {
-           this.getAllClasses()
           this.showAskBox = false
+          this.getDataLocalStorage() //recall api for refresh topic
           this.showNotification('Hệ thống','Xóa thành công', 'success')
+        }
+        else{
+          this.showNotification('Hệ thống','Xóa không thành công', 'error')
         }
        
       },
@@ -323,9 +325,7 @@ import * as XLSX from 'xlsx';
       },
 
       async addNewTopic(){
-        console.log('add')
         let quantiyWord = this.tableData.length
-        
         let dataUser = JSON.parse(localStorage.getItem('userInfo'))
         let createdBy = dataUser.name
         let idFaculty = dataUser.IDFACULTY
@@ -333,20 +333,35 @@ import * as XLSX from 'xlsx';
        try{
 
           let result = await axiosInstance.post('/addNewTopic',{
-              "IdFACULTY": 1,
-              "TopicName": "Topic 2",
-              "TopicDescribe": "Topic 2",
-              "QuantityWords": 20,
-              "CreatedBy": "Loc"
+              "IdFACULTY": idFaculty,
+              "TopicName": `${this.inputNewTopicName}`,
+              "TopicDescribe": `${this.inputTopicDescribe}`,
+              "QuantityWords": quantiyWord,
+              "CreatedBy": `${createdBy}`
           })
 
-          this.addByExcel = this.optionsAdd = false       
-          this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
-          this.getDataLocalStorage() //recall api for refresh topic
+          if(result.status == 200) {
+
+            // Nếu tạo chủ đề thành công -> thêm từ vào chủ đề mới tạo
+            this.handleAddVocabToTopic()
+
+            this.addByExcel = this.optionsAdd = false       
+            this.showNotification('Thông báo', 'Thêm chủ đề mới thành công', 'success')
+            this.getDataLocalStorage() //recall api for refresh topic
+          }
+          else{
+            this.showNotification('Thông báo', 'Thêm chủ đề không thành công', 'error')
+          }
+
+          
        }
        catch(e){
           this.showNotification('Thông báo', 'Thêm chủ đề không thành công', 'error')
        }
+      },
+
+      handleAddVocabToTopic(){
+        console.log(this.tableData)
       },
 
       showNotification(title ,message, type){

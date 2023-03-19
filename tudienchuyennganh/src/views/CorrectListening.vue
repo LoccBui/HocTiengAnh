@@ -3,7 +3,7 @@
     <h1>CorrectListening</h1>
     <el-button type="primary"  @click="this.finishLearn()"> Tiếp theo </el-button>
 
-</div>
+  </div>
 </template>
 
 <script>
@@ -18,6 +18,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

@@ -1,82 +1,153 @@
 <template>
- 
+<div class="container">
 
+<div class="header">
+    <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
 
- <div class="google-btn">
-    <div class="google-icon-wrapper">
-      <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-    </div>
-    <p class="btn-text"><b>Sign in with google</b></p>
+    <div class="temporary"></div>
+
+   <div class="score-cover">
+        {{ totalScore }}
+   </div>
+
 </div>
 
+<div class="sub-header">
+    <span class="sub-header-text"> Chọn kết quả đúng nhất</span>
+    <div class="status-learn">
+        <el-alert :title="statusText" :type="statusAnswer" :closable="false" effect="dark" show-icon />
+    </div>
+</div>
+
+<div class="main-word">
+    <h1 class="current-word">Title</h1>
+    <div class="temporary"></div>
+</div>
+
+
+<div class="options-choose-cover">
+    
+    <div class="result-cover">
+        q
+    </div>
+
+
+    <div class="levels">
+        level
+    </div>
+</div>
+
+</div>
 </template>
 
 <script>
 export default {
-  methods:{
-     onSuccess(googleUser) {
-      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-    },
-     onFailure(error) {
-      console.log(error);
-    },
-     renderButton() {
-      gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
-      });
-    }
-
-    }
 }
 </script>
 
 <style lang="scss" scoped>
-
-
-.google-btn {
-  width: 184px;
-  height: 42px;
-  background-color: #4285f4;
-  border-radius: 2px;
-  box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
-
-  .google-icon-wrapper {
-    position: absolute;
-    margin-top: 1px;
-    margin-left: 1px;
-    width: 40px;
-    height: 40px;
-    border-radius: 2px;
-    background-color: #fff;
-  }
-  .google-icon {
-    position: absolute;
-    margin-top: 11px;
-    margin-left: 11px;
-    width: 18px;
-    height: 18px;
-  }
-  .btn-text {
-    float: right;
-    margin: 11px 11px 0 0;
-    color: #fff;
-    font-size: 14px;
-    letter-spacing: 0.2px;
-    font-family: "Roboto";
-  }
-  &:hover {
-    box-shadow: 0 0 6px #4285f4;
-  }
-  &:active {
-    background: #1669F2;
-  }
+.container{
+    width: 100%;
+    height: 100vh;
 }
 
+.header{
+    display: flex;
+    align-items: center;
 
+    .score-cover{
+        
+        border-radius: 20px;
+        background-color: var(--tints-80);
+        padding: 10px 0px;
+        text-align: center;
+        width: 12%;
+    }
+
+    .el-progress{
+        width: 100%;
+    }
+}
+
+.sub-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0px;
+
+    .sub-header-text{
+        font-size: 20px;
+    }
+
+    .status-learn{
+        background-color: var(--tints-80);
+        height: 200px;
+        width: 10%;
+        text-align: center;
+        color: var(--light-blue-90);
+        border-radius: 10px;
+        z-index: 10;
+        
+    }
+
+    .el-alert {
+        height: 100%;
+    }
+
+}
+
+.main-word{
+    .current-word{
+        font-size: 50px;
+        width: 90%;
+        text-align:center ;
+    }
+}
+
+.temporary{
+    width: 10%;
+}
+
+.options-choose-cover{
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    display: flex;
+    background-color: cadetblue;
+
+
+    .result-cover{
+        width: 90%;
+        background-color: yellowgreen;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        
+    }
+
+    .option{
+        width: 35%;
+        height: 70px;
+        border-radius: 20px;
+        border: 1px solid var(--normal);
+        background-color: var(--tints-90);
+        word-break: keep-all;
+        text-align: center;
+        transition: all 200ms;
+
+        &:hover{
+            font-size: 20px;
+        }     
+    }
+
+    .levels{
+        width: 10%;
+        height: 200px;
+        border-radius: 10px;
+        background-color: blueviolet;
+        ;
+    }
+    
+}
 </style>

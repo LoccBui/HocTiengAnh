@@ -26,7 +26,6 @@ const routes = [
   {path: '/login',  component: Login},
   {path: '/register',  component: Register},
   {path: '/forgot',  component: ForgotPassword},
-  {path: '/test',  component: TestComponent},
   {
     path: '/home',
     component: MainLayout,
@@ -46,7 +45,13 @@ const routes = [
       {
         name: 'LearnTopic',
         path: '/learning/topicid=:id',
-        component: LearnWords
+        component: LearnWords,
+          children: [
+            {
+              path: '/test',
+              component:  TestComponent
+            }
+          ]
       },
       {
         path: '/manage/class',

@@ -255,7 +255,7 @@ export default {
     .btn-login{
         padding: 0px 0px;
         width: 100%;
-        height: 20%;
+        height: 40px;
         background-color: var(--main-color);
 
     }
