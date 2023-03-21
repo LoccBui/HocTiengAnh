@@ -71,6 +71,7 @@
         class="upload-demo"
         :auto-upload="false"
         :limit="1"
+        :action="''"
         drag
         :on-change="handleUpload"
         :before-upload="beforeUpload"
@@ -125,6 +126,7 @@
     v-if="showDetailBox"
     :dataTopic="this.detailDataTopic"
     @close="detailHasClosed"
+    @update-data="refreshData"
   />
 
   </div>
@@ -166,7 +168,7 @@ import * as XLSX from 'xlsx';
         tableData: [],
         inputNewTopicName: '',
         inputNewDescibe: '',
-
+        keyManageVocab: 0,
         
       }
         
@@ -213,6 +215,10 @@ import * as XLSX from 'xlsx';
         this.showDetailBox = false
 
       },
+
+      refreshData(){
+        this.getDataLocalStorage()
+      }, 
 
       // ---------------
 
@@ -364,7 +370,7 @@ import * as XLSX from 'xlsx';
 
 
       async handleAddVocabToTopic(TopicID){
-        
+            console.log(TopicID)
 
             for (var i = 0; i < this.tableData.length; i++){
               console.log(this.tableData[i].Word)
@@ -382,10 +388,10 @@ import * as XLSX from 'xlsx';
                     "VN_Example": `${this.tableData[i].VN_Example}`,
                     "Resources": `${this.tableData[i].Resources}`
                 })
-                }
-                catch(error){
-                  this.showNotification('Thông báo', 'Thêm không thành công', 'error')
-                }
+              }
+              catch(error){
+                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+              }
             }
 
       },

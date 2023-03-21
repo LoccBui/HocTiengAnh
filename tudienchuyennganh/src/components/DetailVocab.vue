@@ -3,19 +3,25 @@
 <div>
     <el-dialog 
         v-model="showBox"  
-        title="Chi tiết"
+        title="Chi tiết chủ đề"
         width="90%"
         fullscreen
         :destroy-on-close="true"
         >
+
+        <div class="addVocab">
+          <el-button type="primary">Thêm từ vựng</el-button>
+        </div>
     
-      <el-input v-model="inputTopicName" :placeholder="`${this.inputTopicName}`" />
-      <el-input v-model="inputTopicDescribe" :placeholder="`${this.inputTopicDescribe}`" />
+
+      <el-input v-model="inputTopicName" :placeholder="`${this.inputTopicName}`" @input="this.checkChange()"  />
+      <el-input v-model="inputTopicDescribe" :placeholder="`${this.inputTopicDescribe}`" @input="this.checkChange()" />
       <el-divider></el-divider>
 
         <!-- Data table -->
       <el-table 
-        :data="dataTableTopic" 
+        max-height="400px"
+        :data="filteredVocab" 
         :default-sort="{ prop: 'TopicID', order: 'ascending' }"
       >
 
@@ -23,13 +29,11 @@
       <el-table-column label="Từ vựng" prop="Word" />
       <el-table-column label="Nghĩa" prop="Vietnamese" />
       <el-table-column label="Miêu tả" prop="VN_Example" />
-      <el-table-column label="Tần suất" prop="Frquency" />
-      <el-table-column label="Active" prop="Active" />
       <el-table-column label="Nguồn" prop="Resources" />
       <el-table-column align="center">
 
       <template #header>
-        <el-input v-model="search" size="large" placeholder="Nhập tên lớp" />
+        <el-input v-model="search" size="large" placeholder="Nhập từ cần tìm" @input="handleSearch"/>
       </template>
 
       <template #default="scope">
@@ -52,19 +56,23 @@
       <div class="dialog-footer">
         <el-button @click="this.showBox = false">Đóng</el-button>
 
-        <el-button type="primary" > Xác nhận </el-button>
+        <el-button type="primary" @click="this.confirmTopic()">
+         Xác nhận 
+         </el-button>
       </div>
     </template>
 
   </el-dialog>
 
-  <!-- Detail vocab choose -->
+  <!-- Detail vocab -->
   <template>
     <el-dialog
         v-model="innerVisible"
-        width="80%"
         title="Chi tiết từ"
+        height="50%"
+        width="50%"
         append-to-body
+        align-center
       >
 
        <el-form
@@ -73,64 +81,65 @@
  
 
       <el-form-item  label="Từ vựng"> 
-        <el-input v-model="dataDetailVocab.Word"  />
+        <el-input v-model="dataDetailVocab.Word" @input="this.checkChange()" />
       </el-form-item>
 
       <el-form-item label="Nghĩa">
-        <el-input v-model="dataDetailVocab.Vietnamese" />
+        <el-input v-model="dataDetailVocab.Vietnamese" @input="this.checkChange()" />
       </el-form-item>
 
     
       <el-form-item label="Ví dụ tiếng việt">
         <el-input 
         type="textarea"
-        v-model="dataDetailVocab.VN_Example" />
+        v-model="dataDetailVocab.VN_Example" @input="this.checkChange()" />
       </el-form-item>
     
       <el-form-item label="Vị trí">
-        <el-input v-model="dataDetailVocab.Position" />
+        <el-input v-model="dataDetailVocab.Position" @input="this.checkChange()" />
       </el-form-item>
 
        
       <el-form-item label="Lemma">
-        <el-input v-model="dataDetailVocab.Lemma" />
+        <el-input v-model="dataDetailVocab.Lemma" @input="this.checkChange()" />
       </el-form-item>
 
       <el-form-item label="Loại">
-        <el-input v-model="dataDetailVocab.Label" />
+        <el-input v-model="dataDetailVocab.Label" @input="this.checkChange()" />
       </el-form-item>
       
       
       <el-form-item label="Phát âm">
-        <el-input v-model="dataDetailVocab.IPA" />
+        <el-input v-model="dataDetailVocab.IPA" @input="this.checkChange()" />
       </el-form-item>
 
       
       <el-form-item label="Câu ví dụ">
-        <el-input type="textarea" v-model="dataDetailVocab.Example" />
+        <el-input type="textarea" v-model="dataDetailVocab.Example" @input="this.checkChange()" />
       </el-form-item>
 
    
-      <el-form-item label="Active">
-        <el-switch v-model="dataDetailVocab.Active" />
+      <el-form-item label="Hiển thị">
+        <el-switch v-model="dataDetailVocab.Active"  active-text="Hiện" inactive-text="Ẩn" @change="this.checkChange"/>
       </el-form-item>
       
      
       
-      <el-form-item label="Cụm từ">
-        <el-input v-model="dataDetailVocab.Cluster" />
+      <el-form-item label="Cụm từ ">
+        <el-input v-model="dataDetailVocab.Cluster" @input="this.checkChange()" />
       </el-form-item>
        
        
       <el-form-item label="Nguồn tham khảo">
-        <el-input type="textarea" v-model="dataDetailVocab.Resources" />
+        <el-input type="textarea" v-model="dataDetailVocab.Resources" @input="this.checkChange()" />
       </el-form-item>
     </el-form>
+
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="this.innerVisible = false">Đóng</el-button>
 
-          <el-button type="primary" > Xác nhận </el-button>
+          <el-button type="primary" @click="this.confirmChange()"> Xác nhận </el-button>
         </div>
       </template>
 
@@ -147,6 +156,8 @@
 
 <script>
 import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
+
 
 export default {
     props: ['showDetailBox','dataTopic'],
@@ -156,11 +167,17 @@ export default {
             inputTopicName: this.dataTopic.TopicName,
             inputTopicDescribe: this.dataTopic.TopicDescribe,
             topicID: this.dataTopic.TopicID,
-            dataTableTopic: [],
+            filteredVocab: [],
             innerVisible: false,
 
             detailVocab: '',
             labelPosition: 'left',
+
+            search: '',
+            vocab: '',
+            isChange: false,
+
+      
 
             dataDetailVocab: {
               Word: '',
@@ -184,6 +201,16 @@ export default {
         }
     },
 
+    computed: {
+    // Mảng sản phẩm đã lọc theo giá trị tìm kiếm
+        filteredVocab() {
+          if (!this.search) {
+            return this.vocab;
+          }
+        return this.vocab.filter(vocab => vocab.Word.toLowerCase().includes(this.search.toLowerCase()));
+      }
+    },
+
     mounted(){
         this.getDataTableTopic()
     },
@@ -192,11 +219,17 @@ export default {
         getDataTableTopic(){
             axiosInstance.get(`/detail/topicid=${this.topicID}`)
             .then((res) => {
-                console.log(res.data)
-                this.dataTableTopic.push(...res.data)
-            })
-            
+                this.vocab = res.data
+            })         
         },
+
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },    
 
         handleVocabChoose(dataVocabChoose){
 
@@ -206,8 +239,80 @@ export default {
             this.dataDetailVocab[data] = dataVocabChoose[data]
           })
 
-
           this.innerVisible = true
+        },
+
+        // Nếu có input nào thay đổi thì thay đổi thành có sự thành đổi -> không cần phải post lên api mỗi khi ko có xác nhận
+        checkChange(){
+          console.log(this.dataDetailVocab.Active)
+          this.isChange = true
+        },  
+
+        async confirmChange(){
+          //Đã có sự thay đổi ô input bất kì
+          if(this.isChange){
+            let result = await axiosInstance.put('updateVocabByTopicID', {
+              "TopicID": parseInt(this.dataDetailVocab.TopicID),
+              "VocabID": parseInt(this.dataDetailVocab.VocabID),
+              "Word": `${this.dataDetailVocab.Word}`,
+              "IPA": `${this.dataDetailVocab.IPA}`,
+              "Label": `${this.dataDetailVocab.Label}`,
+              "Lemma": `${this.dataDetailVocab.Lemma}`,
+              "Vietnamese": `${this.dataDetailVocab.Vietnamese}`,
+              "Cluster": `${this.dataDetailVocab.Cluster}`,
+              "Position": `${this.dataDetailVocab.Position}`,
+              "Example": `${this.dataDetailVocab.Example}`,
+              "VN_Example": `${this.dataDetailVocab.VN_Example}`,
+              "Resources": `${this.dataDetailVocab.Resources}`,
+              "Active": this.dataDetailVocab.Active == true ? 1 : 0
+            })
+
+            if(result.status == 200){
+              this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+              this.getDataTableTopic()
+              this.innerVisible = false
+            }
+            else{
+              this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+            }
+
+
+            this.isChange = false
+
+          }
+          else{
+            this.isChange = false
+            console.log('xác nhận chưa thay đổi')
+            this.innerVisible = false
+          }
+        },
+
+        async confirmTopic(){
+          if(this.isChange){
+            let result = await axiosInstance.put('updateTopic', {
+                "TopicID": this.topicID,
+                "TopicName": `${this.inputTopicName}`,
+                "TopicDescribe": `${this.inputTopicDescribe}`,
+            })
+
+            if(result.status == 200){
+                this.showNotification('Thông báo', 'Cập nhật chủ đề thành công', 'success')
+                this.getDataTableTopic()
+                this.showBox = false
+                this.$emit('update-data')
+            }
+            else{
+              this.showNotification('Thông báo', 'Cập nhật chủ đề không thành công', 'error')
+            }
+
+            this.isChange = false
+          }
+          else{
+            this.isChange = false
+            console.log('xác nhận chưa thay đổi')
+            this.showBox = false
+          }
+    
         }
     }
     
@@ -218,4 +323,10 @@ export default {
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
+
+
+.addVocab{
+  margin-bottom: 20px;
+}
+
 </style>

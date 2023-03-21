@@ -94,5 +94,55 @@ namespace HocTiengAnh.Controllers.ManageTopic
             }
             return Json(result);
         }
+
+
+        [Route("updateVocabByTopicID")]
+        [HttpPut]
+        public IHttpActionResult UpdateVocabByTopicID(WordModel word)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@VocabID", word.VocabID),
+                    new SqlParameter("@TopicID", word.TopicID),
+                    new SqlParameter("@Word", word.Word),
+                    new SqlParameter("@IPA", word.IPA),
+                    new SqlParameter("@Label", word.Label),
+                    new SqlParameter("@Lemma", word.Lemma),
+                    new SqlParameter("@Vietnamese", word.Vietnamese),
+                    new SqlParameter("@Cluster",word.Cluster),
+                    new SqlParameter("@Position",word.Position),
+                    new SqlParameter("@Example", word.Example),
+                    new SqlParameter("@VN_Example", word.VN_Example),
+                    new SqlParameter("@Resources", word.Resources),
+                    new SqlParameter("@Active", word.Active)
+            };
+
+            var result = new DB().GetDataReader("sp_UpdateVocab", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+
+        [Route("updateTopic")]
+        [HttpPut]
+        public IHttpActionResult UpdateTopic(TopicModel topic)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@TopicID", topic.TopicID),
+                    new SqlParameter("@TopicName", topic.TopicName),
+                    new SqlParameter("@TopicDescribe", topic.TopicDescribe)
+            };
+
+            var result = new DB().GetDataReader("sp_UpdateTopic", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
     }
 }

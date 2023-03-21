@@ -184,11 +184,10 @@
 
   import axiosInstance from '../axios'
   import AskBox from '@/components/AskBox.vue'
-  import DetailVocab from '@/components/DetailVocab.vue'
   import * as XLSX from 'xlsx';
 
     export default {
-      components: {AskBox, DetailVocab},
+      components: {AskBox},
       data () {
         return {
           search: '',

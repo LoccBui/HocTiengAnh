@@ -373,7 +373,7 @@ BEGIN
     END CATCH
 END
 
-exec sp_DeleteTopicByID 4
+exec sp_DeleteTopicByID NULL
 
 go
 
@@ -407,15 +407,86 @@ BEGIN
 
 	if(@check > 0 )
 		begin 
-			SELECT 'Thêm thành công' as Status
+			SELECT N'Thêm thành công' as Status
 		end
 	else
 		begin
 			return null
 		end
-
 END
 
+
+go
+-- Cập nhật từ vựng của chủ đề
+alter procedure sp_UpdateVocab
+@VocabID int,
+@TopicID int,
+
+@Word varchar(50), @IPA varchar(100), @Label varchar(50),
+@Lemma varchar(200), @Vietnamese nvarchar(200), @Cluster varchar(100),
+@Position varchar(100), @Example varchar(400), @VN_Example nvarchar(400),
+@Resources varchar(400), @Active bit
+as
+BEGIN
+	DECLARE @check int
+
+	UPDATE TUVUNG
+	SET Word = @Word, IPA = @IPA, Label = @Label,
+		Lemma = @Lemma, Vietnamese = @Vietnamese, Cluster = @Cluster,
+		Position = @Position, Example = @Example, VN_Example = @VN_Example,
+		Resources = @Resources, Active = @Active
+	WHERE VocabID = @VocabID and TopicID = @TopicID
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+-- Cập nhập thông tin chủ đề
+go
+alter procedure sp_UpdateTopic
+@TopicID int, 
+@TopicName nvarchar(100),
+@TopicDescribe nvarchar(200)
+as
+BEGIN
+	DECLARE @QuantityWords smallint
+	DECLARE @check int
+
+
+	-- kiểm tra lại tổng từ --> phòng trường hợp đã xóa hoặc thêm từ
+	set @QuantityWords = (select COUNT(VocabID) From TUVUNG where TopicID = @TopicID)
+
+	UPDATE CHUDE
+	SET	TopicName =  @TopicName,
+		TopicDescribe  = @TopicDescribe,
+		QuantityWords = @QuantityWords
+	where TopicID = @TopicID
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật chủ đề thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
+
+exec sp_UpdateTopic 
+@TopicID = 4,
+@TopicName = N'Học thêm',
+@TopicDescribe= N'Học thêm miêu tả'
 
 
 
