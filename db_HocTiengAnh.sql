@@ -191,8 +191,8 @@ go
 GO
 
 SET IDENTITY_INSERT [dbo].[NHOMTK] ON 
-INSERT [dbo].[NHOMTK] ([RoleID], [Priority], [RoleName]) VALUES (1, 10, N'Admin')
-INSERT [dbo].[NHOMTK] ([RoleID], [Priority], [RoleName]) VALUES (2, 5, N'Giáo viên')
+INSERT [dbo].[NHOMTK] ([RoleID], [Priority], [RoleName]) VALUES (1, 100, N'Admin')
+INSERT [dbo].[NHOMTK] ([RoleID], [Priority], [RoleName]) VALUES (2, 10, N'Giáo viên')
 INSERT [dbo].[NHOMTK] ([RoleID], [Priority], [RoleName]) VALUES (3, 1, N'Sinh viên')
 SET IDENTITY_INSERT [dbo].[NHOMTK] OFF
 

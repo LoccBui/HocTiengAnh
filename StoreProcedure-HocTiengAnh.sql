@@ -27,24 +27,26 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY 
+			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join LOP L on L.MaGV = GV.MaGV
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
 	else 
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY
+			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority 
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where SV.AccountID = @AccountID
 		end
 END
---exec sp_AuthUser 1
+--exec sp_AuthUser 2
 
 
 go
@@ -309,7 +311,7 @@ END
 go
 
 --Thêm một chủ đề mới
-alter PROCEDURE sp_AddTopic
+create PROCEDURE sp_AddTopic
 @IdFaculty int,
 @TopicName nvarchar(100), 
 @TopicDescribe nvarchar(200), 
@@ -346,7 +348,7 @@ END
 go
 
 -- Xóa chủ đề theo id
-ALTER PROCEDURE sp_DeleteTopicByID
+create PROCEDURE sp_DeleteTopicByID
     @TopicID INT
 AS
 BEGIN
@@ -378,7 +380,7 @@ exec sp_DeleteTopicByID NULL
 go
 
 --Thêm từ vựng vào chủ đề mới tạo
-alter procedure sp_AddVocabToNewTopic
+create procedure sp_AddVocabToNewTopic
 @TopicID int,
 @Word varchar(50),
 @IPA varchar(100),
@@ -418,7 +420,7 @@ END
 
 go
 -- Cập nhật từ vựng của chủ đề
-alter procedure sp_UpdateVocab
+create procedure sp_UpdateVocab
 @VocabID int,
 @TopicID int,
 
@@ -452,7 +454,7 @@ END
 
 -- Cập nhập thông tin chủ đề
 go
-alter procedure sp_UpdateTopic
+create procedure sp_UpdateTopic
 @TopicID int, 
 @TopicName nvarchar(100),
 @TopicDescribe nvarchar(200)
@@ -499,3 +501,22 @@ select* from CHUDE
 select * from TUVUNG
 
 
+
+
+
+select * from TAIKHOAN
+select * from KHOA
+select * from LOP
+select * from GIAOVIEN
+select * from SINHVIEN
+--- Setting Account
+select TK.Email,GV.Name, GV.Gender
+from TAIKHOAN TK
+inner join GIAOVIEN GV on TK.AccountID = GV.AccountID
+where MaGV = 3
+
+
+select TK.Email,SV.Name, SV.Gender
+from TAIKHOAN TK
+inner join SINHVIEN SV on TK.AccountID = SV.AccountID
+where MaSV = 2

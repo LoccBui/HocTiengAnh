@@ -12,17 +12,21 @@
               :subtitle="emailUser"             
             ></v-list-item>
           </v-list>
-  
+
+          
           <v-divider></v-divider>
-  
-          <v-list 
-            density="compact"
-            nav  
-            v-for="item in menuListItem" 
-            :key="item"  
-            @click="menuActionClick(item.action)"          
-          >
+          
+          <div v-for="item in menuListItem" :key="item">
+            <v-list 
+              density="compact"
+              nav  
+              @click="menuActionClick(item.action)" 
+              @click:select="this.selectItemNav(item.value)"
+              v-show="item.roles.includes(roleUser)" 
+            > 
+            {{ activeNav }}
               <v-list-item 
+                class="navbar-item"
                 :key="`${item.value}`" 
                 :prepend-icon="`${item.icon}`" 
                 :title="`${item.title}`" 
@@ -32,6 +36,7 @@
             </v-list-item> 
 
           </v-list>
+        </div>
 
         </v-navigation-drawer>
   
@@ -59,16 +64,19 @@ export default {
 
             checkStorage: [],
 
+            roleUser: 1,
+
+
             menuListItem: [
-              {icon: 'mdi-magnify', title: 'Tra từ', value: '1', route: '/searching'},
-              {icon: 'mdi-bookshelf', title: 'Học từ', value: '2', route: '/topic'},
-              {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: '4', route: '/account/setting'},
-              {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: '5', route: '/manage/class'},
-              {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: '6', route: '/manage/users'},
-              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: '7', route: '/manage/vocab'},
+              {icon: 'mdi-magnify', title: 'Tra từ', value: 1, route: '/searching', roles: [1, 10, 100]},
+              {icon: 'mdi-bookshelf', title: 'Học từ', value: 2, route: '/topic', roles: [1, 10, 100]},
+              {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: 3, route: '/account/setting', roles: [1, 10, 100]},
+              {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: 4, route: '/manage/class', roles: [100]},
+              {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
+              {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
 
               // maybe more
-              {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut' }
+              {icon: 'mdi-logout  ', title: 'Đăng xuất', value: '5', route: '', action: 'logOut', roles: [1,10,100] }
             ]
         }
     },
@@ -80,7 +88,7 @@ export default {
     },
 
     mounted(){  
-
+      console.log(this.roleUser)
 
        this.getDataUser()
     },
@@ -93,6 +101,11 @@ export default {
         }
       },
 
+      selectItemNav(index){
+        this.activeIndex = index === this.activeIndex ? null : index
+
+      },
+
       getDataUser(){
           let dataUser = JSON.parse(localStorage.getItem('userInfo'))
 
@@ -103,6 +116,8 @@ export default {
             this.accountID = dataUser.accountID 
             this.emailUser = dataUser.email 
             this.nameUser = dataUser.name
+            this.roleUser = dataUser.Role
+            console.log(typeof this.roleUser)
           }
           
          
@@ -123,5 +138,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.navbar-item{
+
+  &:hover{
+    background-color:  var(--main-color) !important;
+    color: white !important;
+  }
+
+}
+
+
 
 </style>

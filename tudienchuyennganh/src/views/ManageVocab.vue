@@ -21,7 +21,7 @@
 
       <template #default="scope">
         <el-button type="primary" size="large" @click="handleDetail(scope.row)"
-          >Chi tiết
+          >Chi tiết 
         </el-button>
         <el-button
           size="large"
@@ -62,9 +62,9 @@
         append-to-body
         fullscreen
       >
-      <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề muốn tạo">Nhập tên chủ đề muốn tạo</el-input>
-      <el-input v-model="inputNewDescibe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
-
+      <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề">Nhập tên chủ đề muốn tạo</el-input>
+      <el-input v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
+      
       <el-divider />
 
       <el-upload
@@ -118,6 +118,8 @@
   <AskBox 
       v-if="showAskBox"
       :title="'Bạn có muốn xóa chủ đề này ?'"
+      :typeButton="'danger'"
+      :btnYes="'Xóa'"
       @confirm="deleteTopic"
       @close="this.showAskBox = false"
   />
@@ -167,7 +169,6 @@ import * as XLSX from 'xlsx';
         addByDefault: false,
         tableData: [],
         inputNewTopicName: '',
-        inputNewDescibe: '',
         keyManageVocab: 0,
         
       }

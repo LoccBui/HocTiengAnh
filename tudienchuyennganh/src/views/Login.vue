@@ -176,7 +176,8 @@ export default {
                     email: '',
                     name: '',
                     MaGV: '',
-                    IDFACULTY: ''
+                    IDFACULTY: '', 
+                    Role: ''
                 }
                 
                 dataUser.accountID = res.data[0].AccountID
@@ -184,6 +185,7 @@ export default {
                 dataUser.name = res.data[0].Name
                 dataUser.MaGV = res.data[0].MaGV || 0
                 dataUser.IDFACULTY = res.data[0].IDFACULTY
+                dataUser.Role = res.data[0].Priority
 
                 localStorage.setItem('userInfo', JSON.stringify(dataUser))
 

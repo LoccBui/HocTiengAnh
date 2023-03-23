@@ -1,47 +1,90 @@
 <template>
     <div class="container">
     
-        <h1 class="txt-40">Cài đặt tài khoản</h1>
 
-        <el-row :gutter="20">
 
-            <el-col :span="20">
-                <h1 class="info-user">Tài khoản</h1>
-                <el-input v-model="input" />
-            </el-col>
+        <div class="info-wrapper">
+            <div class="wrapper">
 
-            <el-col :span="20">
-                <h1 class="info-user" >Mật khẩu</h1>
-                <el-input show-password="true" v-model="inputPassword" 	/>
-            </el-col>
+                <el-col>
+                    <h1 class="txt-40">Cài đặt tài khoản</h1>
+                
+                    <el-col :span="24">
+                        <h1 class="info-user">Tài khoản</h1>
+                        <el-input v-model="input" />
+                    </el-col>
 
-            <el-col :span="20">
-                <h1 class="info-user">Email</h1>
-                <el-input v-model="input" />
-            </el-col>
+                    <el-col :span="24">
+                        <h1 class="info-user"> Giới tính</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Email</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+                    
+                    <el-col :span="24">
+                        <h1 class="info-user"> Lớp </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Khoa </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                </el-col>
+            </div>
+
+            <div class="wrapper">
+
+                <el-col>
+                    <h1 class="txt-40">Thay đổi mật khẩu</h1>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Mật khẩu hiện tại</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Mật khẩu mới</h1>
+                        <el-input show-password="true" v-model="inputPassword" 	/>
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Xác nhận mật khẩu</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+                    
+                    <el-col :span="24">
+                        <h1 class="info-user"> Lớp </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Khoa </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Giới tính</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+
+                </el-col>
+            </div>
             
-            <el-col :span="10">
-                <h1 class="info-user"> Lớp </h1>
-                <el-input v-model="inpit"  />
-            </el-col>
+        </div>
 
-            <el-col :span="10">
-                <h1 class="info-user"> Khoa </h1>
-                <el-input v-model="inpit"  />
-            </el-col>
+        <el-button 
+            type="primary"
+            class="confirm-btn"
+             >Xác nhận
+        </el-button>
 
-            <el-col :span="20">
-                <h1 class="info-user"> Giới tính</h1>
-                <el-input v-model="input" />
-            </el-col>
-
-       
-        </el-row>
-
-        <el-divider />
-
-        <el-button type="primary">Xác nhận</el-button>
-        <el-button>Đóng</el-button>
+        
 
 
         
@@ -73,6 +116,15 @@ export default {
 <style lang="scss" scoped>
 .container{
     padding: 50px;
+    font-weight: 200;
+    height: 100vh;
+}
+
+.txt-40{
+    font-weight: 500;
+    padding: 20px 0;
+    font-size: 20px;
+    color: var(--gray-text);
 }
 
 .el-col + .el-col {
@@ -82,6 +134,31 @@ export default {
 .info-user{
     color: var(--gray-text);
     font-weight: 500;
+}
+
+.confirm-btn{
+    margin-top: 20px;
+    width: 200px !important;
+    height: 40px;
+}
+
+.info-wrapper{
+    display: flex;
+    width: 100%;
+
+    .wrapper{
+        padding: 20px;
+        border: 1px solid var(--light-blue-90);
+        border-radius: 10px;
+        width: 50%;
+        display: flex;
+        align-items: start;
+        justify-content: center;
+    }
+
+    .wrapper + .wrapper{
+        margin-left: 20px;
+    }
 }
 </style>
 

@@ -1,26 +1,39 @@
 <template>
-  <div>
-      <v-dialog
+  <div class="askbox-container">
+    <el-dialog 
+        class="askBox"
         v-model="dialog"
-        width="auto"
-        transition="dialog-bottom-transition"
-        persistent
-      >
-        <v-card width="500px" :title="`${title}`" >
+        :title="`${title}`" 
+        width="30%" 
+        :before-close="this.handleClose">
+
+        <span>    Hành động này không thể hoàn tác </span>
         
-        <v-card-actions>          
-            <v-btn variant="flat" color="primary" @click="confirm()">Xác nhận </v-btn>
-            <v-btn variant="flat" color="error" @click="close()">Đóng</v-btn>
-        </v-card-actions>
-        
-        </v-card>
-    </v-dialog>
+        <template #footer>
+        <span class="dialog-footer">
+            
+            <el-button 
+                size="large"         
+                @click="close()"
+                >Đóng
+            </el-button>
+
+            <el-button 
+                :type="`${typeButton}`"
+                size="large" 
+                @click="confirm()"
+                >{{ btnYes }}
+            </el-button>
+        </span>
+        </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 export default {
-    props: ['title'],
+    props: ['title', 'typeButton', 'btnYes' ],
     data(){
         return{
             dialog: true,   
@@ -36,11 +49,44 @@ export default {
             this.dialog = false
             this.$emit('close')
 
+        },
+
+        handleClose(){
+            this.$emit('close')
         }
     }
 }
 </script>
 
-<style  lang="scss" scoped>
+<style lang="scss">
+
+.askbox-container{
+    .el-dialog__title{
+        font-weight: 600;
+        font-size: 25px;
+    }
+
+    .el-dialog__body{
+        font-size: 15px;
+    }
+   
+    .el-dialog{
+        border-radius: 10px;
+    }
+
+    .dialog-footer{
+        display: flex;
+
+    }
+
+    .el-button{
+            width:50%;
+        }
+}
+@media screen and (max-width: 900px){
+    .el-dialog{
+        width: 80% !important;
+    }
+}
 
 </style>
