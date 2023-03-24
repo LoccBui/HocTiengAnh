@@ -8,6 +8,8 @@
 </script>
 
 <style lang="scss">
+
+
 *{
   font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
 }
