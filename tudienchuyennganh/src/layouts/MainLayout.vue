@@ -7,10 +7,13 @@
       <div class="nav-bar">
 
       <v-navigation-drawer 
+        v-model="drawer"
+        style="height: auto;"
+        location="left"
         class="nav-bar"
-        expand-on-hover
-        rail
-        permanent 
+        :rail="rail"
+        @click="rail = false"
+        :persistent="false" 
       >
         <v-list>
           <v-list-item
@@ -42,22 +45,27 @@
           </v-list-item> 
         </v-list>
 
+        
+        
       </div>
-      
-      <v-divider></v-divider>
-   
-      <template v-slot:append>
-        <div class="pa-2">
-          <div class="logOut" >
-            <el-button :icon="mdi-logOut" rounded="xl" color="danger" @click="this.logOut()">
-              <v-icon>mdi-logout </v-icon>
-              Đăng xuất
-            </el-button>
-          </div>
-        </div>
-      </template>
 
+      <v-divider></v-divider>
+
+      <div style="padding: 8px;">
+        <el-button 
+          style="width: 100%;"
+          type="danger"
+          round>
+          <v-icon>mdi-logout</v-icon>
+       </el-button>
+      </div>
       </v-navigation-drawer>  
+
+
+      <v-app-bar app>
+        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>My App</v-toolbar-title>
+      </v-app-bar>
     </div>
 
       <div class="menu-bar" v-if="menuVisible" @mouseleave="menuVisible = false">
@@ -115,28 +123,33 @@
 
 
       <v-main class="main">
-        <div style="width:100%; position: relative;">
+
+          <div class="header">
+            <el-header>
+
+              <div class="user-app">
+                <el-avatar
+                  :src="`../../assets/img/${this.gender}.png`"
+                />
+                <span class="text-large font-600 mr-3"> {{ nameUser }} </span>
+                <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
+                  {{ emailUser }}
+                </span>
+
+              </div>
+
+              <div></div>
+              <div></div>
+
+              </el-header>
+          </div>
           
-          <el-header class="header">
-            <div class="user-app">
-              
-              <el-avatar
-                :src="''"
-              />
-              <span class="text-large font-600 mr-3"> {{ nameUser }} </span>
-              <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                {{ emailUser }}
-              </span>
+          
 
-            </div>
-           
-            <div></div>
-            <div></div>
+          <div class="content">
+            <router-view></router-view>
+          </div>
 
-          </el-header>
-          <router-view></router-view>
-
-        </div>
       </v-main>
 
       
@@ -154,9 +167,12 @@
 <script>
 import axiosInstance from '../axios'
 
+
 export default {
   data(){     
       return {
+        drawer: true,
+        rail: true,
           emailUser: '',
           nameUser: '',
           accountID: '',
@@ -166,6 +182,7 @@ export default {
           selectedItems: [],
 
           menuVisible: false,
+          gender: 'male',
 
           menuListItem: [
             {icon: 'mdi-magnify', title: 'Tra từ', value: 1, route: '/searching', roles: [1, 10, 100]},
@@ -221,24 +238,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .main{
-  height: 100vh; 
-  padding: 0px;
-  display: flex;
+  position: relative;
+  padding: 0;
+  
 }
 
 .header{
-  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px 0;
+  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   width: 100%;
+  border: 1px solid var(--light-blue-90);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
+  position: absolute;
 
+  .el-header{
+    height: unset;
+  }
+  
   .user-app{
     display: flex;
     align-items: center;
   }
+}
+
+.content{
+  height: 100vh !important;
 }
 
 .navbar-item{
@@ -266,11 +296,24 @@ export default {
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 0;
   left: 50%;
   bottom: 0;
   transform: translate(-50%, -30%);
   z-index: 10;
+  animation: showBox .3s ease-in-out;
+}
+
+@keyframes showBox {
+  from{
+    opacity: 0;
+    scale: 0;
+  }
+  to{
+    opacity: 1;
+    scale: 1;
+
+
+  }
 }
 
 
@@ -294,16 +337,19 @@ export default {
 
   background-color: rgba(255, 255, 255, 0.5);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+
+  background-color: white;
+
   .v-list{
     background-color: transparent;
     padding: 10px;
 
     .el-button{
         &:hover{
-        background-color:  var(--main-color) !important;
-        color: white !important;
-        font-size: 20px;
-        transition: all 500ms;  
+          background-color:  var(--main-color) !important;
+          color: white !important;
+          font-size: 20px;
+          transition: all 500ms;  
        }
     }
    
@@ -327,7 +373,12 @@ export default {
 
 .nav-bar{
   display: none !important;
-  background-color: red;
+}
+
+
+.v-navigation-drawer{
+  height: 100vh !important;
+  background-color: #0038FF !important;
 }
 
 
@@ -341,6 +392,10 @@ export default {
 
 
 @media screen and (max-width: 768px){
+
+  .showNav{
+    display: none;
+  }
 
   .navbar-mobile{
     display: block;

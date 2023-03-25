@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <div id="app">
+    <router-view />
+  </div>
 </template>
 
 <script setup>
@@ -8,6 +10,17 @@
 </script>
 
 <style lang="scss">
+
+#app{
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #1565C0;
+  margin: 0;
+  overflow-y: scroll;
+}
+
 
 
 *{
@@ -33,6 +46,7 @@
   padding: 0;
   border: 0;
   font-size: 100%;
+  box-sizing: border-box;
  }
 
 a{
@@ -46,6 +60,26 @@ a:active{
 a:visited {
   color: #888888;
 }
+
+/* Scroll bar css*/
+::-webkit-scrollbar {
+   width: 4px;
+ }
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1565C0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 
 
 /* redefine class */

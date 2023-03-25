@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="setting-account-container">
     
 
 
@@ -8,6 +8,23 @@
 
                 <el-col>
                     <h1 class="txt-40">Cài đặt tài khoản</h1>
+
+                    <div class="avatar-wrapper">
+                        <div>
+                            <img src="../../assets/img/male.png" />
+                        </div>
+
+                        <div class="change-img">
+                            <el-button
+                            style="width: auto;"
+                            @click="this.openPick()"
+                            > Chọn avatar khác
+                            </el-button>
+                        </div>
+                    </div>
+
+                
+
                 
                     <el-col :span="24">
                         <h1 class="info-user">Tài khoản</h1>
@@ -78,16 +95,42 @@
             
         </div>
 
-        <el-button 
+
+        <div class="confirm-btn">
+            <el-button 
             type="primary"
-            class="confirm-btn"
+            
              >Xác nhận
         </el-button>
+        </div>
 
-        
+      
 
+        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="50%">
+            <span>
+                Hãy chọn avatar mới
 
-        
+                <div class="images-pick">
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                    <img class="img-choose" src="../../assets/img/male.png" />
+                </div>
+            </span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="openPickAvatar = false">Đóng</el-button>
+                <el-button type="primary" @click="centerDialogVisible = false">
+                Xác nhận
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+
 
     </div>
 </template>
@@ -96,7 +139,8 @@
 export default {
     data(){
         return{
-            inputPassword: '123'
+            inputPassword: '123',
+            openPickAvatar: false,
         }
     },
 
@@ -108,21 +152,37 @@ export default {
         changeTitle(){
           document.title = "Cài đặt tài khoản"
         },
+
+        openPick(){
+            this.openPickAvatar = true
+        }
     }
 
 }
 </script>
 
-<style lang="scss" scoped>
-.container{
-    padding: 50px;
+<style lang="scss" >
+.setting-account-container{ 
+    padding: 5% 0 0;
     font-weight: 200;
-    height: 100vh;
+    overflow-y: scroll;
+
+    .el-dialog__title{
+        font-weight: 600;
+        font-size: 25px;
+    }
+
+    .el-dialog__body{
+        font-size: 15px;
+    }
+   
+    .el-dialog{
+        border-radius: 10px;
+    }
 }
 
 .txt-40{
     font-weight: 500;
-    padding: 20px 0;
     font-size: 20px;
     color: var(--gray-text);
 }
@@ -137,17 +197,28 @@ export default {
 }
 
 .confirm-btn{
+    padding: 0 100px;
     margin-top: 20px;
-    width: 200px !important;
-    height: 40px;
+}
+
+.avatar-wrapper{
+    display: flex;
+    align-items: center;
+
+    .change-img{
+        margin-left: 40px;
+    }
 }
 
 .info-wrapper{
+    padding: 0 100px;
     display: flex;
     width: 100%;
+    overflow-y: scroll;
+
 
     .wrapper{
-        padding: 20px;
+        padding: 10px;
         border: 1px solid var(--light-blue-90);
         border-radius: 10px;
         width: 50%;
@@ -158,6 +229,18 @@ export default {
 
     .wrapper + .wrapper{
         margin-left: 20px;
+    }
+}
+
+.images-pick{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+
+    .img-choose{
+        padding: 10px;
+        flex-basis: 20%;
     }
 }
 </style>

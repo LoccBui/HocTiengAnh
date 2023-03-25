@@ -117,12 +117,10 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-    position: relative;
-    padding: 20px;
+    padding: 5% 0; 
     display: flex;
     justify-content: left;
     flex-wrap: wrap;
-    height: 100vh;
 }
 
 

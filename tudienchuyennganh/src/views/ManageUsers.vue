@@ -169,6 +169,8 @@
     <AskBox 
         v-if="showAskBox"
         :title="'Bạn có muốn xóa tài khoản này ?'"
+        :typeButton="'danger'"
+        :btnYes="'Xóa'"
         @confirm="deleteUser"
         @close="this.showAskBox = false"
     />
@@ -488,7 +490,7 @@
   
   <style lang="scss" scoped>
   .container{
-      padding: 50px;
+    padding: 5% 5%;
   }
   
   .el-dialog{

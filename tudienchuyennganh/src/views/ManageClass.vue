@@ -1,7 +1,7 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" type="primary" @click="addNewClass()"
+    <el-button class="mt-4" color="var(--main-color)" @click="addNewClass()"
     >Thêm lớp</el-button> 
 
 
@@ -31,7 +31,7 @@
       </template>
 
       <template #default="scope">
-        <el-button type="success" size="large" @click="handleABC(scope.$index, scope.$row)"
+        <el-button color="var(--main-color)" size="large" @click="handleABC(scope.$index, scope.$row)"
           >Sửa
         </el-button>
         <el-button
@@ -52,6 +52,8 @@
   <AskBox 
       v-if="showAskBox"
       :title="'Bạn có muốn xóa lớp này ?'"
+      :typeButton="'danger'"
+      :btnYes="'Xóa'"
       @confirm="deleteClass"
       @close="this.showAskBox = false"
   />
@@ -238,6 +240,6 @@ import AskBox from '@/components/AskBox.vue'
 
 <style lang="scss" scoped>
 .container{
-    padding: 50px;
+  padding: 5% 0;
 }
 </style>

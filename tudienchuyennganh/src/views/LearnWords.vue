@@ -30,9 +30,6 @@
     
     <v-divider></v-divider>
 
-      <el-button @click="test" type="danger"> change router view </el-button>
-
-
     
     <span> AUDIO </span>
     <div class="audio-wrapper">
@@ -58,42 +55,41 @@
     <div class="header">
       <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
 
-          <div class="temporary"></div>
+        <div class="temporary"></div>
 
         <div class="score-cover">
               {{ totalScore }}
         </div>
 
     </div>
-    <LearnByMeaningVue v-if="learnByMeaning"
-      :listWord="dataAPI"
-    />
-
-    <ChooseRightMeaning 
-    v-if="ChooseRightMeaning" 
-    :listWord="dataAPI"
-    @finish-learn="handleFinishLearn"
-    />
 
 
-
-    <FillInABlank v-if="FillInABlank"
-    @finish-learn="handleFinishLearn"
-
-    />
-    <ListenAndChoose v-if="ListenAndChoose"
-    @finish-learn="handleFinishLearn"
+            <LearnByMeaningVue v-if="learnByMeaning"
+            :listWord="dataAPI"
+            />
     
-    />
-
-    <ChooseRightWord 
-      v-if="ChooseRightWord"
-       @finish-learn="handleFinishLearn"
-    />
-    <CorrectListening v-if="CorrectListening"
-    @finish-learn="handleFinishLearn"
+            <ChooseRightMeaning v-if="ChooseRightMeaning" 
+              :listWord="dataAPI"
+              @finish-learn="handleFinishLearn"
+            />
     
-    />
+            <FillInABlank v-if="FillInABlank"
+              @finish-learn="handleFinishLearn"
+            />
+    
+            <ListenAndChoose v-if="ListenAndChoose"
+            @finish-learn="handleFinishLearn"
+            />
+    
+            <ChooseRightWord v-if="ChooseRightWord"
+            @finish-learn="handleFinishLearn"
+            />
+          
+            <CorrectListening v-if="CorrectListening"
+            @finish-learn="handleFinishLearn"
+            />  
+        
+
    </div>
   
   </div>
@@ -179,11 +175,6 @@ export default {
   methods:{
     changeTitle(){
         document.title = "Học từ"
-    },
-
-    test(){
-      alert('click')
-      this.$router.push('/test')
     },
     
     speak() {
@@ -313,6 +304,7 @@ export default {
 
 .container{
   padding: 20px;
+  
 
 }
 
