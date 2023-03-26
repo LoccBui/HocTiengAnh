@@ -1,7 +1,7 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" color="var(--main-color)" @click="addNewClass()"
+    <el-button class="mt-4" color="#1565C0" @click="addNewClass()"
     >Thêm lớp</el-button> 
 
 
@@ -31,7 +31,7 @@
       </template>
 
       <template #default="scope">
-        <el-button color="var(--main-color)" size="large" @click="handleABC(scope.$index, scope.$row)"
+        <el-button color="#1565C0" size="large" @click="handleABC(scope.$index, scope.$row)"
           >Sửa
         </el-button>
         <el-button
@@ -131,10 +131,6 @@ import AskBox from '@/components/AskBox.vue'
         
       }
         
-    },
-
-    computed:{
-     
     },
 
     mounted(){
@@ -239,7 +235,4 @@ import AskBox from '@/components/AskBox.vue'
 
 
 <style lang="scss" scoped>
-.container{
-  padding: 5% 0;
-}
 </style>

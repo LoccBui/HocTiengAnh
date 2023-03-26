@@ -12,19 +12,9 @@
 <style lang="scss">
 
 #app{
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #1565C0;
-  margin: 0;
-  overflow-y: scroll;
-}
-
-
-
-*{
-  font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
+  position: relative;
+  width: 100vw;
+  height: auto;
 }
 
 /* color pallete picker: https://imagecolorpicker.com/color-code/0038ff */
@@ -46,7 +36,8 @@
   padding: 0;
   border: 0;
   font-size: 100%;
-  box-sizing: border-box;
+  font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
+
  }
 
 a{
@@ -63,7 +54,7 @@ a:visited {
 
 /* Scroll bar css*/
 ::-webkit-scrollbar {
-   width: 4px;
+   width: 8px;
  }
 
 ::-webkit-scrollbar-track {
@@ -78,6 +69,10 @@ a:visited {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.section::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
 

@@ -1,5 +1,4 @@
 <template>
-  <v-card>
     <v-layout style="navbar-mobile">
 
 
@@ -64,14 +63,13 @@
 
       <v-app-bar app>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>My App</v-toolbar-title>
+        <v-toolbar-title>Học từ vựng</v-toolbar-title>
       </v-app-bar>
     </div>
 
       <div class="menu-bar" v-if="menuVisible" @mouseleave="menuVisible = false">
 
         <div class="menu-wrapper">
-
           
           <div v-for="item in menuListItem" :key="item.value">
 
@@ -117,10 +115,6 @@
       </div>
 
 
-      <el-button class="showNav" @mouseover="menuVisible = true"  >
-        <v-icon>mdi-arrow-up-bold</v-icon>
-      </el-button>
-
 
       <v-main class="main">
 
@@ -141,7 +135,7 @@
               <div></div>
               <div></div>
 
-              </el-header>
+            </el-header>
           </div>
           
           
@@ -150,16 +144,19 @@
             <router-view></router-view>
           </div>
 
+          <div class="footer">
+
+            <el-button class="showNav" @mouseover="menuVisible = true"  >
+            <v-icon>mdi-arrow-up-bold</v-icon>
+          </el-button>
+
+          </div>
+
       </v-main>
 
       
 
     </v-layout>
-
-  </v-card>
-
-
-
 
 </template>
 
@@ -241,21 +238,25 @@ export default {
 
 
 .main{
-  position: relative;
   padding: 0;
-  
+  width: 100%;
+  height: 100vh;
 }
 
 .header{
   padding: 10px 0;
-  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  width: 100%;
   border: 1px solid var(--light-blue-90);
   display: flex;
   align-items: center;
   justify-content: start;
+  width: 100%;
   position: absolute;
+  top: 0;
+  min-height: 60px;
+  max-height: 60px;
+  background-color: white;
+  z-index: 100;
 
   .el-header{
     height: unset;
@@ -268,7 +269,16 @@ export default {
 }
 
 .content{
-  height: 100vh !important;
+  margin-top: 60px;
+  height: auto;
+}
+
+.footer{
+  position: absolute;
+  width: 100%;
+  height: auto;
+  z-index: 10;
+  bottom: 0;
 }
 
 .navbar-item{
@@ -301,6 +311,7 @@ export default {
   transform: translate(-50%, -30%);
   z-index: 10;
   animation: showBox .3s ease-in-out;
+
 }
 
 @keyframes showBox {
@@ -376,18 +387,9 @@ export default {
 }
 
 
-.v-navigation-drawer{
-  height: 100vh !important;
-  background-color: #0038FF !important;
-}
-
-
 .showNav{
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  z-index: 10;
   color: #0038FF;
+  width: inherit;
 }
 
 
@@ -409,6 +411,9 @@ export default {
     display: none;
   }
 }
+
+
+
 
 
 </style>

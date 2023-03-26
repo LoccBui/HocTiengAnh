@@ -90,12 +90,11 @@
       >
 
       <el-upload
-      :auto-upload="false"
-
-        ref="upload"
         class="upload-demo"
-        :limit="1"
         drag
+        :auto-upload="false"
+        :limit="1"
+        :action="''"
         :on-change="handleUpload"
         :before-upload="beforeUpload"
       >
@@ -111,18 +110,26 @@
           </div>
         </template>
 
+
       </el-upload>
 
+      
+      <el-switch
+          v-model="typeUser"
+          size="large"
+          active-text="Dữ liệu là giáo viên "
+          inactive-text="Dữ liệu là sinh viên"
+        />
+
       <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="Name"></el-table-column>
-      <el-table-column prop="age" label="Age"></el-table-column>
-      <el-table-column prop="gender" label="Gender"></el-table-column>
+      <el-table-column prop="Account" label="Tài khoản"></el-table-column>
+      <el-table-column prop="Email" label="Email"></el-table-column>
+      <el-table-column prop="Password" label="Password"></el-table-column>
     </el-table>
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewUserByDefault()" > Thêm </el-button>
+          <el-button type="primary" size="large" @click="addNewUserByExcel()" > Thêm </el-button>
         </div>
       </template>
 
@@ -181,7 +188,6 @@
   </template>
   
   <script>
-  import { ElMessage } from 'element-plus'
   import { ElNotification } from 'element-plus'
 
   import axiosInstance from '../axios'
@@ -215,6 +221,8 @@
           addByExcel: false,
           addByDefault: false,
           tableData: [],
+
+          typeUser: false,
 
           inputNewEmail: '',
           inputNewPassword: '',
@@ -269,7 +277,6 @@
         },
 
         handleTypeTableRole(role){
-            console.log(role)
             if(role == 1){
                 return 'success'
             }
@@ -355,6 +362,39 @@
 
         },
 
+        async addNewUserByExcel(){  
+
+          for (let i = 0; i < this.tableData.length; i++){
+
+            let convertTypeUser = this.typeUser == false ? 1 : 10
+
+            try{
+                let result = await axiosInstance.post('/addNewUser',{
+                  "Username": `${this.tableData[i].Account}`,
+                  "Password": `${this.tableData[i].Password}`,
+                  "Email": `${this.tableData[i].Email}`,
+                  "RoleID": convertTypeUser
+                })
+
+                if(result.status == 200) {
+                  this.addByExcel = false
+                  this.optionsAdd = false 
+                  this.addTypeUser(result.data[0])
+                }
+
+              }
+            catch(error){
+              this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+            }
+          }     
+        },
+
+        addTypeUser(data){
+            console.info("data", data)
+             this.getAllUsers()
+
+        },
+
         // ------------------
         
         getDataLocalStorage(){
@@ -385,7 +425,6 @@
             const worksheet = workbook.Sheets[sheetName]
             const jsonData = XLSX.utils.sheet_to_json(worksheet)
             this.tableData = jsonData
-            console.log(this.tableData)
           }
           reader.readAsArrayBuffer(file.raw)
         },
@@ -427,10 +466,9 @@
           let result = await axiosInstance.delete(`/DeleteClass/${this.idClassDelete}`)
               
           if (result.status == 200) {
-             this.getAllClasses()
+            this.getAllClasses()
             this.showAskBox = false
-            this.showMessage('Xóa thành công', 'success')
-  
+            this.showNotification('Thông báo', 'Xóa thành công', 'error')
           }
          
         },
@@ -473,14 +511,7 @@
           console.log("chạy nè",index, row)
         },
   
-  
-        showMessage(message, type){
-          ElMessage({
-            message: `${message}`,
-            type: `${type}`,
-            effect:"dark"
-          })
-        }
+
   
         
       }
@@ -489,10 +520,7 @@
   
   
   <style lang="scss" scoped>
-  .container{
-    padding: 5% 5%;
-  }
-  
+ 
   .el-dialog{
   
     .el-input + .el-input{

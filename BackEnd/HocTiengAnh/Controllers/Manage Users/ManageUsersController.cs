@@ -36,7 +36,7 @@ namespace HocTiengAnh.Controllers.Manage_Users
                     new SqlParameter("@RoleID", account.RoleID)
             };
 
-            var result = new DB().GetDataReader("sp_InsertNewAccount", param);
+            var result = new DB().GetDataReader("sp_AddNewUser", param);
 
             return Json(result);
         }

@@ -1,8 +1,97 @@
 <template>
     <div class="setting-account-container">
     
+        <div class="info-wrapper">
+            <div class="wrapper">
+
+                <el-col>
+                    <h1 class="txt-40">Cài đặt tài khoản</h1>
+
+                    <div class="avatar-wrapper">
+                        <div>
+                            <img src="../../assets/img/male.png" />
+                        </div>
+
+                        <div class="change-img">
+                            <el-button
+                            style="width: auto;"
+                            @click="this.openPick()"
+                            > Chọn avatar khác
+                            </el-button>
+                        </div>
+                    </div>
+
+                
+
+                
+                    <el-col :span="24">
+                        <h1 class="info-user">Tài khoản</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Giới tính</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Email</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+                    
+                    <el-col :span="24">
+                        <h1 class="info-user"> Lớp </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Khoa </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                </el-col>
+            </div>
+
+            <div class="wrapper">
+
+                <el-col>
+                    <h1 class="txt-40">Thay đổi mật khẩu</h1>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Mật khẩu hiện tại</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Mật khẩu mới</h1>
+                        <el-input show-password="true" v-model="inputPassword" 	/>
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user">Xác nhận mật khẩu</h1>
+                        <el-input v-model="input" />
+                    </el-col>
+                    
+                    <el-col :span="24">
+                        <h1 class="info-user"> Lớp </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Khoa </h1>
+                        <el-input v-model="inpit"  />
+                    </el-col>
+
+                    <el-col :span="24">
+                        <h1 class="info-user"> Giới tính</h1>
+                        <el-input v-model="input" />
+                    </el-col>
 
 
+                </el-col>
+            </div>
+            
+        </div>
         <div class="info-wrapper">
             <div class="wrapper">
 
@@ -163,9 +252,8 @@ export default {
 
 <style lang="scss" >
 .setting-account-container{ 
-    padding: 5% 0 0;
-    font-weight: 200;
-    overflow-y: scroll;
+    padding-bottom: 200px;
+    background-color: aqua;
 
     .el-dialog__title{
         font-weight: 600;
@@ -198,7 +286,7 @@ export default {
 
 .confirm-btn{
     padding: 0 100px;
-    margin-top: 20px;
+    margin: 80px 0;
 }
 
 .avatar-wrapper{
@@ -214,7 +302,6 @@ export default {
     padding: 0 100px;
     display: flex;
     width: 100%;
-    overflow-y: scroll;
 
 
     .wrapper{

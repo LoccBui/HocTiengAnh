@@ -485,12 +485,65 @@ BEGIN
 		end
 END
 
-exec sp_UpdateTopic 
-@TopicID = 4,
-@TopicName = N'Học thêm',
-@TopicDescribe= N'Học thêm miêu tả'
+--exec sp_UpdateTopic 
+--@TopicID = 4,
+--@TopicName = N'Học thêm',
+--@TopicDescribe= N'Học thêm miêu tả'
 
 
+go
+
+
+--Tạo tài khoản mới
+alter PROCEDURE sp_AddNewUser
+    @Username VARCHAR(50),
+    @Password VARCHAR(100),
+    @Email VARCHAR(100),
+    @RoleID SMALLINT
+AS
+BEGIN 
+    DECLARE @lastestID INT
+	DECLARE @check int
+    DECLARE @password_binary VARBINARY(100)
+
+    SET @lastestID = (SELECT MAX(AccountID) FROM TAIKHOAN) + 1
+    SET @password_binary = PWDENCRYPT(@Password)-- Chuyển đổi mật khẩu sang kiểu varbinary
+
+	SET IDENTITY_INSERT TAIKHOAN ON 
+
+    IF NOT EXISTS (SELECT * FROM TAIKHOAN WHERE Username = @Username)
+    BEGIN
+        INSERT INTO TAIKHOAN (AccountID, Username, Password, Email, Active, RoleID)
+        VALUES (@lastestID, @Username, @password_binary, @Email, 1, @RoleID)
+
+		set @check = (select @@ROWCOUNT) 
+    END
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thêm tài khoản thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
+
+go
+
+create procedure sp_AddNewSinhVien
+@Name nvarchar(100)
+as
+BEGIN
+    DECLARE @lastestID INT
+    DECLARE @lastestAccountID INT
+
+    SET @lastestID = (SELECT MAX(MaSV) FROM SINHVIEN) + 1
+    SET @lastestAccountID = (SELECT MAX(AccountID) FROM TAIKHOAN)
+
+	INSERT INTO SINHVIEN(MaSV, AccountID, Name, Gender, DateCreated, IDCLASS)
+	VALUES (@lastestID, @lastestAccountID, @Name, N'Không', GETDATE(), 0)
+END
 
 
 

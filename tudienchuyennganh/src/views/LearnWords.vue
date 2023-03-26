@@ -302,12 +302,6 @@ export default {
 
 <style lang="scss" scoped>
 
-.container{
-  padding: 20px;
-  
-
-}
-
 .btnNext{
   color: red !important;
 }

@@ -24,10 +24,11 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  padding: 5% 0;
+  width: 100%;
 }
 
 .widget-laban{
+  padding: 20px;
   width: 100% !important;
   height: 1000px;
 }

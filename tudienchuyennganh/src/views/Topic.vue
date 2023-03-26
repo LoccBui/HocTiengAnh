@@ -117,7 +117,7 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-    padding: 5% 0; 
+    height: inherit;
     display: flex;
     justify-content: left;
     flex-wrap: wrap;
@@ -125,7 +125,6 @@ export default {
 
 
 .topic-cover{
-    
     flex-basis: 400px;
     max-height: 200px;
     margin: 20px;

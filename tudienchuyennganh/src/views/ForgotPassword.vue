@@ -214,7 +214,6 @@ export default {
 <style lang="scss" scoped>
 #container{
     width: 80%;
-    height: 100vh;
     margin: 0 auto;
     display: flex;
     align-items: center;

@@ -414,10 +414,6 @@ import * as XLSX from 'xlsx';
 
 
 <style lang="scss" scoped>
-.container{
-  padding: 5% 5%;
-
-}
 
 .el-dialog{
 

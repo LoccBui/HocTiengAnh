@@ -169,7 +169,7 @@ export default {
             console.log('idUser',idUser)
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
-                console.log(res.data[0].AccountID)
+                console.log(res.data)
 
                 let dataUser = {
                     accountID: '',
@@ -202,7 +202,6 @@ export default {
 #container{
     position: relative;
     width: 80%;
-    height: 100vh;
     margin: 0 auto;
     display: flex;
     align-items: center;

@@ -8,7 +8,7 @@
                 height="50px"
                 rounded
                 @click="backToHomePage"
-            >Quay về trang chủ
+                >Quay về trang chủ
             </v-btn>
         </div>
 
@@ -31,7 +31,7 @@ export default {
         },
 
         backToHomePage(){
-            this.$router.push('/topic')
+            this.$router.push('/login')
         }
         
     }
@@ -40,8 +40,7 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
     display: flex;
 }
 
@@ -73,4 +72,4 @@ export default {
         max-width: 80%;
     }
 }
-</style>>
+</style>
