@@ -167,11 +167,13 @@
     <Compile Include="Controllers\Login\GetDataUserByIDController.cs" />
     <Compile Include="Controllers\Login\LoginController.cs" />
     <Compile Include="Controllers\Manage Class\DeleteClassByIDController.cs" />
+    <Compile Include="Controllers\Manage Class\ManageClassController.cs" />
     <Compile Include="Controllers\Manage Class\SelectAllFacultyController.cs" />
     <Compile Include="Controllers\Manage Class\ShowAllClassController.cs" />
     <Compile Include="Controllers\Manage Class\ShowTeacherByFacultyController.cs" />
     <Compile Include="Controllers\Manage Users\ManageUsersController.cs" />
     <Compile Include="Controllers\ManageTopic\ManageTopicController.cs" />
+    <Compile Include="Controllers\NewUserForm\NewUserFormController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />
     <Compile Include="Controllers\Topic\SelectAllTopicController.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\ClassModel.cs" />
     <Compile Include="Models\SachModel.cs" />
+    <Compile Include="Models\StudentModel.cs" />
     <Compile Include="Models\TopicModel.cs" />
     <Compile Include="Models\UsersModel.cs" />
     <Compile Include="Models\WordModel.cs" />

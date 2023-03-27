@@ -366,7 +366,7 @@
 
           for (let i = 0; i < this.tableData.length; i++){
 
-            let convertTypeUser = this.typeUser == false ? 1 : 10
+            let convertTypeUser = this.typeUser == false ? 3 : 2
 
             try{
                 let result = await axiosInstance.post('/addNewUser',{
@@ -379,7 +379,7 @@
                 if(result.status == 200) {
                   this.addByExcel = false
                   this.optionsAdd = false 
-                  this.addTypeUser(result.data[0])
+                  this.getAllUsers()
                 }
 
               }
@@ -391,7 +391,6 @@
 
         addTypeUser(data){
             console.info("data", data)
-             this.getAllUsers()
 
         },
 

@@ -54,6 +54,8 @@
         <OptionLearning  v-if="showOption"
             @close-option = this.closeOptionBox()
         />
+
+        <NewSinhVienForm v-if="showSinhVienForm"/>
         
     </div>
 </template>
@@ -61,22 +63,26 @@
 <script>
 import OptionLearning from './OptionLearning.vue';
 import axiosInstance from '../axios'
+import NewSinhVienForm from '../components/NewSinhVienForm.vue';
 
 
 export default {
-    components: {OptionLearning},
+    components: {OptionLearning,NewSinhVienForm},
     data(){
         return{
             showOption: false,
             dataTopicsAPI: [],
             accountID: '',
+            showSinhVienForm: false,
 
         }
     },
 
     mounted(){
+        this.handleNewUser()
         this.changeTitle()
         this.getDataTopic()
+    
 
     },
 
@@ -84,9 +90,33 @@ export default {
         changeTitle(){
             document.title = "Học từ vựng"
         },
+
+        handleNewUser(){
+
+            let isNew = JSON.parse(localStorage.getItem('isNew'))
+            
+
+            console.log('isNew', isNew === true ? 1: 0)
+            
+            if(isNew == true){
+                 console.log('show form')
+                
+                this.showSinhVienForm = true
+            }
+            else if(isNew == false){
+                console.log(' ko show form')
+
+                this.showSinhVienForm = false
+            }
+            else{
+                window.location.href = '/login'
+            }
+
+        },
         
         //lấy data từ emitter
         handleDataUser(data){
+            console.log("trạng thái", data)
             this.accountID = data.accountID   
             this.getDataTopic(this.accountID)
         },

@@ -1,4 +1,6 @@
-﻿-- Login so sánh usesrname và pass
+﻿--drop database HocTiengAnh
+
+-- Login so sánh usesrname và pass
 create procedure sp_LoginAccount
 	@UserName varchar(50),
 	@UserPass varchar(50)
@@ -27,7 +29,7 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority 
+			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join LOP L on L.MaGV = GV.MaGV
@@ -35,9 +37,9 @@ BEGIN
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
-	else 
+	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority 
+			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active  
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
@@ -45,8 +47,13 @@ BEGIN
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where SV.AccountID = @AccountID
 		end
+	else
+		begin
+			select '1' as isNewUser,AccountID, RoleID, Active from TAIKHOAN
+			where AccountID =  @AccountID
+		end
 END
---exec sp_AuthUser 2
+exec sp_AuthUser 9
 
 
 go
@@ -514,7 +521,7 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM TAIKHOAN WHERE Username = @Username)
     BEGIN
         INSERT INTO TAIKHOAN (AccountID, Username, Password, Email, Active, RoleID)
-        VALUES (@lastestID, @Username, @password_binary, @Email, 1, @RoleID)
+        VALUES (@lastestID, @Username, @password_binary, @Email, 0, @RoleID)
 
 		set @check = (select @@ROWCOUNT) 
     END
@@ -529,21 +536,42 @@ BEGIN
 		end
 END
 
+--exec sp_AddNewUser
+--    @Username  = '12323',
+--    @Password = '12323',
+--    @Email = '12323@gmail.com',
+--    @RoleID = 1
 go
 
-create procedure sp_AddNewSinhVien
-@Name nvarchar(100)
+alter procedure sp_AddNewSinhVien
+@AccountID int,
+@Name nvarchar(100),
+@Gender nvarchar(10),
+@IDCLASS int
 as
 BEGIN
-    DECLARE @lastestID INT
-    DECLARE @lastestAccountID INT
+    DECLARE @lastestMaSV INT
 
-    SET @lastestID = (SELECT MAX(MaSV) FROM SINHVIEN) + 1
-    SET @lastestAccountID = (SELECT MAX(AccountID) FROM TAIKHOAN)
+    SET @lastestMaSV = (SELECT MAX(MaSV) FROM SINHVIEN) + 1
 
 	INSERT INTO SINHVIEN(MaSV, AccountID, Name, Gender, DateCreated, IDCLASS)
-	VALUES (@lastestID, @lastestAccountID, @Name, N'Không', GETDATE(), 0)
+	VALUES (@lastestMaSV, @AccountID, @Name, @Gender, GETDATE(), @IDCLASS)
 END
+
+
+go
+
+--Lọc lớp theo id khoa
+create procedure sp_FilterClassByFacultyID
+@IDFACULTY int
+as
+BEGIN
+	select IDCLASS, ClassName
+	from LOP 
+	where IDFACULTY = @IDFACULTY
+
+END
+
 
 
 
@@ -555,13 +583,13 @@ select * from TUVUNG
 
 
 
-
-
 select * from TAIKHOAN
-select * from KHOA
-select * from LOP
-select * from GIAOVIEN
 select * from SINHVIEN
+select * from LOP
+select * from KHOA
+select * from GIAOVIEN
+
+
 --- Setting Account
 select TK.Email,GV.Name, GV.Gender
 from TAIKHOAN TK

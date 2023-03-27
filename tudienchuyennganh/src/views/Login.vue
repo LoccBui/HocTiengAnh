@@ -88,8 +88,6 @@ import axiosInstance from '../axios'
 
 import { ElNotification } from 'element-plus'
 
-
-
 export default {
 
     name: "Login",
@@ -169,7 +167,7 @@ export default {
             console.log('idUser',idUser)
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
-                console.log(res.data)
+                console.log(res.data[0])
 
                 let dataUser = {
                     accountID: '',
@@ -177,19 +175,33 @@ export default {
                     name: '',
                     MaGV: '',
                     IDFACULTY: '', 
-                    Role: ''
+                    Role: '',
                 }
                 
-                dataUser.accountID = res.data[0].AccountID
-                dataUser.email = res.data[0].Email
-                dataUser.name = res.data[0].Name
-                dataUser.MaGV = res.data[0].MaGV || 0
-                dataUser.IDFACULTY = res.data[0].IDFACULTY
-                dataUser.Role = res.data[0].Priority
+                if(res.data[0].Active == 0){
+                    dataUser.accountID = res.data[0].AccountID
 
-                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                    localStorage.setItem('isNew', true)
 
-                window.location.href = '/topic'
+                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                     window.location.href = '/topic'
+
+                }
+                else {
+                    
+                    dataUser.accountID = res.data[0].AccountID
+                    dataUser.email = res.data[0].Email
+                    dataUser.name = res.data[0].Name
+                    dataUser.MaGV = res.data[0].MaGV || 0
+                    dataUser.IDFACULTY = res.data[0].IDFACULTY
+                    dataUser.Role = res.data[0].Priority
+
+                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                    localStorage.setItem('isNew', false)
+
+                    window.location.href = '/topic'
+                }
+               
 
 
             })
