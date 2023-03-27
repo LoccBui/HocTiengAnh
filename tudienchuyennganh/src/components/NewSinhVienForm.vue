@@ -1,22 +1,31 @@
 <template>
   <div class="container">
     <el-dialog
-    v-model="dialogVisible"
-    title="Học từ vựng xin chào ✨"
-    width="40%"
-    :show-close="false"
-    :close-on-press-escape="false"
-    :close-on-click-modal="false"
-  >
-    <span style="line-height: 20px;">
+        v-model="dialogVisible"
+        title="Học từ vựng xin chào ✨"
+        width="40%"
+        :show-close="false"
+        :close-on-press-escape="false"
+        :close-on-click-modal="false"
+    >
+
+    <span style="line-height: 30px; font-size: 20px;">
         Có vẻ như bạn là người mới ! Phiền bạn nhập vài thông tin để tụi mình xây dựng bài học cho bạn nhé 💖
     </span>
-    
-    <el-form :model="form" label-width="120px" :label-position="'left'">
+
+    <el-form  
+    ref="ruleFormRef"
+    :model="ruleForm"
+    :rules="rules"
+    status-icon
+    label-width="20%" :label-position="'left'" >
 
 
-    <el-form-item label="Họ và tên"> 
-        <el-input v-model="inputName" placeholder="Tên của bạn" clearable />    
+    <el-form-item label="Họ và tên" prop="name" > 
+        <el-input
+            v-model="ruleForm.name" 
+            clearable   
+        />  
     </el-form-item>
 
     <el-form-item label="Giới tính"> 
@@ -24,8 +33,9 @@
     </el-form-item>
 
 
-    <el-form-item label="Khoa">
-        <el-select v-model="selectFaculty"  @change="handleSelectFaculty" :key="refreshFaculty">
+    <el-form-item label="Khoa" prop="faculty">
+        <el-select v-model="ruleForm.faculty"  @change="handleSelectFaculty" :key="refreshFaculty" 
+        placeholder="Khoa">
             <el-option
                 v-for="item in facultyList"
                 :key="item.value"
@@ -35,10 +45,10 @@
         </el-select>
     </el-form-item>
     
-
-    
-    <el-form-item label="Lớp" v-if="showSelectClass">
-        <el-select  v-model="selectedClass" @change="handleSelectClass" :key="refreshClass">
+ 
+    <el-form-item label="Lớp" v-if="showSelectClass" prop="class">
+        <el-select  v-model="ruleForm.class" @change="handleSelectClass" :key="refreshClass" 
+        placeholder="Lớp">
             <el-option
                 v-for="item in classList"
                 :key="item"
@@ -48,8 +58,7 @@
          </el-select>
     </el-form-item>
 
-    </el-form>
-
+</el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="confirm()">
@@ -63,6 +72,7 @@
 
 <script>
 import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
 
 
 export default {
@@ -70,17 +80,29 @@ export default {
         return{
             dialogVisible: true,
             gender: 'false',
-            inputName: '',
 
             facultyList: [],            
-            selectedFaculty: '',
             
             classList: [],
-            selectedClass: '',
           
             showSelectClass: false,
             refreshFaculty: false,
-            refreshClass: false
+            refreshClass: false,
+
+            // form
+
+            ruleForm : {
+                inputName: '',
+                faculty: '',
+                class: ''
+            },
+
+            rules: {
+                name: [{ required: true, message: 'Bạn cần nhập họ tên', trigger: 'blur' }],
+                faculty: [{required: true, message: 'Bạn cần chọn khoa',trigger: 'change'}],
+                class: [{required: true, message: 'Bạn cần chọn lớp', trigger: 'change'}],
+            }       
+
         }
     },
 
@@ -89,6 +111,15 @@ export default {
     },
 
     methods: {
+
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },
+
         getFacultyForSelect(){
             axiosInstance.get('SelectAllFaculty')
             .then((res) => {
@@ -100,9 +131,9 @@ export default {
             })
         },
 
+
         handleSelectFaculty(IDFACULTY){
             this.refreshFaculty = !this.refreshFaculty
-            this.refreshClass = !this.refreshClass
 
 
             // refresh lại sau khi chọn lại khoa
@@ -117,9 +148,7 @@ export default {
             console.log(IDFACULTY)
             axiosInstance.get(`getClassByID/${IDFACULTY}`)
             .then((res) => {
-            
-                this.classList.length = 0
-                
+                this.classList.length = 0          
                 this.classList = res.data.map(item => ({ label: item.ClassName, value: item.IDCLASS }))
 
             })
@@ -127,42 +156,92 @@ export default {
 
         handleSelectClass(){
             console.log(this.selectedClass)
+            this.refreshClass = !this.refreshClass
+
         },
 
-        confirm(){
+        async confirm(){
 
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            await  this.$refs.ruleFormRef.validate((valid) => {
+                if (valid) {
+                    console.log('submit')
+                    console.log
+                    this.addToDatabase()
 
-            console.log(dataUser)
+                } else {
+                    console.log('chưa valid')
+                    this.$message.error('Dữ liệu còn thiếu.');
+                    return false;
+                }
+            });
 
-            console.log("AccountID" , dataUser.accountID)
-            console.log("Name" , this.inputName)
-            console.log("Gender" , this.gender == false ? 'Nữ': 'Nam')
-            console.log("IDCLASS" , this.selectedClass)
-
-            
-
-
-            //Thiếu : check điều kiện nhập
-            // đủ điền kiện mới ko disable nút xác nhận
-
-            // this.addToDatabase()
         },
 
         async addToDatabase(){
+
+            
+            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+
             try{
                 let result = axiosInstance.post('addInfoNewSinhVien', {
-                    "AccountID": '',
-                    "Name": '',
-                    "Gender": '',
-                    "IDCLASS": ''
+                    "AccountID": dataUser.accountID,
+                    "Name": `${this.ruleForm.name}`,
+                    "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
+                    "IDCLASS": this.ruleForm.class
                 })
+
+                if(result.status == 200){
+                    this.getDataUser(dataUser.accountID)
+                }
             }
             catch(error){
 
             }
             
-        }
+        },
+
+
+        getDataUser(idUser){
+            axiosInstance.get(`/user/id=${idUser}`)
+            .then((res) => {
+                console.log(res.data[0])
+
+                let dataUser = {
+                    accountID: '',
+                    email: '',
+                    name: '',
+                    MaGV: '',
+                    IDFACULTY: '', 
+                    Role: '',
+                }
+                
+                if(res.data[0].Active == 0){
+                    dataUser.accountID = res.data[0].AccountID
+
+                    localStorage.setItem('isNew', true)
+
+                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                }
+                else {
+                    
+                    dataUser.accountID = res.data[0].AccountID
+                    dataUser.email = res.data[0].Email
+                    dataUser.name = res.data[0].Name
+                    dataUser.MaGV = res.data[0].MaGV || 0
+                    dataUser.IDFACULTY = res.data[0].IDFACULTY
+                    dataUser.Role = res.data[0].Priority
+
+                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                    localStorage.setItem('isNew', false)
+                    
+                    this.showNotification('Thông báo', 'Cập nhật thông tin thành công', 'success')
+                    this.$emit('finish-update-information')
+                }
+               
+
+
+            })
+        },  
     }
 }
 </script>

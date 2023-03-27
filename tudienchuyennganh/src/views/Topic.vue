@@ -55,7 +55,9 @@
             @close-option = this.closeOptionBox()
         />
 
-        <NewSinhVienForm v-if="showSinhVienForm"/>
+        <NewSinhVienForm v-if="showSinhVienForm"
+        @finish-update-information = handleFinishForm
+        />
         
     </div>
 </template>
@@ -138,6 +140,11 @@ export default {
         closeOptionBox(){
             this.showOption = false
         },
+
+        handleFinishForm(){
+            this.showSinhVienForm = false
+            window.location.reload()
+        }
         
 
     }
