@@ -286,7 +286,7 @@ END
 go
 
 -- thêm tài khoản mới
-create PROCEDURE sp_InsertNewAccount
+alter PROCEDURE sp_InsertNewAccount
     @Username varchar(50),
 	@Password varchar(100),
 	@Email varchar(100),
@@ -294,26 +294,57 @@ create PROCEDURE sp_InsertNewAccount
 as
 BEGIN
     DECLARE @password_binary VARBINARY(100)
+	DECLARE @check int
 
     -- Chuyển đổi mật khẩu sang kiểu varbinary
     SET @password_binary = PWDENCRYPT(@Password)
 
-	INSERT INTO TAIKHOAN(Username, Password, Email, Active, RoleID)
-	VALUES(@Username, @password_binary, @Email, 1, @RoleID)
+    IF NOT EXISTS (SELECT * FROM TAIKHOAN WHERE Username = @Username)
+	BEGIN
+		INSERT INTO TAIKHOAN(Username, Password, Email, Active, RoleID)
+		VALUES(@Username, @password_binary, @Email, 1, @RoleID)
+		set @check = (select @@ROWCOUNT) 
+
+	END
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thêm tài khoản thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
 END
 
 go
 --- xóa Account theo id
-create procedure sp_DeleteUser
+alter procedure sp_DeleteUser
 @AccountID int
 as 
 BEGIN
+    DECLARE @check int
+
 	delete 
 	from TAIKHOAN
 	where AccountID = @AccountID
-	SELECT @@ROWCOUNT as RowDelete
+	set @check = (select @@ROWCOUNT) 
+
+	delete 
+	from SINHVIEN
+	where AccountID = @AccountID 
+
+	IF(@check > 0 )
+	begin 
+		 SELECT N'Xóa tài khoản thành công'
+	end
+	ELSE
+		begin
+			return null
+		end
+
 END
---exec sp_DeleteUser 35
+--exec sp_DeleteUser 6
 
 go
 
@@ -550,12 +581,28 @@ alter procedure sp_AddNewSinhVien
 @IDCLASS int
 as
 BEGIN
+	DECLARE @check int
     DECLARE @lastestMaSV INT
 
     SET @lastestMaSV = (SELECT MAX(MaSV) FROM SINHVIEN) + 1
 
+	UPDATE TAIKHOAN
+	SET Active = 1
+	where AccountID = @AccountID
+
+
 	INSERT INTO SINHVIEN(MaSV, AccountID, Name, Gender, DateCreated, IDCLASS)
 	VALUES (@lastestMaSV, @AccountID, @Name, @Gender, GETDATE(), @IDCLASS)
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thông tin tài khoản thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
 END
 
 
@@ -573,6 +620,32 @@ BEGIN
 END
 
 
+-- lấy username dựa vào email
+alter procedure sp_GetUsername
+@Email varchar(100)
+as
+BEGIN
+	DECLARE @check int
+	DECLARE @result varchar(100)
+
+	set @result = (select Username
+	from TAIKHOAN
+	where Email like @Email)
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			select @result as Username
+		end
+	else
+		begin
+			return null
+		end
+END
+
+exec sp_GetUsername 'buihauuloc2001@gmail.com'
+
+
 
 
 
@@ -586,8 +659,9 @@ select * from TUVUNG
 select * from TAIKHOAN
 select * from SINHVIEN
 select * from LOP
-select * from KHOA
 select * from GIAOVIEN
+select * from KHOA
+select * from NHOMTK
 
 
 --- Setting Account

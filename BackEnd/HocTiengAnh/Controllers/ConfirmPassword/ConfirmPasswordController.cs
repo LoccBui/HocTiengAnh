@@ -9,25 +9,22 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace HocTiengAnh.Controllers.NewUserForm
+namespace HocTiengAnh.Controllers.ConfirmPassword
 {
     [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
 
-
-    public class NewUserFormController : ApiController
+    public class ConfirmPasswordController : ApiController
     {
         [HttpPost]
-        [Route("addInfoNewSinhVien")]
-        public IHttpActionResult AddInfoNewUser(StudentModel student)
+        [Route("getUsername")]
+        public IHttpActionResult GetDataUserByID(AccountModel account)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@AccountID", student.AccountID),
-                    new SqlParameter("@Name", student.Name),
-                    new SqlParameter("@Gender", student.Gender),
-                    new SqlParameter("@IDCLASS", student.IDCLASS)
-            };
+                    new SqlParameter("@Email", account.Email)
+                };
+            var result = new DB().GetDataReader("sp_GetUsername", param);
 
-            var result = new DB().GetDataReader("sp_AddNewSinhVien", param);
+            return Json(result);
 
             if (result == null)
             {

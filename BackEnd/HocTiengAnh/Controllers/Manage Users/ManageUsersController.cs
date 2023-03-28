@@ -11,7 +11,8 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Manage_Users
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+
 
     public class ManageUsersController : ApiController
     {
@@ -51,6 +52,10 @@ namespace HocTiengAnh.Controllers.Manage_Users
 
             var result = new DB().GetDataReader("sp_DeleteUser", param);
 
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
             return Json(result);
         }
 

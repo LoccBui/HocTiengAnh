@@ -165,7 +165,6 @@ export default {
             await  this.$refs.ruleFormRef.validate((valid) => {
                 if (valid) {
                     console.log('submit')
-                    console.log
                     this.addToDatabase()
 
                 } else {
@@ -183,7 +182,7 @@ export default {
             let dataUser = JSON.parse(localStorage.getItem('userInfo'))
 
             try{
-                let result = axiosInstance.post('addInfoNewSinhVien', {
+                let result = await axiosInstance.post('addInfoNewSinhVien', {
                     "AccountID": dataUser.accountID,
                     "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
@@ -191,6 +190,7 @@ export default {
                 })
 
                 if(result.status == 200){
+                    console.log('finish add to database')
                     this.getDataUser(dataUser.accountID)
                 }
             }
@@ -215,30 +215,18 @@ export default {
                     Role: '',
                 }
                 
-                if(res.data[0].Active == 0){
-                    dataUser.accountID = res.data[0].AccountID
+                       
+                dataUser.accountID = res.data[0].AccountID
+                dataUser.email = res.data[0].Email
+                dataUser.name = res.data[0].Name
+                dataUser.MaGV = res.data[0].MaGV || 0
+                dataUser.IDFACULTY = res.data[0].IDFACULTY
+                dataUser.Role = res.data[0].Priority
 
-                    localStorage.setItem('isNew', true)
-
-                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                }
-                else {
+                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                localStorage.setItem('isNew', false)
                     
-                    dataUser.accountID = res.data[0].AccountID
-                    dataUser.email = res.data[0].Email
-                    dataUser.name = res.data[0].Name
-                    dataUser.MaGV = res.data[0].MaGV || 0
-                    dataUser.IDFACULTY = res.data[0].IDFACULTY
-                    dataUser.Role = res.data[0].Priority
-
-                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                    localStorage.setItem('isNew', false)
-                    
-                    this.showNotification('Thông báo', 'Cập nhật thông tin thành công', 'success')
-                    this.$emit('finish-update-information')
-                }
-               
-
+                this.$emit('finish-update-information')
 
             })
         },  

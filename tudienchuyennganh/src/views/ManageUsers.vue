@@ -10,23 +10,13 @@
       <el-table-column label="ID" prop="AccountID" width="150" sortable/>
       <el-table-column label="Tài khoản" prop="UserName" />
       <el-table-column label="Email" prop="Email" />
-      
-      <!-- <el-table-column label="Hoạt động" prop="Active" >
-        <template #default="scope">
-          <el-switch v-model="scope.row.active"
-            >Chi tiết
-          </el-switch>
-        </template> 
-      </el-table-column> -->
-
-
       <el-table-column 
         label="Vai trò" 
         prop="RoleID" 
         :filters="[
-            { text: 'Sinh viên', value: '1' },
+            { text: 'Sinh viên', value: '3' },
             { text: 'Giáo viên', value: '2' },
-            { text: 'Admin', value: '3' },
+            { text: 'Admin', value: '1' },
         ]"
         :filter-method="filterHandler"
         >
@@ -182,7 +172,9 @@
         @close="this.showAskBox = false"
     />
   
-
+    <ConfirmPassword v-if="showAuthenBox"
+        @authenticate="handleAuthenticate"
+    />
   
     </div>
   </template>
@@ -190,12 +182,14 @@
   <script>
   import { ElNotification } from 'element-plus'
 
+  import ConfirmPassword from '@/components/ConfirmPassword.vue';
+
   import axiosInstance from '../axios'
   import AskBox from '@/components/AskBox.vue'
   import * as XLSX from 'xlsx';
 
     export default {
-      components: {AskBox},
+      components: {AskBox, ConfirmPassword},
       data () {
         return {
           search: '',
@@ -230,6 +224,8 @@
           inputNewUsername: '',
 
           idNeedDelete: '',
+
+          showAuthenBox: false,
 
           optionsRole: [
             {
@@ -290,14 +286,27 @@
 
         handleTableNameRole(role){
             if(role == 1){
-                return 'Sinh Viên'
+                return 'Admin'
             }
             else if(role == 2){
                 return 'Giáo viên'
             }
             else{
-                return 'Admin'
+                return 'Sinh Viên'
             }
+        },
+
+        handleAuthenticate(statusAuthen){
+
+          if(statusAuthen == true){
+            this.showAuthenBox = false
+            this.showNotification('Thông báo', 'Xác thực thành công', 'success')
+            this.handleAddNewUser()
+          }else{
+            this.showAuthenBox = false
+            this.showNotification('Thông báo', 'Xác thực thất bại', 'error')
+            this.typeUser =false
+          }          
         },
 
         
@@ -312,6 +321,7 @@
         openWith(typeOpen){
             if(typeOpen == 'excel'){
               this.addByExcel = true
+              
             }
             else{
               this.addByDefault = true
@@ -330,14 +340,12 @@
 
         async deleteUser(){
           try{
-              axiosInstance.delete(`/DeleteUser/${this.idNeedDelete}`)
-              .then((res) => {
-                  if(res.status == 200) {
-                    this.showNotification('Thông báo', 'Xóa thành công', 'success')
-                    this.showAskBox = false
-                    this.getAllUsers()
-                  }       
-              })
+              let result = await axiosInstance.delete(`/DeleteUser/${this.idNeedDelete}`)
+              if(result.status == 200) {
+                this.showNotification('Thông báo', 'Xóa thành công', 'success')
+                this.showAskBox = false
+                this.getAllUsers()
+              }       
 
           }
           catch{
@@ -363,30 +371,51 @@
         },
 
         async addNewUserByExcel(){  
+          //1: ADMIN, 2: GIAO VIEN, 3: SINH VIEN
 
-          for (let i = 0; i < this.tableData.length; i++){
-
+          if(this.tableData.length > 0 ){
             let convertTypeUser = this.typeUser == false ? 3 : 2
 
-            try{
-                let result = await axiosInstance.post('/addNewUser',{
-                  "Username": `${this.tableData[i].Account}`,
-                  "Password": `${this.tableData[i].Password}`,
-                  "Email": `${this.tableData[i].Email}`,
-                  "RoleID": convertTypeUser
-                })
-
-                if(result.status == 200) {
-                  this.addByExcel = false
-                  this.optionsAdd = false 
-                  this.getAllUsers()
-                }
-
+            if(convertTypeUser == 2)
+              {
+                this.showAuthenBox = true
               }
-            catch(error){
-              this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+            else{
+              console.log('add sinh vien')
+                this.handleAddNewUser()
             }
-          }     
+          }
+          else{
+            this.$message.error('Dữ liệu excel chưa import.');
+          }
+           
+        },
+
+        async handleAddNewUser(){
+          for (let i = 0; i < this.tableData.length; i++){
+            let convertTypeUser = this.typeUser == false ? 3 : 2
+
+              try{
+                  let result = await axiosInstance.post('/addNewUser',{
+                    "Username": `${this.tableData[i].Account}`,
+                    "Password": `${this.tableData[i].Password}`,
+                    "Email": `${this.tableData[i].Email}`,
+                    "RoleID": convertTypeUser
+                  })
+
+                  if(result.status == 200) {
+                    this.addByExcel = false
+                    this.optionsAdd = false 
+                    this.getAllUsers()
+                    
+                    this.showNotification('Thông báo', 'Thêm thành công', 'success')
+                  }
+
+                }
+              catch(error){
+                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+              }
+            }    
         },
 
         addTypeUser(data){
