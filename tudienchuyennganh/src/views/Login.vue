@@ -115,7 +115,7 @@ export default {
     },
 
     mounted() {
-        this.changeTitle()
+        this.getFacultyForSelect()
     },
 
     methods:{
@@ -128,6 +128,17 @@ export default {
                 title: `${title}`,
                 message: `${message}`,
                 type: `${type}`,
+            })
+        },
+
+        getFacultyForSelect(){
+            axiosInstance.get('SelectAllFaculty')
+            .then((res) => {
+            
+                this.facultyList.length = 0
+                
+                this.facultyList = res.data.map(item => ({ label: item.FacultyName, value: item.IDFACULTY }))
+
             })
         },
 
@@ -180,6 +191,7 @@ export default {
                 
                 if(res.data[0].Active == 0){
                     dataUser.accountID = res.data[0].AccountID
+                    dataUser.Role = res.data[0].RoleID
 
                     localStorage.setItem('isNew', true)
 

@@ -13,7 +13,7 @@
     </template>
 
     <span style="line-height: 30px; font-size: 20px;">
-        Có vẻ như bạn là người mới ! Nhờ bạn nhập vài thông tin để tụi mình xây dựng bài học cho bạn nhé 💖
+       Có vẻ như bạn là người mới ! Nhờ bạn nhập vài thông tin để tụi mình xây dựng bài học cho bạn nhé 💖
     </span>
 
     <el-form  
@@ -23,54 +23,54 @@
     status-icon
     label-width="20%" :label-position="'left'" >
 
+        <el-form-item label="Họ và tên" prop="name" > 
+            <el-input
+                v-model="ruleForm.name" 
+                clearable   
+            />  
+        </el-form-item>
 
-    <el-form-item label="Họ và tên" prop="name" > 
-        <el-input
-            v-model="ruleForm.name" 
-            clearable   
-        />  
-    </el-form-item>
+        <el-form-item label="Giới tính"> 
+            <el-switch  v-model="gender" size="medium" active-text="Nam" inactive-text="Nữ">Giới tính</el-switch>
+        </el-form-item>
 
-    <el-form-item label="Giới tính"> 
-        <el-switch  v-model="gender" size="medium" active-text="Nam" inactive-text="Nữ">Giới tính</el-switch>
-    </el-form-item>
-
-
-    <el-form-item label="Khoa" prop="faculty">
-        <el-select v-model="ruleForm.faculty"  @change="handleSelectFaculty" :key="refreshFaculty" 
-        placeholder="Khoa">
-            <el-option
-                v-for="item in facultyList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-            />
-        </el-select>
-    </el-form-item>
+        <el-form-item label="Khoa" prop="faculty">
+        <el-select v-model="ruleForm.faculty"  @change="handleSelectFaculty"
+            placeholder="Khoa">
+                <el-option
+                    v-for="item in facultyList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+            </el-select>
+        </el-form-item>
+        
     
- 
-    <el-form-item label="Lớp" v-if="showSelectClass" prop="class">
-        <el-select  v-model="ruleForm.class" @change="handleSelectClass" :key="refreshClass" 
-        placeholder="Lớp">
-            <el-option
-                v-for="item in classList"
-                :key="item"
-                :label="item.label"
-                :value="item.value"
-            />
-         </el-select>
-    </el-form-item>
+        <el-form-item label="Lớp giảng dạy" v-if="showSelectClass" prop="class">
+            <el-select  v-model="ruleForm.class" @change="handleSelectClass" multiple
+            placeholder="Lớp chủ nhiệm">
+                <el-option
+                    v-for="item in classList"
+                    :key="item"
+                    :label="item.label"
+                    :value="item"
+                />
+            </el-select>
+        </el-form-item>
 
-</el-form>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button type="primary" @click="confirm()">
-          Xác nhận thông tin
-        </el-button>
-      </span>
-    </template>
-  </el-dialog>
-  </div>
+
+    </el-form>
+
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="confirm()">
+                Xác nhận thông tin
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
+ </div>
 </template>
 
 <script>
@@ -82,12 +82,10 @@ export default {
     data(){
         return{
             dialogVisible: true,
-            gender: 'false',
-
+            gender: 'false',         
             facultyList: [],            
             
             classList: [],
-          
             showSelectClass: false,
             refreshFaculty: false,
             refreshClass: false,
@@ -110,7 +108,8 @@ export default {
     },
 
     mounted(){
-      this.getFacultyForSelect()    
+        this.getFacultyForSelect()
+    
     },
 
     methods: {
@@ -134,7 +133,6 @@ export default {
             })
         },
 
-
         handleSelectFaculty(IDFACULTY){
             this.refreshFaculty = !this.refreshFaculty
 
@@ -147,6 +145,7 @@ export default {
             this.getClassForSelect(IDFACULTY);
         },
 
+
         getClassForSelect(IDFACULTY){
             console.log(IDFACULTY)
             axiosInstance.get(`getClassByID/${IDFACULTY}`)
@@ -157,18 +156,20 @@ export default {
             })
         },
 
-        handleSelectClass(){
-            console.log(this.selectedClass)
-            this.refreshClass = !this.refreshClass
-
-        },
 
         async confirm(){
-
+            // valid thành công
             await  this.$refs.ruleFormRef.validate((valid) => {
                 if (valid) {
-                    console.log('submit')
-                    this.addToDatabase()
+                    // this.addToDatabase()
+                    console.log("data lop chu nhiem",this.ruleForm.class)
+
+                    for (let i = 0; i < this.ruleForm.class.length; i++) {
+                        console.log(this.ruleForm.class[i].label)
+                        console.log(this.ruleForm.class[i].value)
+                    }
+
+
 
                 } else {
                     console.log('chưa valid')
@@ -180,21 +181,41 @@ export default {
         },
 
         async addToDatabase(){
-
-            
             let dataUser = JSON.parse(localStorage.getItem('userInfo'))
 
+            
+
             try{
-                let result = await axiosInstance.post('addInfoNewSinhVien', {
+
+
+                let addToGiaoVien = await axiosInstance.post('addInfoNewGiaoVien', {
                     "AccountID": dataUser.accountID,
                     "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
-                    "IDCLASS": this.ruleForm.class
                 })
 
-                if(result.status == 200){
-                    console.log('finish add to database')
-                    this.getDataUser(dataUser.accountID)
+                //1. add to giao vien -> lay dc maGV
+                //2. xu ly v-select ( for)
+                // 2.1 -> lay ID class từng cái 
+                // 2.2 -> lay Class từng cái 
+                //3. Test id khoa lấy đc ko
+
+
+                let addToClass =  await axiosInstance.post('addGiaoVienToClass', {
+                    "IDCLASS": 123,
+                    "ClassName":1231, 
+                    "MaGV": 123,
+                    "IDFACULTY":123 
+                })
+
+
+              
+                if(addToClass.status == 200 && addToGiaoVien.status == 200){
+                    //Xử lí chọn khoa
+                    //Xử lí chọn nhiều lớp
+                    //Xử lý thêm lớp
+                    
+                    // this.getDataUser(dataUser.accountID)
                 }
             }
             catch(error){
@@ -204,10 +225,10 @@ export default {
         },
 
 
-        getDataUser(idUser){
-            axiosInstance.get(`/user/id=${idUser}`)
-            .then((res) => {
-                console.log(res.data[0])
+        async getDataUser(idUser){
+            let result = await axiosInstance.get(`/user/id=${idUser}`)
+           
+            console.log(result)
 
                 let dataUser = {
                     accountID: '',
@@ -219,19 +240,19 @@ export default {
                 }
                 
                        
-                dataUser.accountID = res.data[0].AccountID
-                dataUser.email = res.data[0].Email
-                dataUser.name = res.data[0].Name
-                dataUser.MaGV = res.data[0].MaGV || 0
-                dataUser.IDFACULTY = res.data[0].IDFACULTY
-                dataUser.Role = res.data[0].Priority
+                // dataUser.accountID = res.data[0].AccountID
+                // dataUser.email = res.data[0].Email
+                // dataUser.name = res.data[0].Name
+                // dataUser.MaGV = res.data[0].MaGV || 0
+                // dataUser.IDFACULTY = res.data[0].IDFACULTY
+                // dataUser.Role = res.data[0].Priority
 
-                localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                localStorage.setItem('isNew', false)
+                // localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                // localStorage.setItem('isNew', false)
                     
-                this.$emit('finish-update-information')
+                // this.$emit('finish-update-information')
 
-            })
+            
         },  
     }
 }

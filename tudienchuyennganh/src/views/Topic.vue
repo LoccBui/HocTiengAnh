@@ -58,6 +58,10 @@
         <NewSinhVienForm v-if="showSinhVienForm"
         @finish-update-information = handleFinishForm
         />
+
+        <NewGiaoVienForm v-if="showGiaoVienForm"
+        @finish-update-information = handleFinishForm
+        />
         
     </div>
 </template>
@@ -66,16 +70,18 @@
 import OptionLearning from './OptionLearning.vue';
 import axiosInstance from '../axios'
 import NewSinhVienForm from '../components/NewSinhVienForm.vue';
+import NewGiaoVienForm from '@/components/NewGiaoVienForm.vue';
 
 
 export default {
-    components: {OptionLearning,NewSinhVienForm},
+    components: {OptionLearning,NewSinhVienForm, NewGiaoVienForm},
     data(){
         return{
             showOption: false,
             dataTopicsAPI: [],
             accountID: '',
             showSinhVienForm: false,
+            showGiaoVienForm: false,
 
         }
     },
@@ -96,14 +102,22 @@ export default {
         handleNewUser(){
 
             let isNew = JSON.parse(localStorage.getItem('isNew'))
+            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
             
 
             console.log('isNew', isNew === true ? 1: 0)
             
             if(isNew == true){
-                 console.log('show form')
-                
-                this.showSinhVienForm = true
+
+                // user mới là giáo viên
+                if(dataUser.Role== 2)
+                {
+                    this.showGiaoVienForm = true
+                }
+                // user mới là sinh viên
+                else{
+                    this.showSinhVienForm = true
+                }        
             }
             else if(isNew == false){
                 console.log(' ko show form')
@@ -143,6 +157,7 @@ export default {
 
         handleFinishForm(){
             this.showSinhVienForm = false
+            this.showGiaoVienForm = false
             window.location.reload()
         }
         

@@ -53,7 +53,8 @@ BEGIN
 			where AccountID =  @AccountID
 		end
 END
-exec sp_AuthUser 9
+exec sp_AuthUser 8
+
 
 
 go
@@ -574,6 +575,44 @@ END
 --    @RoleID = 1
 go
 
+alter PROCEDURE sp_AddNewGiaoVien
+    @Username VARCHAR(50),
+    @Password VARCHAR(100),
+    @Email VARCHAR(100),
+    @RoleID SMALLINT
+AS
+BEGIN 
+    DECLARE @lastestID INT
+	DECLARE @check int
+    DECLARE @password_binary VARBINARY(100)
+
+    SET @lastestID = (SELECT MAX(AccountID) FROM TAIKHOAN) + 1
+    SET @password_binary = PWDENCRYPT(@Password)-- Chuyển đổi mật khẩu sang kiểu varbinary
+
+	SET IDENTITY_INSERT TAIKHOAN ON 
+
+    IF NOT EXISTS (SELECT * FROM TAIKHOAN WHERE Username = @Username)
+    BEGIN
+        INSERT INTO TAIKHOAN (AccountID, Username, Password, Email, Active, RoleID)
+        VALUES (@lastestID, @Username, @password_binary, @Email, 0, @RoleID)
+
+		set @check = (select @@ROWCOUNT) 
+    END
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thêm tài khoản thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+
+go
+
 alter procedure sp_AddNewSinhVien
 @AccountID int,
 @Name nvarchar(100),
@@ -605,6 +644,37 @@ BEGIN
 		end
 END
 
+go
+--Cập nhật thông tin giáo viên
+create procedure sp_AddInfoGiaoVien
+@AccountID int,
+@Name nvarchar(100),
+@Gender nvarchar(10)
+as
+BEGIN
+	DECLARE @check int
+    DECLARE @lastestMaGV INT
+
+    SET @lastestMaGV = (SELECT MAX(MaGV) FROM GIAOVIEN) + 1
+
+	UPDATE TAIKHOAN
+	SET Active = 1
+	where AccountID = @AccountID
+
+
+	INSERT INTO GIAOVIEN(MaGV, AccountID, Name, Gender, DateCreated)
+	VALUES (@lastestMaGV, @AccountID, @Name, @Gender, GETDATE())
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thông tin giáo viên thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
 
 go
 
@@ -643,7 +713,6 @@ BEGIN
 		end
 END
 
-exec sp_GetUsername 'buihauuloc2001@gmail.com'
 
 
 
@@ -656,22 +725,13 @@ select * from TUVUNG
 
 
 
-select * from TAIKHOAN
-select * from SINHVIEN
 select * from LOP
 select * from GIAOVIEN
-select * from KHOA
+
 select * from NHOMTK
+select * from TAIKHOAN
+
+select * from SINHVIEN
+select * from KHOA
 
 
---- Setting Account
-select TK.Email,GV.Name, GV.Gender
-from TAIKHOAN TK
-inner join GIAOVIEN GV on TK.AccountID = GV.AccountID
-where MaGV = 3
-
-
-select TK.Email,SV.Name, SV.Gender
-from TAIKHOAN TK
-inner join SINHVIEN SV on TK.AccountID = SV.AccountID
-where MaSV = 2

@@ -174,6 +174,7 @@
     <Compile Include="Controllers\Manage Class\ShowTeacherByFacultyController.cs" />
     <Compile Include="Controllers\Manage Users\ManageUsersController.cs" />
     <Compile Include="Controllers\ManageTopic\ManageTopicController.cs" />
+    <Compile Include="Controllers\NewGiaoVienForm\NewGiaoVienFormController.cs" />
     <Compile Include="Controllers\NewUserForm\NewUserFormController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />
@@ -186,6 +187,7 @@
     </Compile>
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\ClassModel.cs" />
+    <Compile Include="Models\GiaoVienModel.cs" />
     <Compile Include="Models\SachModel.cs" />
     <Compile Include="Models\StudentModel.cs" />
     <Compile Include="Models\TopicModel.cs" />
