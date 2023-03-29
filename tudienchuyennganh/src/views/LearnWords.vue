@@ -78,6 +78,7 @@
             />
     
             <ListenAndChoose v-if="ListenAndChoose"
+            :listWord="dataAPI"
             @finish-learn="handleFinishLearn"
             />
     
@@ -169,8 +170,6 @@ export default {
     this.getVocabularyByTopicID(this.idTopic)
   },
 
-  beforeMount() {
-  },
 
   methods:{
     changeTitle(){
@@ -302,6 +301,11 @@ export default {
 
 <style lang="scss" scoped>
 
+.container{
+  width: 100%;
+  height: 100%;
+  padding: 2% 0;
+}
 .btnNext{
   color: red !important;
 }

@@ -165,6 +165,7 @@
     <Compile Include="Controllers\ForgotPassword\GenerateOTPForEmailController.cs" />
     <Compile Include="Controllers\ForgotPassword\ValidEmailController.cs" />
     <Compile Include="Controllers\ForgotPassword\VerifyOTPCodeController.cs" />
+    <Compile Include="Controllers\ListenAndChoose\ListenAndChooseController.cs" />
     <Compile Include="Controllers\Login\GetDataUserByIDController.cs" />
     <Compile Include="Controllers\Login\LoginController.cs" />
     <Compile Include="Controllers\Manage Class\DeleteClassByIDController.cs" />

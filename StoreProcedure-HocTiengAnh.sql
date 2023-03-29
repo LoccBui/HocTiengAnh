@@ -1,5 +1,4 @@
-﻿--drop database HocTiengAnh
-
+﻿
 -- Login so sánh usesrname và pass
 create procedure sp_LoginAccount
 	@UserName varchar(50),
@@ -23,7 +22,7 @@ go
 
 
 -- Phân loại user theo admin hoặc giáo viên hoặc sinh viên
-alter procedure sp_AuthUser
+create procedure sp_AuthUser
 @AccountID int
 as 
 BEGIN
@@ -53,7 +52,7 @@ BEGIN
 			where AccountID =  @AccountID
 		end
 END
-exec sp_AuthUser 8
+--exec sp_AuthUser 8
 
 
 
@@ -74,14 +73,15 @@ select * from TUVUNG
 go
 
 --Hiển thị từ vựng theo chủ đề
-create procedure sp_SelectTuVungByTopicID
+alter procedure sp_SelectTuVungByTopicID
 @TopicID int
 as
-select * 
+select TOP 5 *
 from TUVUNG
-where TopicID = @TopicID
+where TopicID = @TopicID and Learned = 0
 
---exec sp_SelectTuVungByTopicID 3
+--exec sp_SelectTuVungByTopicID 4
+
 
 go
 
@@ -712,6 +712,25 @@ BEGIN
 			return null
 		end
 END
+
+go
+--Logic Học từ
+
+alter procedure sp_GetDataListenAndChoose
+@Word varchar(50)
+as
+BEGIN
+	DECLARE @firstCharacter varchar(1)
+
+	SET @firstCharacter = (LEFT(@Word,1))
+
+	select distinct Word
+	from TUVUNG
+    WHERE Word LIKE '%' + @firstCharacter + '%' and Word not like @Word
+END
+
+exec sp_GetDataListenAndChoose 
+@Word = 'include'
 
 
 
