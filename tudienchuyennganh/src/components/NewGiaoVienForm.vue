@@ -47,8 +47,8 @@
         </el-form-item>
         
     
-        <el-form-item label="Lớp giảng dạy" v-if="showSelectClass" prop="class">
-            <el-select  v-model="ruleForm.class" @change="handleSelectClass" multiple
+        <el-form-item label="Lớp chủ nhiệm" v-if="showSelectClass" prop="class">
+            <el-select  v-model="ruleForm.class" @change="handleSelectClass" 
             placeholder="Lớp chủ nhiệm">
                 <el-option
                     v-for="item in classList"
@@ -161,16 +161,7 @@ export default {
             // valid thành công
             await  this.$refs.ruleFormRef.validate((valid) => {
                 if (valid) {
-                    // this.addToDatabase()
-                    console.log("data lop chu nhiem",this.ruleForm.class)
-
-                    for (let i = 0; i < this.ruleForm.class.length; i++) {
-                        console.log(this.ruleForm.class[i].label)
-                        console.log(this.ruleForm.class[i].value)
-                    }
-
-
-
+                     this.addToDatabase()             
                 } else {
                     console.log('chưa valid')
                     this.$message.error('Dữ liệu còn thiếu.');
@@ -194,31 +185,24 @@ export default {
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
                 })
 
-                //1. add to giao vien -> lay dc maGV
-                //2. xu ly v-select ( for)
-                // 2.1 -> lay ID class từng cái 
-                // 2.2 -> lay Class từng cái 
-                //3. Test id khoa lấy đc ko
+                let MaGV = addToGiaoVien.data[0].MaGV
 
 
                 let addToClass =  await axiosInstance.post('addGiaoVienToClass', {
-                    "IDCLASS": 123,
-                    "ClassName":1231, 
-                    "MaGV": 123,
-                    "IDFACULTY":123 
+                    "ClassName": `${this.ruleForm.class.label}`, 
+                    "MaGV": MaGV,
+                    "IDFACULTY":this.ruleForm.faculty 
                 })
 
 
               
                 if(addToClass.status == 200 && addToGiaoVien.status == 200){
-                    //Xử lí chọn khoa
-                    //Xử lí chọn nhiều lớp
-                    //Xử lý thêm lớp
-                    
-                    // this.getDataUser(dataUser.accountID)
+
+                     this.getDataUser(dataUser.accountID)
                 }
             }
             catch(error){
+                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
 
             }
             
@@ -226,9 +210,8 @@ export default {
 
 
         async getDataUser(idUser){
-            let result = await axiosInstance.get(`/user/id=${idUser}`)
+            let res = await axiosInstance.get(`/user/id=${idUser}`)
            
-            console.log(result)
 
                 let dataUser = {
                     accountID: '',
@@ -240,17 +223,17 @@ export default {
                 }
                 
                        
-                // dataUser.accountID = res.data[0].AccountID
-                // dataUser.email = res.data[0].Email
-                // dataUser.name = res.data[0].Name
-                // dataUser.MaGV = res.data[0].MaGV || 0
-                // dataUser.IDFACULTY = res.data[0].IDFACULTY
-                // dataUser.Role = res.data[0].Priority
+                dataUser.accountID = res.data[0].AccountID
+                dataUser.email = res.data[0].Email
+                dataUser.name = res.data[0].Name
+                dataUser.MaGV = res.data[0].MaGV || 0
+                dataUser.IDFACULTY = res.data[0].IDFACULTY
+                dataUser.Role = res.data[0].Priority
 
-                // localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                // localStorage.setItem('isNew', false)
+                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                localStorage.setItem('isNew', false)
                     
-                // this.$emit('finish-update-information')
+                this.$emit('finish-update-information')
 
             
         },  

@@ -168,6 +168,7 @@ export default {
     this.changeTitle()
     this.speak()
     this.getVocabularyByTopicID(this.idTopic)
+    alert('mouas')
   },
 
 

@@ -116,7 +116,7 @@ export default {
 
         }
         catch(error){
-            this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'success')
+            this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
             this.$router.push('/topic')
 
         }

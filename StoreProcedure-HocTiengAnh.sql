@@ -52,8 +52,7 @@ BEGIN
 			where AccountID =  @AccountID
 		end
 END
---exec sp_AuthUser 8
-
+--exec sp_AuthUser 4
 
 
 go
@@ -646,7 +645,7 @@ END
 
 go
 --Cập nhật thông tin giáo viên
-create procedure sp_AddInfoGiaoVien
+alter procedure sp_AddInfoGiaoVien
 @AccountID int,
 @Name nvarchar(100),
 @Gender nvarchar(10)
@@ -661,14 +660,44 @@ BEGIN
 	SET Active = 1
 	where AccountID = @AccountID
 
-
-	INSERT INTO GIAOVIEN(MaGV, AccountID, Name, Gender, DateCreated)
-	VALUES (@lastestMaGV, @AccountID, @Name, @Gender, GETDATE())
-	set @check = (select @@ROWCOUNT) 
+	if not EXISTS (select * from GIAOVIEN where AccountID = @AccountID)
+	BEGIN
+		INSERT INTO GIAOVIEN(MaGV, AccountID, Name, Gender, DateCreated)
+		VALUES (@lastestMaGV, @AccountID, @Name, @Gender, GETDATE())
+		set @check = (select @@ROWCOUNT) 
+	END
 
 	if(@check > 0 )
 		begin 
-			SELECT N'Cập nhật thông tin giáo viên thành công' as Status
+			SELECT MaGV from GIAOVIEN where AccountID = @AccountID
+		end
+	else
+		begin
+			return null
+		end
+END
+go
+
+alter procedure sp_AddGiaoVienToClass
+@ClassName varchar(50),
+@MaGV int, 
+@IDFACULTY int
+as
+BEGIN 
+	DECLARE @check int
+    DECLARE @lastestIDCLASS INT
+
+    SET @lastestIDCLASS = (SELECT MAX(IDCLASS) FROM LOP) + 1
+	SET IDENTITY_INSERT LOP ON 
+
+
+	INSERT INTO LOP(IDCLASS, ClassName, MaGV, IDFACULTY)
+	VALUES(@lastestIDCLASS, @ClassName, @MaGV, @IDFACULTY )
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+	begin 
+			SELECT N'Thêm giáo viên vào lớp thành công'
 		end
 	else
 		begin
@@ -676,7 +705,7 @@ BEGIN
 		end
 END
 
-go
+
 
 --Lọc lớp theo id khoa
 create procedure sp_FilterClassByFacultyID

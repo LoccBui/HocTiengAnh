@@ -33,6 +33,24 @@ namespace HocTiengAnh.Controllers.NewGiaoVienForm
             }
             return Json(result);
         }
-        
+
+        [HttpPost]
+        [Route("addGiaoVienToClass")]
+        public IHttpActionResult AddGiaoVienToClass(ClassModel cls)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@ClassName", cls.ClassName),
+                    new SqlParameter("@MaGV", cls.MaGV),
+                    new SqlParameter("@IDFACULTY", cls.IDFACULTY)
+            };
+
+            var result = new DB().GetDataReader("sp_AddGiaoVienToClass", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
     }
 }
