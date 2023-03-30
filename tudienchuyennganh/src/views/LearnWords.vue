@@ -168,7 +168,6 @@ export default {
     this.changeTitle()
     this.speak()
     this.getVocabularyByTopicID(this.idTopic)
-    alert('mouas')
   },
 
 
@@ -176,7 +175,7 @@ export default {
     changeTitle(){
         document.title = "Học từ"
     },
-    
+
     speak() {
         //set biến đếm để nói 1 lần        
         const listenBtn = document.getElementById('myvoice');

@@ -52,7 +52,7 @@ BEGIN
 			where AccountID =  @AccountID
 		end
 END
---exec sp_AuthUser 4
+--exec sp_AuthUser 6
 
 
 go
@@ -708,15 +708,22 @@ END
 
 
 --Lọc lớp theo id khoa
-create procedure sp_FilterClassByFacultyID
+alter procedure sp_FilterClassByFacultyID
 @IDFACULTY int
 as
 BEGIN
-	select IDCLASS, ClassName
+	select DISTINCT ClassName, IDCLASS
 	from LOP 
 	where IDFACULTY = @IDFACULTY
 
 END
+
+exec sp_FilterClassByFacultyID 
+@IDFACULTY = 3
+
+select DISTINCT IDCLASS, ClassName
+	from LOP 
+	where IDFACULTY = 3
 
 
 -- lấy username dựa vào email

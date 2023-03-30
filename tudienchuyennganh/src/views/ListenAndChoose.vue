@@ -4,9 +4,14 @@
     <div class="header"> 
       <h1 class="w80">Nghe và chọn kết quả</h1>
       <div class="w20">
-        <el-button color="#0038FF"  @click="this.finishLearn()"> 
+        <el-button color="#0038FF"  @click="this.finishLearn()" > 
           <v-icon>mdi-arrow-right-thick</v-icon>
           Tiếp theo 
+        </el-button>
+
+        <el-button color="green"  @click="this.selectAnswer()"> 
+          <v-icon>mdi-check</v-icon>
+          Chọn
         </el-button>
       </div>
     </div>
@@ -22,12 +27,17 @@
     <div class="learning-wrapper">
 
       <div class="left-side-learning">
+
+        <h3>{{ this.dataGetFromAPI }}</h3>
+        <h1>----------------</h1>
         
         <h5>{{ randomHasAppear }}</h5>
           <div class="options">
 
-            <el-button color="var(--main-color)" 
-            v-for="word in randomHasAppear" :key="word" @click="handleChoose(word)">
+            <el-button color="var(--main-color)"
+            v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
+            :class="{ 'success-button': isCorrect === true && selectedIndex === index, 'error-button': isCorrect === false && selectedIndex === index }"
+            >
               <v-icon> mdi-volume-high </v-icon>
               {{ Word }}
             </el-button>
@@ -53,19 +63,45 @@ export default {
 
   data(){
     return{
+      idTopic: this.$route.params.id,
+
+      arrWords: '',
+
       titleQuestion: '',
       VN_Meaning:'',
       dataGetFromAPI: [],
       randomHasAppear: [],
-      arrayQuestion: []
+      arrayQuestion: [],
+      isCorrect: false,
+      selectedIndex: -1,
+      selectedWord: ''
     }
   },
 
   mounted(){
-    this.handleData()
+    this.getVocabularyByTopicID(this.idTopic)
+
+    console.warn('---listen and choose')
+    // this.handleData()
+
   },
 
   methods:{
+
+    async getVocabularyByTopicID(topicID){
+      let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
+
+      if(result.status == 200){
+        this.arrWords = (result.data)
+
+        console.log('data đã get', this.arrWords)
+        this.handleData()
+      }
+
+      
+            
+    },
+
 
     showNotification(title ,message, type){
         ElNotification({
@@ -75,31 +111,73 @@ export default {
         })
     },
 
-    handleChoose(word){
-      if(word == this.titleQuestion){
-        console.log('correct')
-      }
-      else{
-        console.log('false')
+    handleChoose(word, index){
+      this.selectedWord = word
+      this.selectedIndex = index;
+      console.log(this.selectedWord)
+
+      this.speak(word)
+      
+    },
+
+    selectAnswer(){
+
+      const correct = new Audio('../../assets/audio/correct.mp3');
+      const wrong = new Audio('../../assets/audio/wrong.mp3');
+
+
+      if(this.selectedWord == this.titleQuestion){
+        this.isCorrect = true;
+
+        correct.play();
+
+        setTimeout(() => {
+          this.finishLearn();
+        }, 2000);
 
       }
+      else{
+        wrong.play()  
+        this.isCorrect = false;
+      }
     },
+
+    speak(word) {
+        //set biến đếm để nói 1 lần        
+        const listenBtn = document.getElementById('myvoice');
+        let numTimesSpoken = 0;
+
+          if (numTimesSpoken < 1) {
+            const msg = new SpeechSynthesisUtterance(`${word}`);
+            
+            window.speechSynthesis.speak(msg);
+
+            numTimesSpoken++;
+          }
+
+     },
   
 
     handleData(){
-      const random = Math.floor(Math.random() * this.listWord.length);
-      this.titleQuestion = this.listWord[random].Word 
+      console.info('--> xử lí handle data')
+      console.log(this.arrWords[0])
 
-      this.VN_Meaning = this.listWord[random].Vietnamese 
+      const random = Math.floor(Math.random() * this.arrWords.length);
+
+      this.titleQuestion = this.arrWords[random].Word 
+
+      this.VN_Meaning = this.arrWords[random].Vietnamese 
 
 
-      this.getDataListenAndChoose(this.titleQuestion)
-      this.randomHasAppear.push(this.titleQuestion)
+       this.getDataListenAndChoose(this.titleQuestion)
+      // this.randomHasAppear.push(this.titleQuestion)
 
 
     },
 
     async getDataListenAndChoose(Word){
+        console.log(Word)
+      
         try{
           let result = await axiosInstance.post('getDataListenAndChoose',{
             "Word": `${Word}`
@@ -107,17 +185,15 @@ export default {
 
           if(result.status == 200){
             console.log('lấy data thành công')
-            console.log(result.data)
-
+            this.dataGetFromAPI.length = 0
             this.dataGetFromAPI.push(...result.data)
-            console.log(this.dataGetFromAPI)
             this.handleRandom()     
           }
 
         }
         catch(error){
             this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
-            this.$router.push('/topic')
+            // this.$router.push('/topic')
 
         }
     },
@@ -126,39 +202,22 @@ export default {
         console.log('----------------------------------')
 
         console.log('bắt đầu random')
-        console.log('data từ API', this.dataGetFromAPI.length)
+        console.log('từ đã có: ', this.dataGetFromAPI)
+        console.log('độ dài list từ API', this.dataGetFromAPI.length)
+
+        this.randomHasAppear.push(this.titleQuestion)
               
         let valueRandom;
-        const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
-        valueRandom = this.dataGetFromAPI[random].Word
+        
 
-        console.log("id random: ",  random)
-
-        console.log('từ đã random: ' + valueRandom)
-        console.log('từ trong mảng đã có: ' + this.randomHasAppear)
-        console.log('độ dài trong mảng đã có: ' + this.randomHasAppear.length)
-
-        if(this.randomHasAppear.length <= 5){
-          if(!this.randomHasAppear.includes(valueRandom)){
-            console.log('không trùng nên thêm')
-            this.randomHasAppear.push(valueRandom)
-            console.log("mảng sau thêm", this.randomHasAppear)
-
-            console.log("độ dài sau thêm", this.randomHasAppear.length)
-            console.log('thêm xong -> lặp lại')
-            this.handleRandom()
-         }
-         else{
-            console.log('bị trùng')
-            this.handleRandom()
-         }
+        while(this.randomHasAppear.length < 6){
+          const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
+          valueRandom = this.dataGetFromAPI[random].Word;
+          this.randomHasAppear.push(valueRandom);
         }
-        else{
-          console.log('mảng đã đầy')
-          console.log('độ dài trong mảng sau xong: ' + this.randomHasAppear.length)
-          this.handleQuestion()
 
-        }
+        console.log('--> xong ', this.randomHasAppear)
+        this.handleQuestion()
 
     },
 
@@ -236,5 +295,13 @@ export default {
   }
 }
 
+
+.success-button {
+  background-color: green;
+}
+
+.error-button {
+  background-color: red;
+}
 
 </style>
