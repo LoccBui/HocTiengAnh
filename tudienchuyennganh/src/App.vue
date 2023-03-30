@@ -36,8 +36,7 @@
   padding: 0;
   border: 0;
   font-size: 100%;
-  font-family: 'Noto Sans JP',Roboto, Arial, sans-serif;
-
+  font-family: 'Noto Sans JP', 'Nunito Sans', Roboto, Arial, sans-serif;    
  }
 
 a{

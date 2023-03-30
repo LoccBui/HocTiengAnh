@@ -69,15 +69,6 @@
                 </div>
             </div>
         </div>
-
-
-
-        <!-- Dialog Confirm -->
-        <!-- <DialogBox
-            :title="'Trời pơ tin dc j=gna'"
-            :type="'success'"
-        /> -->
-
     </v-app>
 
 </template>
@@ -225,7 +216,7 @@ export default {
 <style lang="scss" scoped>
 #container{
     position: relative;
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     display: flex;
     align-items: center;
