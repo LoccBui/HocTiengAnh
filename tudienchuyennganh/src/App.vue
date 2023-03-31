@@ -90,6 +90,8 @@ a:visited {
   cursor: default;
 }
 
+
+
 /* size */
 
 .txt-20{
@@ -103,6 +105,18 @@ a:visited {
 
 .size-icon-48px{
   width: 48px;
+}
+
+.w80{
+  width: 80%;
+}
+
+.w20{
+  width: 20%;
+}
+
+.flex1{
+  flex: 1;
 }
 
 // Elemnt ÚI

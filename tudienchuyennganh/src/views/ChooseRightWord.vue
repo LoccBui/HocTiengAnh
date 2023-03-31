@@ -2,7 +2,17 @@
     <div class="container"> 
   
       <div class="header"> 
-        <h1 class="w80 normal-text">Chọn đúng từ</h1>
+
+        <h1 class="left-side w80 normal-text">
+          Chọn đúng từ
+
+          <div class="timer">
+            <h1>{{ countDownTimes }}</h1>
+          </div>
+        </h1>
+
+        
+
         <div class="w20">
           <el-button color="#0038FF"  @click="this.selectAnswer()"> 
             <v-icon>mdi-check</v-icon>
@@ -36,7 +46,7 @@
   
         <div class="right-side-learning">
           <div class="level-word">
-           <img :src="`../../assets/img/learning-level/level${this.levelWord}.png`" alt="Level Word">
+           <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
           </div>
         </div>
   
@@ -67,15 +77,28 @@
         isCorrect: false,
         isFalse: false,
         selectedIndex: -1,
-        selectedWord: ''
+        selectedWord: '',
+        countDownTimes: 30,
       }
     },
   
     mounted(){
       this.getVocabularyByTopicID(this.idTopic)
+      
+      this.countDown()
     },
   
     methods:{
+      countDown(){
+        let countDown = setInterval(()=>{
+          this.countDownTimes -= 1
+          if(this.countDownTimes === 0){
+            clearInterval(countDown)
+            this.selectAnswer()
+          }
+        },1000)
+      },
+
       async getVocabularyByTopicID(topicID){
         let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
   
@@ -123,6 +146,8 @@
         else{
           this.isFalse = true
           wrong.play()  
+          this.finishLearn();
+
         }
       },
   
@@ -222,11 +247,31 @@
   .header{
     display: flex;
     height: 120px;
+
   
     .el-button{
       font-size: 20px;
       width: 100%;
       height: 100%;
+    }
+
+    .left-side {
+      display: flex;
+      align-items: center; 
+      justify-content: space-between;
+      padding-right: 5%;
+    }
+
+    .timer{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 40px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #0038FF;
     }
   }
   
@@ -267,13 +312,13 @@
       align-items: center;
   
       .level-word{
-        background-color: var(--main-color);
         width: 200px;
         height: 200px;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,#0038FF 0px 2px 16px 0px;
       }
     }
   }

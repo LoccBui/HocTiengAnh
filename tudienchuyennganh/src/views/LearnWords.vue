@@ -22,9 +22,10 @@
     </div>
 
 
-    <div class="progress-learning">
+    <div class="progress-learning"> 
       <router-view></router-view>
     </div>
+
 
 
     
@@ -53,12 +54,15 @@
    <div v-else>
 
     <div class="header">
-      <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
 
-        <div class="temporary"></div>
-
-        <div class="score-cover">
+        <div class="w80">
+          <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
+        </div>
+      
+        <div class="flex1 score-cover">
+            <span class="score-number">
               {{ totalScore }}
+            </span> 
         </div>
 
     </div>
@@ -134,7 +138,9 @@ export default {
       CorrectListening: false,
 
       randomTimes:0,
-        
+      totalScore: 0,
+
+      progressPercent: 20,
 
       learningSteps: [
         {
@@ -343,6 +349,33 @@ export default {
   padding: 5px;
 }
 
+
+.header{
+  display: flex;
+  align-items: center;
+  .el-progress{
+    width: 100%;
+  }
+
+  .score-cover{          
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .score-number{
+    border-radius: 20px;
+    padding: 10px 0px;
+    text-align: center;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  }
+
+
+}
 
 
 // Mobile devices

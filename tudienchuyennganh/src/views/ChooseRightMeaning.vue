@@ -36,7 +36,7 @@
 
       <div class="right-side-learning">
         <div class="level-word">
-         <img :src="`../../assets/img/learning-level/level${this.levelWord}.png`" alt="Level Word">
+         <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
         </div>
       </div>
 
@@ -274,13 +274,13 @@ export default {
     align-items: center;
 
     .level-word{
-      background-color: var(--main-color);
       width: 200px;
       height: 200px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,#0038FF 0px 2px 16px 0px;
     }
   }
 }

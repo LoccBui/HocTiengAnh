@@ -4,13 +4,6 @@ module.exports = defineConfig({
     publicPath: '/hoctienganh/',
     devServer: {
       proxy: {
-        // '/api': {
-        //   target: 'http://localhost:8000',
-        //   changeOrigin: true,
-        //   pathRewrite: {
-        //     '^/api': ''
-        //   }
-        // }
 
         "/api": {
             ws: true,
@@ -18,6 +11,7 @@ module.exports = defineConfig({
             target: "http://localhost:8000"
         }
      }
-    }
+    },
+
     
 })
