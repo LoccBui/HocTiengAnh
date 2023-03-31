@@ -54,8 +54,11 @@
         <el-button 
           style="width: 100%;"
           type="danger"
-          round>
+          round
+          @click="logOut()"
+          >
           <v-icon>mdi-logout</v-icon>
+          
        </el-button>
       </div>
       </v-navigation-drawer>  

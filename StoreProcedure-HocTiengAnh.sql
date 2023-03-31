@@ -768,7 +768,22 @@ END
 exec sp_GetDataListenAndChoose 
 @Word = 'include'
 
+go
 
+--Choose right meaning -> Chọn đúng nghĩa của từ
+alter procedure sp_GetVietNameseRightMeaning
+@Word varchar(50),
+@Vietnamese nvarchar(200)
+as
+BEGIN
+	DECLARE @firstCharacter varchar(1)
+
+	SET @firstCharacter = (LEFT(@Vietnamese,1))
+
+	select TOP 20 Word, Vietnamese
+	from TUVUNG
+	where  Vietnamese like '%' + @firstCharacter + '%'
+END
 
 
 
@@ -776,7 +791,9 @@ exec sp_GetDataListenAndChoose
 
 ----------------- TESTING AREA
 select* from CHUDE
-select * from TUVUNG
+select Example from TUVUNG
+where 
+
 
 
 
