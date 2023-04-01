@@ -184,7 +184,6 @@
             
         </div>
 
-
         <div class="confirm-btn">
             <el-button 
             type="primary"
@@ -252,8 +251,8 @@ export default {
 
 <style lang="scss" >
 .setting-account-container{ 
-    padding-bottom: 200px;
-    background-color: aqua;
+    position: relative;
+    height: 100%;
 
     .el-dialog__title{
         font-weight: 600;

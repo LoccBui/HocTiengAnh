@@ -39,7 +39,6 @@
       </button> 
     </div>
 
-    <el-button @click="randomLearningType()">random</el-button>
     <h1 v-if="ChooseRightMeaning">step1</h1>
     <h1 v-if="FillInABlank">step2</h1>
     <h1 v-if="ListenAndChoose">step3</h1>
@@ -68,31 +67,34 @@
     </div>
 
 
-            <LearnByMeaningVue v-if="learnByMeaning"
-            :listWord="dataAPI"
-            />
-    
-            <ChooseRightMeaning v-if="ChooseRightMeaning" 
-              :listWord="dataAPI"
-              @finish-learn="handleFinishLearn"
-            />
-    
-            <FillInABlank v-if="FillInABlank"
-              @finish-learn="handleFinishLearn"
-            />
-    
-            <ListenAndChoose v-if="ListenAndChoose"
-            :listWord="dataAPI"
-            @finish-learn="handleFinishLearn"
-            />
-    
-            <ChooseRightWord v-if="ChooseRightWord"
-            @finish-learn="handleFinishLearn"
-            />
-          
-            <CorrectListening v-if="CorrectListening"
-            @finish-learn="handleFinishLearn"
-            />  
+    <LearnByMeaningVue v-if="learnByMeaning"
+    :listWord="dataAPI"
+    />
+
+    <ChooseRightMeaning v-if="ChooseRightMeaning" 
+      :listWord="dataAPI"
+      @finish-learn="handleFinishLearn"
+      @step-Status="handleProgress"
+
+    />
+
+    <FillInABlank v-if="FillInABlank"
+      @finish-learn="handleFinishLearn"
+    />
+
+    <ListenAndChoose v-if="ListenAndChoose"
+    :listWord="dataAPI"
+    @finish-learn="handleFinishLearn"
+    />
+
+    <ChooseRightWord v-if="ChooseRightWord"
+    @finish-learn="handleFinishLearn"
+    @step-Status="handleProgress"
+    />
+  
+    <CorrectListening v-if="CorrectListening"
+    @finish-learn="handleFinishLearn"
+    />  
         
 
    </div>
@@ -140,7 +142,8 @@ export default {
       randomTimes:0,
       totalScore: 0,
 
-      progressPercent: 20,
+      progressPercent: '',
+      progressLength: '',
 
       learningSteps: [
         {
@@ -203,11 +206,39 @@ export default {
 
     getVocabularyByTopicID(topicID){
       axiosInstance.get(`/learning/topicid=${topicID}`)
-            .then(res => this.handleData(res.data))
-            
+            .then(res => this.handleData(res.data))      
+    },
+
+    handleProgress(status){
+
+      console.log(status)
+      
+      //correct answer
+      if(status == "correct"){
+        this.totalScore += 100
+        this.progressPercent += 10
+      }
+      //wrong answer
+      else if(status == "wrong"){
+        this.totalScore += 0
+        this.progressPercent += ( 100 / this.progressLength ) 
+      }
+      // bypass question
+      else if(status == "mention"){
+        this.totalScore += 50
+        this.progressPercent += ( 100 / this.progressLength ) 
+      }
+      // overtime
+      else{
+        this.totalScore += 0
+        this.progressPercent += ( 100 / this.progressLength ) 
+      }
+
+
     },
 
     handleData(dataAPI){
+
         this.dataAPI = dataAPI
 
         this.vocabLength = dataAPI.length

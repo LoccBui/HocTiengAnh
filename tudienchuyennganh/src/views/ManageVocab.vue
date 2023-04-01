@@ -415,6 +415,11 @@ import * as XLSX from 'xlsx';
 
 <style lang="scss" scoped>
 
+.container{
+  height: 100vh;
+
+}
+
 .el-dialog{
 
   .el-input + .el-input{

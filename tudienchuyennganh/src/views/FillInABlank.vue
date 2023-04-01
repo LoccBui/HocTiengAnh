@@ -2,8 +2,17 @@
   <div class="container"> 
 
     <div class="header"> 
-      <h1 class="w80 normal-text">Điền vào chỗ trống</h1>
-      <div class="w20">
+      <h1 class="left-side w80 normal-text">
+        Điền vào chỗ trống     
+
+        <div class="timer">
+          <h1>{{ countDownTimes }}</h1>
+       </div>
+      </h1>
+
+
+
+      <div class="flex1">
         <el-button color="#0038FF"  @click="this.selectAnswer()"> 
           <v-icon>mdi-check</v-icon>
           Chọn
@@ -13,8 +22,20 @@
 
     <div>
       <div class="w80 question-area">
-        <span class="question-text">
-          {{  this.replaceWord(`${Example}`)  }}
+        <span class="question-text"> {{  this.replaceWord(`${Example}`)  }} <span>
+            <v-tooltip  
+              min-width="200px"
+              activator="parent"
+              location="right"
+            >Số lượng kí tự cần điền
+            
+            </v-tooltip>
+            
+            <el-button type="primary" bg text="true" size="large" >
+              {{ englishWord.length }}
+            </el-button>
+          </span>
+          
         </span>
       
       </div>
@@ -28,7 +49,8 @@
           <div class="options">
 
 
-            <el-input v-model="inputAnswer" class="input-answer" placeholder="Nhập kết quả của bạn tại đây"
+            <el-input v-model="inputAnswer" class="input-answer" 
+            placeholder="Nhập kết quả của bạn tại đây"
             @keyup.enter="selectAnswer()"   
             >\</el-input>
             
@@ -61,8 +83,6 @@ import { ElNotification } from 'element-plus'
 
 
 export default {
-  props: ['listWord'],
-
   data(){
     return{
       idTopic: this.$route.params.id,
@@ -83,14 +103,34 @@ export default {
       selectedWord: '',
       inputAnswer: '',
       mention: false,
+      countDownTimes: 30,
     }
   },
 
   mounted(){
     this.getVocabularyByTopicID(this.idTopic)
+    this.countDown()
   },
+  
+  
 
   methods:{
+
+    countDown(){
+      let countDown = setInterval(()=>{
+        this.countDownTimes -= 1
+        if(this.countDownTimes === 0){
+          clearInterval(countDown)
+          this.handleOvertime()
+        }
+      },1000)
+    },
+
+    handleOvertime(){
+      this.$emit('step-Status', 'overtime')
+      // this.selectAnswer()
+    },
+
     async getVocabularyByTopicID(topicID){
       let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
 
@@ -125,13 +165,22 @@ export default {
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
       if(this.inputAnswer == this.englishWord){
+
+        if(this.mention == true){
+          this.$emit('step-Status', 'mention')
+        }
+        else{
+          this.$emit('step-Status', 'correct')
+        }
+
         this.isCorrect = true;
         this.isFalse = false
 
         correct.play();
 
-        setTimeout(() => {
+        const time = setTimeout(() => {
           this.finishLearn();
+          clearTimeout(time)
         }, 2000);
 
       }
@@ -227,7 +276,6 @@ export default {
 
 
     replaceWord(Word){
-
       const replace = Word.replace(`${this.englishWord}`, match => {
         const numDashes = match.length;
         return '  _  '.repeat(numDashes);
@@ -277,6 +325,25 @@ export default {
     width: 100%;
     height: 100%;
   }
+
+  .left-side {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    padding-right:5%;
+  }
+
+  .timer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #0038FF;
+  }
 }
 
 
@@ -288,7 +355,6 @@ export default {
 .mention{
   font-size: 20px;
 }
-
 .question-text{
   font-size: 40px;
   font-weight: 600;

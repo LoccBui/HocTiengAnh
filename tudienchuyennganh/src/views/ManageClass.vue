@@ -235,4 +235,7 @@ import AskBox from '@/components/AskBox.vue'
 
 
 <style lang="scss" scoped>
+.container{
+  height: 100vh;
+}
 </style>

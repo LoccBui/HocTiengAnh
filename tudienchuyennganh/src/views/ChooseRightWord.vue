@@ -55,13 +55,11 @@
   </template>
   
   <script>
-  import axiosInstance from '../axios'
-  import { ElNotification } from 'element-plus'
+import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
   
   
   export default {
-    props: ['listWord'],
-  
     data(){
       return{
         idTopic: this.$route.params.id,
@@ -94,9 +92,14 @@
           this.countDownTimes -= 1
           if(this.countDownTimes === 0){
             clearInterval(countDown)
-            this.selectAnswer()
+            this.handleOvertime()
           }
         },1000)
+      },
+
+      handleOvertime(){
+        this.$emit('step-Status', 'overtime')
+        this.selectAnswer()
       },
 
       async getVocabularyByTopicID(topicID){
@@ -133,21 +136,27 @@
         const wrong = new Audio('../../assets/audio/wrong.mp3');
   
         if(this.selectedWord == this.titleQuestion){
+
+          this.$emit('step-Status', 'correct')
+
           this.isCorrect = true;
           this.isFalse = false
   
           correct.play();
   
-          setTimeout(() => {
+          const time = setTimeout(() => {
             this.finishLearn();
+            clearTimeout(time)
           }, 2000);
-  
+
+          
         }
-        else{
+        else if(this.selectedWord != this.titleQuestion){
+          this.$emit('step-Status', 'wrong')
+
           this.isFalse = true
           wrong.play()  
           this.finishLearn();
-
         }
       },
   

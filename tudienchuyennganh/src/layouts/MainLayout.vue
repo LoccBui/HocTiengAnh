@@ -150,8 +150,8 @@
           <div class="footer">
 
             <el-button class="showNav" @mouseover="menuVisible = true"  >
-            <v-icon>mdi-arrow-up-bold</v-icon>
-          </el-button>
+              <v-icon>mdi-arrow-up-bold</v-icon>
+            </el-button>
 
           </div>
 
@@ -254,7 +254,7 @@ export default {
   align-items: center;
   justify-content: start;
   width: 100%;
-  position: absolute;
+  position: sticky;
   top: 0;
   min-height: 60px;
   max-height: 60px;
@@ -277,7 +277,7 @@ export default {
 }
 
 .footer{
-  position: absolute;
+  position: sticky;
   width: 100%;
   height: auto;
   z-index: 10;
@@ -304,17 +304,15 @@ export default {
 
 
 .menu-bar{
-  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: 0;
+  bottom: 100px !important;
   transform: translate(-50%, -30%);
-  z-index: 10;
   animation: showBox .3s ease-in-out;
-
+  z-index: 10;
 }
 
 @keyframes showBox {
@@ -348,8 +346,6 @@ export default {
   background: rgba(0, 0, 0, 0.4);
   border-radius: 20px;
   width: auto;
-
-  background-color: rgba(255, 255, 255, 0.5);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
   background-color: white;

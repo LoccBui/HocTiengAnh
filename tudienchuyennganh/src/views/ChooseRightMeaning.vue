@@ -110,19 +110,29 @@ export default {
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
       if(this.selectedWord == this.Vietnamese){
+        this.$emit('step-Status', 'correct')
         this.isCorrect = true;
         this.isFalse = false
 
         correct.play();
+        
+        console.log('correct')
 
         setTimeout(() => {
           this.finishLearn();
         }, 2000);
 
+
       }
       else{
+        this.$emit('step-Status', 'false')
         this.isFalse = true
         wrong.play()  
+
+        setTimeout(() => {
+          this.finishLearn();
+        }, 2000);
+
       }
     },
 
@@ -250,6 +260,7 @@ export default {
 
   .left-side-learning{
     width: 80%;
+    
 
     .options{
       display: flex;

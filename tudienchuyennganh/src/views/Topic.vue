@@ -169,10 +169,12 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-    height: inherit;
+    height: 100vh;
     display: flex;
-    justify-content: left;
+    justify-content: center;
+    align-items: start;
     flex-wrap: wrap;
+    overflow: hidden;
 }
 
 
