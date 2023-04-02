@@ -119,7 +119,7 @@ export default {
     countDown(){
       let countDown = setInterval(()=>{
         this.countDownTimes -= 1
-        if(this.countDownTimes === 0){
+        if(this.countDownTimes == 0){
           clearInterval(countDown)
           this.handleOvertime()
         }
@@ -128,7 +128,7 @@ export default {
 
     handleOvertime(){
       this.$emit('step-Status', 'overtime')
-      // this.selectAnswer()
+      this.selectAnswer()
     },
 
     async getVocabularyByTopicID(topicID){
@@ -180,14 +180,19 @@ export default {
 
         const time = setTimeout(() => {
           this.finishLearn();
-          clearTimeout(time)
         }, 2000);
+
 
       }
       else{
+        this.$emit('step-Status', 'wrong')
+
         this.isFalse = true
         wrong.play()  
-        this.finishLearn();
+
+        const time = setTimeout(() => {
+          this.finishLearn();
+        }, 2000);
       }
     },
 

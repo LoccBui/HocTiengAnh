@@ -55,7 +55,7 @@
     <div class="header">
 
         <div class="w80">
-          <el-progress :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
+          <el-progress v-model="progressLearning" :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
         </div>
       
         <div class="flex1 score-cover">
@@ -69,22 +69,24 @@
 
     <LearnByMeaningVue v-if="learnByMeaning"
     :listWord="dataAPI"
+    @step-Status="handleProgress"
     />
 
     <ChooseRightMeaning v-if="ChooseRightMeaning" 
       :listWord="dataAPI"
       @finish-learn="handleFinishLearn"
       @step-Status="handleProgress"
-
     />
 
     <FillInABlank v-if="FillInABlank"
       @finish-learn="handleFinishLearn"
+      @step-Status="handleProgress"
     />
 
     <ListenAndChoose v-if="ListenAndChoose"
     :listWord="dataAPI"
     @finish-learn="handleFinishLearn"
+    @step-Status="handleProgress"
     />
 
     <ChooseRightWord v-if="ChooseRightWord"
@@ -94,6 +96,7 @@
   
     <CorrectListening v-if="CorrectListening"
     @finish-learn="handleFinishLearn"
+    @step-Status="handleProgress"
     />  
         
 
@@ -142,8 +145,9 @@ export default {
       randomTimes:0,
       totalScore: 0,
 
-      progressPercent: '',
+      progressPercent: 0,
       progressLength: '',
+      progressLearning: '',
 
       learningSteps: [
         {
@@ -175,7 +179,6 @@ export default {
 
   mounted(){
     this.changeTitle()
-    this.speak()
     this.getVocabularyByTopicID(this.idTopic)
   },
 
@@ -210,34 +213,39 @@ export default {
     },
 
     handleProgress(status){
+      const totalStep = (this.vocabLength * 2) 
+      const inscreasePercent = (100 / totalStep)
 
-      console.log(status)
-      
-      //correct answer
-      if(status == "correct"){
-        this.totalScore += 100
-        this.progressPercent += 10
+      if(this.progressPercent != 100){``
+        switch(status){
+          case "correct": 
+            this.totalScore += 100
+            this.progressPercent += inscreasePercent
+            break;
+          case "wrong": 
+            this.totalScore += 0
+            this.progressPercent += inscreasePercent
+            break;
+          case "mention": 
+            this.totalScore += 50
+            this.progressPercent += inscreasePercent
+            break;
+          default: 
+            this.totalScore += 0
+            this.progressPercent += inscreasePercent
+            break;
+        }
       }
-      //wrong answer
-      else if(status == "wrong"){
-        this.totalScore += 0
-        this.progressPercent += ( 100 / this.progressLength ) 
-      }
-      // bypass question
-      else if(status == "mention"){
-        this.totalScore += 50
-        this.progressPercent += ( 100 / this.progressLength ) 
-      }
-      // overtime
       else{
-        this.totalScore += 0
-        this.progressPercent += ( 100 / this.progressLength ) 
+        alert('hoan thanh bai hoc')
       }
-
 
     },
 
     handleData(dataAPI){
+      
+        this.progressLength = dataAPI.length
+        console.log(this.progress)
 
         this.dataAPI = dataAPI
 

@@ -101,8 +101,8 @@ export default {
     },
 
     handleOvertime(){
-      // this.$emit('step-Status', 'overtime')
-      // this.selectAnswer()
+      this.$emit('step-Status', 'overtime')
+      this.selectAnswer()
     },
 
     async getVocabularyByTopicID(topicID){
@@ -149,7 +149,6 @@ export default {
 
         const time = setTimeout(() => {
           this.finishLearn();
-          clearTimeout(time)
         }, 2000);
 
         
@@ -159,7 +158,10 @@ export default {
 
         this.isFalse = true
         wrong.play()  
-        this.finishLearn();
+
+        const time = setTimeout(() => {
+          this.finishLearn();
+        }, 2000);
       }
     },
 

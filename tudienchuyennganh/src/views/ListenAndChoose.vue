@@ -2,13 +2,21 @@
   <div class="container"> 
 
     <div class="header"> 
-      <h1 class="w80 normal-text">Nghe và chọn kết quả</h1>
+      <h1 class="left-side w80 normal-text">
+        Nghe và chọn kết quả
+      
+        <div class="timer">
+          <h1>{{ countDownTimes }}</h1>
+        </div>
+      </h1>
+
       <div class="w20">
         <el-button color="#0038FF"  @click="this.selectAnswer()"> 
           <v-icon>mdi-check</v-icon>
           Chọn
         </el-button>
       </div>
+
     </div>
 
     <div>
@@ -29,7 +37,6 @@
             :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
             >
               <v-icon> mdi-volume-high </v-icon>
-              {{ Word }}
             </el-button>
 
           </div>
@@ -68,15 +75,19 @@ export default {
       isCorrect: false,
       isFalse: false,
       selectedIndex: -1,
-      selectedWord: ''
+      selectedWord: '',
+      countDownTimes: 30
     }
   },
 
   mounted(){
     this.getVocabularyByTopicID(this.idTopic)
+    this.countDown()
+
   },
 
   methods:{
+    
     async getVocabularyByTopicID(topicID){
       let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
 
@@ -84,6 +95,21 @@ export default {
         this.arrWords = (result.data)
         this.handleData()
       }       
+    },
+
+    countDown(){
+      let countDown = setInterval(()=>{
+        this.countDownTimes -= 1
+        if(this.countDownTimes === 0){
+          clearInterval(countDown)
+          this.handleOvertime()
+        }
+      },1000)
+    },
+
+    handleOvertime(){
+      this.$emit('step-Status', 'overtime')
+      this.selectAnswer()
     },
 
 
@@ -111,19 +137,27 @@ export default {
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
       if(this.selectedWord == this.titleQuestion){
+        this.$emit('step-Status', 'correct')
+
         this.isCorrect = true;
         this.isFalse = false
 
         correct.play();
 
-        setTimeout(() => {
+        const time = setTimeout(() => {
           this.finishLearn();
         }, 2000);
 
       }
       else{
+        this.$emit('step-Status', 'wrong')
+
         this.isFalse = true
         wrong.play()  
+
+        const time = setTimeout(() => {
+          this.finishLearn();
+        }, 2000);
       }
     },
 
@@ -203,6 +237,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.container{
+  padding: 0;
+}
 .normal-text{
   font-size: 30px;
   font-weight: normal;
@@ -228,6 +266,24 @@ export default {
     font-size: 20px;
     width: 100%;
     height: 100%;
+  }
+  .left-side {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    padding-right: 5%;
+  }
+
+  .timer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #0038FF;
   }
 }
 

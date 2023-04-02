@@ -2,7 +2,13 @@
   <div class="container"> 
 
     <div class="header"> 
-      <h1 class="w80 normal-text">Chọn đúng nghĩa của từ</h1>
+      <h1 class="left-side w80 normal-text">
+        Chọn đúng nghĩa của từ
+
+        <div class="timer">
+          <h1>{{ countDownTimes }}</h1>
+        </div>
+      </h1>
       <div class="w20">
         <el-button color="#0038FF"  @click="this.selectAnswer()"> 
           <v-icon>mdi-check</v-icon>
@@ -67,12 +73,16 @@ export default {
       isCorrect: false,
       isFalse: false,
       selectedIndex: -1,
-      selectedWord: ''
+      selectedWord: '',
+      countDownTimes: 30
+
     }
   },
 
   mounted(){
     this.getVocabularyByTopicID(this.idTopic)
+    this.countDown()
+
   },
 
   methods:{
@@ -83,6 +93,21 @@ export default {
         this.arrWords = (result.data)
         this.handleData()
       }       
+    },
+
+    countDown(){
+      let countDown = setInterval(()=>{
+        this.countDownTimes -= 1
+        if(this.countDownTimes == 0){
+          clearInterval(countDown)
+          this.handleOvertime()
+        }
+      },1000)
+    },
+
+    handleOvertime(){
+      this.$emit('step-Status', 'overtime')
+      this.selectAnswer()
     },
 
 
@@ -113,22 +138,17 @@ export default {
         this.$emit('step-Status', 'correct')
         this.isCorrect = true;
         this.isFalse = false
-
-        correct.play();
+        correct.play()
         
-        console.log('correct')
-
         setTimeout(() => {
           this.finishLearn();
         }, 2000);
-
-
       }
       else{
-        this.$emit('step-Status', 'false')
+        this.$emit('step-Status', 'wrong')
         this.isFalse = true
         wrong.play()  
-
+        
         setTimeout(() => {
           this.finishLearn();
         }, 2000);
@@ -243,6 +263,25 @@ export default {
     font-size: 20px;
     width: 100%;
     height: 100%;
+  }
+
+  .left-side {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    padding-right: 5%;
+  }
+
+  .timer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #0038FF;
   }
 }
 

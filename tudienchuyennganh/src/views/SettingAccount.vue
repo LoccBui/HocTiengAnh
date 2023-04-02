@@ -194,19 +194,14 @@
 
       
 
-        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="50%">
+        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="45%">
             <span>
                 Hãy chọn avatar mới
 
-                <div class="images-pick">
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
-                    <img class="img-choose" src="../../assets/img/male.png" />
+                <div class="images-pick" >
+                     <el-button v-for="img in arrSourcesImage" :key="img.id" @click="chooseAvatar(img.source)">
+                        <img class="img-choose" :src="`../../assets/img/avatar/${img.source}.png`" />
+                    </el-button>
                 </div>
             </span>
             <template #footer>
@@ -229,6 +224,16 @@ export default {
         return{
             inputPassword: '123',
             openPickAvatar: false,
+            arrSourcesImage:[
+                {'id': 1, 'source': 'male1'},
+                {'id': 2, 'source': 'male2'},
+                {'id': 3, 'source': 'male3'},
+                {'id': 4, 'source': 'male4'},
+                {'id': 5, 'source': 'female1'},
+                {'id': 6, 'source': 'female2'},
+                {'id': 6, 'source': 'female3'},
+                {'id': 6, 'source': 'female4'},
+            ]
         }
     },
 
@@ -243,6 +248,10 @@ export default {
 
         openPick(){
             this.openPickAvatar = true
+        },
+
+        chooseAvatar(source){
+            alert(source)
         }
     }
 
@@ -321,13 +330,16 @@ export default {
 .images-pick{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    
+    justify-content: start;
+    align-items: center;
 
-    .img-choose{
-        padding: 10px;
-        flex-basis: 20%;
+    .el-button{
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 20px;
     }
+
 }
 </style>
 

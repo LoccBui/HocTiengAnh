@@ -146,9 +146,7 @@ import { ElNotification } from 'element-plus'
   
           const time = setTimeout(() => {
             this.finishLearn();
-            clearTimeout(time)
           }, 2000);
-
           
         }
         else if(this.selectedWord != this.titleQuestion){
