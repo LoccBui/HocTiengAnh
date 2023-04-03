@@ -9,7 +9,7 @@
 
                     <div class="avatar-wrapper">
                         <div>
-                            <img src="../../assets/img/male.png" />
+                            <img :src="`../../assets/img/avatar/${imageUser}.png`" />
                         </div>
 
                         <div class="change-img">
@@ -25,30 +25,33 @@
 
                 
                     <el-col :span="24">
-                        <h1 class="info-user">Tài khoản</h1>
-                        <el-input v-model="input" />
+                        <h1 class="info-user">Họ và tên</h1>
+                        <el-input v-model="inputName" />
                     </el-col>
 
                     <el-col :span="24">
                         <h1 class="info-user"> Giới tính</h1>
-                        <el-input v-model="input" />
+                        <el-switch v-model="gender" :inactive-text="'Nữ'" :active-text="'Nam'"></el-switch>
                     </el-col>
 
                     <el-col :span="24">
                         <h1 class="info-user">Email</h1>
-                        <el-input v-model="input" />
+                        <el-input v-model="inputEmail" />
                     </el-col>
                     
                     <el-col :span="24">
                         <h1 class="info-user"> Lớp </h1>
-                        <el-input v-model="inpit"  />
+                        <el-input v-model="inputClass" disabled	 />
                     </el-col>
 
                     <el-col :span="24">
                         <h1 class="info-user"> Khoa </h1>
-                        <el-input v-model="inpit"  />
+                        <el-input v-model="inputFaculty" disabled />
                     </el-col>
 
+                    <div class="confirm-btn">
+                        <el-button  type="primary" >Xác nhận</el-button>
+                    </div>
                 </el-col>
             </div>
 
@@ -71,128 +74,19 @@
                         <h1 class="info-user">Xác nhận mật khẩu</h1>
                         <el-input v-model="input" />
                     </el-col>
-                    
-                    <el-col :span="24">
-                        <h1 class="info-user"> Lớp </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
 
-                    <el-col :span="24">
-                        <h1 class="info-user"> Khoa </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user"> Giới tính</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-
-                </el-col>
-            </div>
-            
-        </div>
-        <div class="info-wrapper">
-            <div class="wrapper">
-
-                <el-col>
-                    <h1 class="txt-40">Cài đặt tài khoản</h1>
-
-                    <div class="avatar-wrapper">
-                        <div>
-                            <img src="../../assets/img/male.png" />
-                        </div>
-
-                        <div class="change-img">
-                            <el-button
-                            style="width: auto;"
-                            @click="this.openPick()"
-                            > Chọn avatar khác
-                            </el-button>
-                        </div>
+                    <div class="confirm-btn">
+                        <el-button type="primary">Thay đổi mật khẩu</el-button>
                     </div>
 
-                
-
-                
-                    <el-col :span="24">
-                        <h1 class="info-user">Tài khoản</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user"> Giới tính</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user">Email</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-                    
-                    <el-col :span="24">
-                        <h1 class="info-user"> Lớp </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user"> Khoa </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
-
                 </el-col>
-            </div>
 
-            <div class="wrapper">
-
-                <el-col>
-                    <h1 class="txt-40">Thay đổi mật khẩu</h1>
-
-                    <el-col :span="24">
-                        <h1 class="info-user">Mật khẩu hiện tại</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user">Mật khẩu mới</h1>
-                        <el-input show-password="true" v-model="inputPassword" 	/>
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user">Xác nhận mật khẩu</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-                    
-                    <el-col :span="24">
-                        <h1 class="info-user"> Lớp </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user"> Khoa </h1>
-                        <el-input v-model="inpit"  />
-                    </el-col>
-
-                    <el-col :span="24">
-                        <h1 class="info-user"> Giới tính</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-
-                </el-col>
             </div>
             
         </div>
 
-        <div class="confirm-btn">
-            <el-button 
-            type="primary"
-            
-             >Xác nhận
-        </el-button>
-        </div>
 
-      
+       
 
         <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="45%">
             <span>
@@ -207,7 +101,7 @@
             <template #footer>
             <span class="dialog-footer">
                 <el-button @click="openPickAvatar = false">Đóng</el-button>
-                <el-button type="primary" @click="centerDialogVisible = false">
+                <el-button type="primary" @click="this.confirmAvatar()">
                 Xác nhận
                 </el-button>
             </span>
@@ -219,10 +113,27 @@
 </template>
 
 <script>
+import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
+
+
 export default {
     data(){
         return{
-            inputPassword: '123',
+            accountID: '',
+
+            imageUser: '',
+            inputName: '',
+            gender: '',
+            inputEmail: '',
+            inputClass: '',
+            inputFaculty: '',
+
+            inputCurrentPassword: '',
+            inputNewPassword: '',
+
+            selectedAvatar: '',
+
             openPickAvatar: false,
             arrSourcesImage:[
                 {'id': 1, 'source': 'male1'},
@@ -231,14 +142,16 @@ export default {
                 {'id': 4, 'source': 'male4'},
                 {'id': 5, 'source': 'female1'},
                 {'id': 6, 'source': 'female2'},
-                {'id': 6, 'source': 'female3'},
-                {'id': 6, 'source': 'female4'},
+                {'id': 7, 'source': 'female3'},
+                {'id': 8, 'source': 'female4'},
+                {'id': 9, 'source': 'default'},
             ]
         }
     },
 
     mounted(){
         this.changeTitle()
+        this.getDataAvailable()
     },
 
     methods: {
@@ -250,8 +163,51 @@ export default {
             this.openPickAvatar = true
         },
 
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },    
+
         chooseAvatar(source){
-            alert(source)
+            this.selectedAvatar = source
+        },
+
+        async confirmAvatar(){
+            let result = await axiosInstance.post('changeAvatar', {
+                "AccountID": this.accountID,
+                "Image": `${this.selectedAvatar}`
+            })
+
+            if(result.status == 200) {
+                this.showNotification('Thông báo', 'Cập nhật ảnh thành công', 'success')
+                window.location.reload()
+            }else{
+                this.showNotification('Thông báo', 'Cập nhật ảnh không thành công', 'error')
+            }
+            
+        },  
+
+        async getDataAvailable(){
+            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+
+
+            this.accountID = dataUser.accountID
+
+            let result = await axiosInstance.post('settingAccount', {
+                "AccountID": this.accountID
+            })
+
+            if(result.status == 200){
+                this.imageUser =  result.data[0].Image
+                this.inputName = result.data[0].Name
+                this.gender = result.data[0].Gender == 'Nam' ? true : false
+                this.inputEmail = result.data[0].Email
+                this.inputClass = result.data[0].ClassName
+                this.inputFaculty = result.data[0].FacultyName
+            }
         }
     }
 
@@ -293,8 +249,7 @@ export default {
 }
 
 .confirm-btn{
-    padding: 0 100px;
-    margin: 80px 0;
+    padding: 20px 0;
 }
 
 .avatar-wrapper{
@@ -313,6 +268,7 @@ export default {
 
 
     .wrapper{
+        height: auto;
         padding: 10px;
         border: 1px solid var(--light-blue-90);
         border-radius: 10px;

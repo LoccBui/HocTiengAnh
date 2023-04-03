@@ -19,8 +19,6 @@ END
 
 go
 
-
-
 -- Phân loại user theo admin hoặc giáo viên hoặc sinh viên
 create procedure sp_AuthUser
 @AccountID int
@@ -28,7 +26,7 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active 
+			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join LOP L on L.MaGV = GV.MaGV
@@ -38,7 +36,7 @@ BEGIN
 		end
 	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active  
+			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image  
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
@@ -72,7 +70,7 @@ select * from TUVUNG
 go
 
 --Hiển thị từ vựng theo chủ đề
-alter procedure sp_SelectTuVungByTopicID
+create procedure sp_SelectTuVungByTopicID
 @TopicID int
 as
 select TOP 5 *
@@ -86,7 +84,7 @@ go
 
 --Hiển thị chủ đề theo khoa
 create procedure sp_ShowTopicByFaculty
-@IDFACULTY int
+@IDFACULTY tinyint
 as
 BEGIN
 	select CD.TopicID, CD.TopicDescribe, CD.TopicName, CD.CreatedBy, CD.QuantityWords
@@ -241,7 +239,7 @@ go
 
 -- Xóa Class theo ID
 create procedure sp_DeleteClassByID
-@IDClass int
+@IDClass smallint
 as 
 BEGIN
 	delete 
@@ -255,8 +253,8 @@ go
 --Thêm Class mới
 create procedure sp_AddNewClass
 @ClassName varchar(50),
-@MaGV int,
-@IDFaculty int
+@MaGV smallint,
+@IDFaculty tinyint
 as 
 BEGIN
 	declare @lastestID int
@@ -286,11 +284,11 @@ END
 go
 
 -- thêm tài khoản mới
-alter PROCEDURE sp_InsertNewAccount
+create PROCEDURE sp_InsertNewAccount
     @Username varchar(50),
 	@Password varchar(100),
 	@Email varchar(100),
-	@RoleID smallint
+	@RoleID tinyint
 as
 BEGIN
     DECLARE @password_binary VARBINARY(100)
@@ -319,7 +317,7 @@ END
 
 go
 --- xóa Account theo id
-alter procedure sp_DeleteUser
+create procedure sp_DeleteUser
 @AccountID int
 as 
 BEGIN
@@ -350,7 +348,7 @@ go
 
 --Thêm một chủ đề mới
 create PROCEDURE sp_AddTopic
-@IdFaculty int,
+@IdFaculty tinyint,
 @TopicName nvarchar(100), 
 @TopicDescribe nvarchar(200), 
 @QuantityWords smallint, 
@@ -533,11 +531,11 @@ go
 
 
 --Tạo tài khoản mới
-alter PROCEDURE sp_AddNewUser
+create PROCEDURE sp_AddNewUser
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
-    @RoleID SMALLINT
+    @RoleID tinyint
 AS
 BEGIN 
     DECLARE @lastestID INT
@@ -567,18 +565,13 @@ BEGIN
 		end
 END
 
---exec sp_AddNewUser
---    @Username  = '12323',
---    @Password = '12323',
---    @Email = '12323@gmail.com',
---    @RoleID = 1
 go
 
-alter PROCEDURE sp_AddNewGiaoVien
+create PROCEDURE sp_AddNewGiaoVien
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
-    @RoleID SMALLINT
+    @RoleID tinyint
 AS
 BEGIN 
     DECLARE @lastestID INT
@@ -612,11 +605,11 @@ END
 
 go
 
-alter procedure sp_AddNewSinhVien
+create procedure sp_AddNewSinhVien
 @AccountID int,
 @Name nvarchar(100),
 @Gender nvarchar(10),
-@IDCLASS int
+@IDCLASS smallint
 as
 BEGIN
 	DECLARE @check int
@@ -644,8 +637,9 @@ BEGIN
 END
 
 go
+
 --Cập nhật thông tin giáo viên
-alter procedure sp_AddInfoGiaoVien
+create procedure sp_AddInfoGiaoVien
 @AccountID int,
 @Name nvarchar(100),
 @Gender nvarchar(10)
@@ -676,12 +670,13 @@ BEGIN
 			return null
 		end
 END
+
 go
 
-alter procedure sp_AddGiaoVienToClass
+create procedure sp_AddGiaoVienToClass
 @ClassName varchar(50),
-@MaGV int, 
-@IDFACULTY int
+@MaGV smallint, 
+@IDFACULTY tinyint
 as
 BEGIN 
 	DECLARE @check int
@@ -705,29 +700,22 @@ BEGIN
 		end
 END
 
-
+go
 
 --Lọc lớp theo id khoa
-alter procedure sp_FilterClassByFacultyID
-@IDFACULTY int
+create procedure sp_FilterClassByFacultyID
+@IDFACULTY tinyint
 as
 BEGIN
 	select DISTINCT ClassName, IDCLASS
 	from LOP 
 	where IDFACULTY = @IDFACULTY
-
 END
 
-exec sp_FilterClassByFacultyID 
-@IDFACULTY = 3
-
-select DISTINCT IDCLASS, ClassName
-	from LOP 
-	where IDFACULTY = 3
-
+go
 
 -- lấy username dựa vào email
-alter procedure sp_GetUsername
+create procedure sp_GetUsername
 @Email varchar(100)
 as
 BEGIN
@@ -751,8 +739,7 @@ END
 
 go
 --Logic Học từ
-
-alter procedure sp_GetDataListenAndChoose
+create procedure sp_GetDataListenAndChoose
 @Word varchar(50)
 as
 BEGIN
@@ -771,7 +758,7 @@ exec sp_GetDataListenAndChoose
 go
 
 --Choose right meaning -> Chọn đúng nghĩa của từ
-alter procedure sp_GetVietNameseRightMeaning
+create procedure sp_GetVietNameseRightMeaning
 @Word varchar(50),
 @Vietnamese nvarchar(200)
 as
@@ -785,84 +772,192 @@ BEGIN
 	where  Vietnamese like '%' + @firstCharacter + '%'
 END
 
+go
 
+--QUẢN LÝ TÀI KHOẢN
+
+create procedure sp_GetDataAccount
+@AccountID int
+as 
+BEGIN
+	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
+		begin 
+			select GV.AccountID, GV.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image
+			from GIAOVIEN GV
+			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
+			inner join LOP L on L.MaGV = GV.MaGV
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			where GV.AccountID = @AccountID
+		end
+	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
+		begin 
+			select SV.AccountID, SV.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image  
+			from SINHVIEN SV
+			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
+			inner join LOP L on L.IDCLASS = SV.IDCLASS
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			where SV.AccountID = @AccountID
+		end
+	else
+		begin
+			select '1' as isNewUser,AccountID, RoleID, Active from TAIKHOAN
+			where AccountID =  @AccountID
+		end
+END
+
+go
+
+create procedure sp_ChangeAvatar
+@AccountID int,
+@Image varchar(200)
+as
+BEGIN
+	DECLARE @check int
+
+	UPDATE TAIKHOAN
+	SET Image = @Image
+	WHERE AccountID = @AccountID
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật ảnh đại diện thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+--Update dữ liệu tài khoản
+create procedure sp_UpdateInfoAccount
+@AccountID int,
+@Name nvarchar(100),
+@Gender nvarchar(10),
+@Email varchar(100)
+as
+BEGIN
+	DECLARE @check int
+
+	UPDATE TAIKHOAN 
+	SET Email = @Email
+	WHERE AccountID = @AccountID
+
+	IF EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
+		begin
+			UPDATE GIAOVIEN
+			SET Name = @Name, Gender = @Gender
+			where AccountID = @AccountID
+			set @check = (select @@ROWCOUNT) 
+		end
+	ELSE IF EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
+		begin
+			UPDATE SINHVIEN
+			SET Name = @Name, Gender = @Gender
+			where AccountID = @AccountID
+			set @check = (select @@ROWCOUNT) 
+		end
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thông tin tài khoản thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+go
+
+
+select * from TAIKHOAN
 
 
 
 ----------------- TESTING AREA
-select* from CHUDE
-select Example from TUVUNG
-where 
+
+--select * from LOP
+--select * from GIAOVIEN
+--select * from NHOMTK
+--select * from TAIKHOAN
+--select * from SINHVIEN
+--select * from KHOA
 
 
 
 
-select * from LOP
-select * from GIAOVIEN
-
-select * from NHOMTK
-select * from TAIKHOAN
-
-select * from SINHVIEN
-select * from KHOA
-
-
-
-
-CREATE TABLE CHITIETHOC(
-	IDHOC INT IDENTITY(1,1),
-	AccountID INT,
-	VocabID INT,
-	DateCreated DATETIME,
-	NumberCorrect INT,
-	NumberIncorrect INT,
-	PRIMARY KEY (IDHOC),
-	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
-	FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
-);
+--CREATE TABLE CHITIETHOC(
+--	IDHOC INT IDENTITY(1,1),
+--	AccountID INT,
+--	VocabID INT,
+--	DateCreated DATETIME,
+--	NumberCorrect INT,
+--	NumberIncorrect INT,
+--	PRIMARY KEY (IDHOC),
+--	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
+--	FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
+--);
 
 
 -- Tạo bảng THANHTUU
-CREATE TABLE THANHTUU(
-	IDTHANHTUU INT IDENTITY(1,1),
-	AccountID INT,
-	TopicID INT,
-	NumberLearned INT,
-	Streak INT,
-	PRIMARY KEY (IDTHANHTUU),
-	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
-	FOREIGN KEY (TopicID) REFERENCES CHUDE(TopicID)
-);
+--CREATE TABLE THANHTUU(
+--	IDTHANHTUU INT IDENTITY(1,1),
+--	AccountID INT,
+--	TopicID INT,
+--	NumberLearned INT,
+--	Streak INT,
+--	PRIMARY KEY (IDTHANHTUU),
+--	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
+--	FOREIGN KEY (TopicID) REFERENCES CHUDE(TopicID)
+--);
 
 
 -- Thống kê từ sai nhiều trong mỗi chủ đề
-SELECT TOP 1 WITH TIES CHUDE.TopicID, CHUDE.TopicName, COUNT(*) AS WrongAnswers
-FROM TUVUNG
-INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
-WHERE TUVUNG.Learned = 1 AND TUVUNG.Active = 1 AND TUVUNG.Level < 5
-GROUP BY CHUDE.TopicID, CHUDE.TopicName, TUVUNG.Word
-ORDER BY ROW_NUMBER() OVER (PARTITION BY CHUDE.TopicID ORDER BY COUNT(*) DESC)
+--SELECT TOP 1 WITH TIES CHUDE.TopicID, CHUDE.TopicName, COUNT(*) AS WrongAnswers
+--FROM TUVUNG
+--INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
+--WHERE TUVUNG.Learned = 1 AND TUVUNG.Active = 1 AND TUVUNG.Level < 5
+--GROUP BY CHUDE.TopicID, CHUDE.TopicName, TUVUNG.Word
+--ORDER BY ROW_NUMBER() OVER (PARTITION BY CHUDE.TopicID ORDER BY COUNT(*) DESC)
 
 
 -- Tạo bảng CHITIETHOC
-CREATE TABLE CHITIETTUHOC (
-  ChiTietTuHocID int IDENTITY(1,1),
-  AccountID int,
-  VocabID int,
-  Learned bit,
-  Level tinyint,
+--CREATE TABLE CHITIETTUHOC (
+--  ChiTietTuHocID int IDENTITY(1,1),
+--  AccountID int,
+--  VocabID int,
+--  Learned bit,
+--  Level tinyint,
   
-  PRIMARY KEY (ChiTietTuHocID),
-  FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
-  FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
-)
+--  PRIMARY KEY (ChiTietTuHocID),
+--  FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
+--  FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
+--)
 
--- Thêm PathImage varchar(200)
--- Thêm NumberWrong int,
 
-SELECT CHUDE.TenChuDe, SUM(CHITIETTUHOC.SoLanSai) AS TongSoLanSai
-FROM CHITIETTUHOC
-INNER JOIN TUVUNG ON CHITIETTUHOC.TuvungID = TUVUNG.VocabID
-INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
-GROUP BY CHUDE.TenChuDe
-ORDER BY TongSoLanSai DESC;
+--SELECT CHUDE.TenChuDe, SUM(CHITIETTUHOC.SoLanSai) AS TongSoLanSai
+--FROM CHITIETTUHOC
+--INNER JOIN TUVUNG ON CHITIETTUHOC.TuvungID = TUVUNG.VocabID
+--INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
+--GROUP BY CHUDE.TenChuDe
+--ORDER BY TongSoLanSai DESC;
+
+
+--SELECT SUM(Score) AS TotalScore
+--FROM CHITIETHOC
+--WHERE AccountID = 1 AND VocabID = 5
+
+--Kết quả sẽ trả về tổng số điểm mà tài khoản có AccountID=1 học được ở chủ đề có VocabID=5.
+
+--Nếu bạn muốn thống kê số điểm học được của tất cả các chủ đề của một tài khoản, bạn có thể sử dụng câu lệnh sau:
+
+--SELECT VocabID, SUM(Score) AS TotalScore
+--FROM CHITIETHOC
+--WHERE AccountID = 1
+--GROUP BY VocabID
+
+go
+

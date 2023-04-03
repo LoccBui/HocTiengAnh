@@ -179,6 +179,7 @@
     <Compile Include="Controllers\NewGiaoVienForm\NewGiaoVienFormController.cs" />
     <Compile Include="Controllers\NewUserForm\NewUserFormController.cs" />
     <Compile Include="Controllers\SelectTuVungByTopicIDController.cs" />
+    <Compile Include="Controllers\SettingAccount\SettingAccountController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />
     <Compile Include="Controllers\Topic\SelectAllTopicController.cs" />
     <Compile Include="Controllers\TuVungSelectAllController.cs" />

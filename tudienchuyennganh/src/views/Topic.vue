@@ -188,7 +188,7 @@ export default {
     border-radius: 15px;
 
     line-height: 50px;
-
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     .header-info{
         display: flex;
     }

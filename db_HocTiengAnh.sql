@@ -1,16 +1,12 @@
-﻿
---drop database HocTiengAnh
+﻿--drop database HocTiengAnh
 
 create database HocTiengAnh
 go
 use HocTiengAnh
 go
 
-
-
-
 create table NHOMTK (
-	RoleID smallint IDENTITY(1,1),
+	RoleID tinyint IDENTITY(1,1),
 	Priority tinyint,
 	RoleName nvarchar(10),
 
@@ -23,9 +19,9 @@ create table TAIKHOAN (
 	Username varchar(50) UNIQUE,
 	Password varbinary(100),
 	Email varchar(100) UNIQUE,
+	Image varchar(200) default 'default',
 	Active bit,
-	RoleID smallint,
-
+	RoleID tinyint,
 
 	PRIMARY KEY (AccountID),
 	FOREIGN KEY (RoleID) REFERENCES NHOMTK(RoleID),
@@ -34,22 +30,20 @@ go
 
 
 create table GIAOVIEN (
-	MaGV int,
+	MaGV smallint,
 	AccountID int,
 	Name nvarchar(100),
 	Gender nvarchar(10),
 	DateCreated datetime,
 
-
 	PRIMARY KEY (MaGV),
 	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
-
 )
 
 go
 
 create table KHOA(
-	IDFACULTY int IDENTITY(1,1),
+	IDFACULTY tinyint IDENTITY(1,1),
 	FacultyName nvarchar(100),
 
 	PRIMARY KEY (IDFACULTY),
@@ -58,11 +52,11 @@ create table KHOA(
 go 
 
 create table LOP(
-	IDCLASS int IDENTITY(1,1),
+	IDCLASS smallint IDENTITY(1,1) UNIQUE,
 	ClassName varchar(50),
-	MaGV int,
+	MaGV smallint,
 
-	IDFACULTY int,
+	IDFACULTY tinyint,
 
 	PRIMARY KEY (IDCLASS),
 	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV),
@@ -79,7 +73,7 @@ create table SINHVIEN (
 	Gender nvarchar(10),
 	DateCreated datetime,
 
-	IDCLASS int,
+	IDCLASS smallint,
 
 	PRIMARY KEY (MaSV),
 	FOREIGN KEY (IDCLASS) REFERENCES LOP(IDCLASS),
@@ -92,7 +86,7 @@ go
 
 create table CHUDE (
 	TopicID int IDENTITY(1,1),
-	IDFACULTY int,
+	IDFACULTY tinyint,
 	TopicName nvarchar(100),
 	TopicDescribe nvarchar(200),
 	QuantityWords smallint,
@@ -101,7 +95,6 @@ create table CHUDE (
 
 	PRIMARY KEY (TopicID),
 	FOREIGN KEY (IDFACULTY) REFERENCES KHOA(IDFACULTY)
-
 )
 
 
@@ -111,7 +104,7 @@ create table TUVUNG(
 
 	Frequency int,
 	Word varchar(50),
-	IPA varchar(100),
+	IPA nvarchar(100),
 	Label varchar(50),
 	Lemma varchar(200),
 	Vietnamese nvarchar(200),
@@ -130,10 +123,33 @@ create table TUVUNG(
 )
 GO
 
+CREATE TABLE CHITIETLOP (
+	DetailID int IDENTITY(1,1),
+	MaGV smallint,
+	IDCLASS smallint,
+	PRIMARY KEY (DetailID),
+	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV),
+	FOREIGN KEY (IDCLASS) REFERENCES LOP(IDCLASS)
+)
 
 
+GO
 
-go
+CREATE TABLE CHITIETHOC (
+  DetailID int IDENTITY(1,1),
+  AccountID int,
+  VocabID int,
+  Learned bit,
+  Level tinyint,
+  WrongTimes smallint,
+  Score int,
+  PRIMARY KEY (DetailID),
+  FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
+  FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
+)
+
+
+GO
 
 
 create table TUVUNGCANHAN(
@@ -143,7 +159,7 @@ create table TUVUNGCANHAN(
 
 	Frequency int,
 	Word varchar(50),
-	IPA varchar(100),
+	IPA nvarchar(100),
 	Label varchar(50),
 	Lemma varchar(200),
 	Vietnamese nvarchar(200),
@@ -200,7 +216,7 @@ GO
 
 --CONVERT(VARBINARY(50), '0x9473FBCCBC01AF'
 SET IDENTITY_INSERT [dbo].[TAIKHOAN] ON 
-INSERT [dbo].[TAIKHOAN] ([AccountID], [Username], [Password], [Email], [Active], [RoleID]) VALUES (1, N'loc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435, 'buihuuloc2001@gmail.com', 1, 1)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username], [Password], [Email], [Active], [RoleID]) VALUES (1, N'loc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435, 'buihuuloc2001@gmail.com',  1, 1)
 INSERT [dbo].[TAIKHOAN] ([AccountID], [Username], [Password], [Email], [Active], [RoleID]) VALUES (2, N'admin',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'phuc@gmail.com', 1, 2)
 INSERT [dbo].[TAIKHOAN] ([AccountID], [Username], [Password], [Email], [Active], [RoleID]) VALUES (3, N'an',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'an@gmail.com',1, 3)
 INSERT [dbo].[TAIKHOAN] ([AccountID], [Username], [Password], [Email], [Active], [RoleID]) VALUES (4, N'huuhiep',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'tranhuuhiep@gmail.com',1, 3)
@@ -249,10 +265,10 @@ SET IDENTITY_INSERT [dbo].[CHUDE] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[TUVUNG] ON 
-INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (1, 1, 1, 'benefit', '/ˈbenɪfɪt/', 'noun', 'benefits', N'lợi ích', 'benefit from', 'on left', 'Although at a group level most benefit from ICS is obtained at a low dose, individual ICS responsiveness varies', N'Mặc dù lợi ích từ ICS liều thấp đều được ghi nhận ở cấp độ nhóm nhưng sự đáp ứng với ICS của mỗi cá nhân thì lại khác nhau.', 'GINA 2020. (attach file txt) ', 1, 1, 1)
-INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (2, 1, 1, 'benefit', '/ˈbenɪfɪt/', 'Verb', N'benefits/benefiting/benefited', N'hưởng lợi (từ), có được lợi ích', N'benefit from', N'on left', 'this is example', N'Một số bệnh nhân không kiểm soát được bệnh hen suyễn khi sử dụng ICS-LABA liều thấp (dù đã tuân thủ tốt và sử dụng bình hít đúng kỹ thuật) thì có thể được hưởng lợi từ việc tăng liều duy trì lên mức trung bình.', 'GINA 2020. (attach file txt) ', 1, 1, 1)
-INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (3, 1, 1, 'include', '/ɪnˈkluːd /', 'verb', N'includeing/included/includes', N'Bao gồm, bao hàm, gồm có, chứa trong', N'included in', N'on left', N'Some (e.g. diphenhydramine) may also be included in cold remedies for their supposed antitussive action.', N'Một số thuốc (ví như như: diphenhylamine) cũng có thể bao gồm trong các biện pháp điều trị cảm lạnh với tác dụng trị ho của các thuốc này.', 'Symptoms in the Pharmacy_ A Guide to the Management of Common Illnesses-Wiley-Blackwell (2018). (attach file txt) ', 1, 1, 1)
-INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (4, 2, 1, 'low', '/ləʊ /', 'adjective', 'lower; 
+INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (1, 1, 1, 'benefit', 'N/ˈbenɪfɪt/', 'noun', 'benefits', N'lợi ích', 'benefit from', 'on left', 'Although at a group level most benefit from ICS is obtained at a low dose, individual ICS responsiveness varies', N'Mặc dù lợi ích từ ICS liều thấp đều được ghi nhận ở cấp độ nhóm nhưng sự đáp ứng với ICS của mỗi cá nhân thì lại khác nhau.', 'GINA 2020. (attach file txt) ', 1, 1, 1)
+INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (2, 1, 1, 'benefit', 'N/ˈbenɪfɪt/', 'Verb', N'benefits/benefiting/benefited', N'hưởng lợi (từ), có được lợi ích', N'benefit from', N'on left', 'this is example', N'Một số bệnh nhân không kiểm soát được bệnh hen suyễn khi sử dụng ICS-LABA liều thấp (dù đã tuân thủ tốt và sử dụng bình hít đúng kỹ thuật) thì có thể được hưởng lợi từ việc tăng liều duy trì lên mức trung bình.', 'GINA 2020. (attach file txt) ', 1, 1, 1)
+INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (3, 1, 1, 'include', 'N/ɪnˈkluːd /', 'verb', N'includeing/included/includes', N'Bao gồm, bao hàm, gồm có, chứa trong', N'included in', N'on left', N'Some (e.g. diphenhydramine) may also be included in cold remedies for their supposed antitussive action.', N'Một số thuốc (ví như như: diphenhylamine) cũng có thể bao gồm trong các biện pháp điều trị cảm lạnh với tác dụng trị ho của các thuốc này.', 'Symptoms in the Pharmacy_ A Guide to the Management of Common Illnesses-Wiley-Blackwell (2018). (attach file txt) ', 1, 1, 1)
+INSERT [dbo].[TUVUNG] ([VocabID], [TopicID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (4, 2, 1, 'low', 'N/ləʊ /', 'adjective', 'lower; 
 lowly (adv)"', N'thấp, nhỏ', N'rate', N'on left', N'Most studies with LABA/LAMA combinations have been performed in patients with a low rate of exacerbations. ', N'Hầu hết các nghiên cứu với sự kết hợp LABA và LAMA đã được thực hiện ở những bệnh nhân lên cơn cấp với tần suất thấp.', 'GLOBAL STRATEGY FOR THE DIAGNOSIS, MANAGEMENT, AND PREVENTION OF CHRONIC OBSTRUCTIVE PULMONARY DISEASE (2018 REPORT). (attach file txt) ', 1, 1, 1)
 INSERT [dbo].[TUVUNG] ([VocabID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources], [Active], [Learned], [Level]) VALUES (5, 1, N'clinical', N'/kl??n??n /', N'adverb', N'clinical', N'lâm sàng, thuộc hoặc liên quan đến việc khám và điều trị bệnh nhân', 'clinical diagnosis', 'on left', 'The risk of misdiagnosis and over-treatment of individual patients using the fixed ratio (FEV1/FVC) as a diagnostic criterion is limited, as spirometry is only one parameter for establishing the clinical diagnosis of COPD', N'Nguy cơ chẩn đoán sai và điều trị quá mức đối ở từng bệnh nhân sử dụng fixed ratio (FEV1/FVC) làm tiêu chuẩn chẩn đoán thì còn hạn chế, vì phế dung kế chỉ là một trong các thông số đùng trong chẩn đoán lâm sàng của bệnh COPD', 'GLOBAL STRATEGY FOR THE DIAGNOSIS, MANAGEMENT, AND PREVENTION OF CHRONIC OBSTRUCTIVE PULMONARY DISEASE (2018 REPORT). (attach file txt) ', 1, 1, 1)
 SET IDENTITY_INSERT [dbo].[TUVUNG] OFF

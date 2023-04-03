@@ -125,9 +125,7 @@
             <el-header>
 
               <div class="user-app">
-                <el-avatar
-                  :src="`../../assets/img/${this.gender}.png`"
-                />
+                <el-avatar :src="`../../assets/img/avatar/${imageUser}.png`" class="avatar"/>
                 <span class="text-large font-600 mr-3"> {{ nameUser }} </span>
                 <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
                   {{ emailUser }}
@@ -154,11 +152,8 @@
             </el-button>
 
           </div>
-
+          
       </v-main>
-
-      
-
     </v-layout>
 
 </template>
@@ -166,9 +161,10 @@
 
 <script>
 import axiosInstance from '../axios'
-
+import SettingAccount from '@/views/SettingAccount.vue'
 
 export default {
+  components: {SettingAccount},
   data(){     
       return {
         drawer: true,
@@ -181,8 +177,9 @@ export default {
           roleUser: 1,
           selectedItems: [],
 
+          imageUser: '',
+
           menuVisible: false,
-          gender: 'male',
 
           menuListItem: [
             {icon: 'mdi-magnify', title: 'Tra từ', value: 1, route: '/searching', roles: [1, 10, 100]},
@@ -199,10 +196,27 @@ export default {
 
   mounted(){  
      this.getDataUser()
+
+     this.getData()
   },
 
 
   methods:{
+
+    async getData(){
+      let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+
+
+      this.accountID = dataUser.accountID
+
+      let result = await axiosInstance.post('settingAccount', {
+          "AccountID": this.accountID
+      })
+
+      if(result.status == 200){
+          this.imageUser =  result.data[0].Image
+      }
+    },
   
 
     selectItem(valueNav){
@@ -268,6 +282,10 @@ export default {
   .user-app{
     display: flex;
     align-items: center;
+  }
+  
+  .avatar{
+    margin-right: 10px;
   }
 }
 

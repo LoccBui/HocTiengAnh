@@ -13,5 +13,7 @@ namespace HocTiengAnh.Models
         public string Email { get; set; }
         public int Active { get; set; }
         public int RoleID { get; set; }
+        public string Image { get; set; }
+
     }
 }
