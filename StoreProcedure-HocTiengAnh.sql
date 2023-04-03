@@ -782,20 +782,22 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image
+			select GV.AccountID, GV.MaGV,  GV.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join LOP L on L.MaGV = GV.MaGV
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
 	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image  
+			select SV.AccountID, SV.MaSV, SV.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where SV.AccountID = @AccountID
 		end
 	else
@@ -829,36 +831,46 @@ BEGIN
 		end
 END
 
-
---Update dữ liệu tài khoản
+--Update bảng tài khoản 
 create procedure sp_UpdateInfoAccount
 @AccountID int,
-@Name nvarchar(100),
-@Gender nvarchar(10),
 @Email varchar(100)
 as
 BEGIN
 	DECLARE @check int
-
+	
 	UPDATE TAIKHOAN 
 	SET Email = @Email
 	WHERE AccountID = @AccountID
 
-	IF EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
-		begin
-			UPDATE GIAOVIEN
-			SET Name = @Name, Gender = @Gender
-			where AccountID = @AccountID
-			set @check = (select @@ROWCOUNT) 
-		end
-	ELSE IF EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
-		begin
-			UPDATE SINHVIEN
-			SET Name = @Name, Gender = @Gender
-			where AccountID = @AccountID
-			set @check = (select @@ROWCOUNT) 
-		end
+	set @check = (select @@ROWCOUNT) 
 
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thông tin tài khoản thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+go
+
+--Update dữ liệu tài khoản GIÁO VIÊN
+alter procedure sp_UpdateInfoAccountGiaoVien
+@MaGV smallint,
+@Name nvarchar(100),
+@Gender nvarchar(10)
+as
+BEGIN
+	DECLARE @check int
+
+	UPDATE GIAOVIEN
+	SET Name = @Name, Gender = @Gender
+	where MaGV = @MaGV
+	set @check = (select @@ROWCOUNT) 
+	
 	if(@check > 0 )
 		begin 
 			SELECT N'Cập nhật thông tin tài khoản thành công'
@@ -872,8 +884,31 @@ END
 
 go
 
+--Update dữ liệu tài khoản SINH VIÊN
 
-select * from TAIKHOAN
+alter procedure sp_UpdateInfoAccountSinhVien
+@MaSV int,
+@Name nvarchar(100),
+@Gender nvarchar(10)
+as
+BEGIN
+	DECLARE @check int
+
+	UPDATE SINHVIEN
+	SET Name = @Name, Gender = @Gender
+	where MaSV = @MaSV
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật thông tin tài khoản thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
 
 
 

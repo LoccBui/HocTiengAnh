@@ -214,7 +214,11 @@ export default {
       })
 
       if(result.status == 200){
+        console.log("getData", result.data[0])
           this.imageUser =  result.data[0].Image
+          this.nameUser =  result.data[0].Name
+          this.emailUser = result.data[0].Email
+
       }
     },
   
@@ -231,9 +235,7 @@ export default {
           this.$router.push('/login')
         }
         else{
-          this.accountID = dataUser.accountID 
-          this.emailUser = dataUser.email 
-          this.nameUser = dataUser.name
+
           this.roleUser = dataUser.Role
         }
     },

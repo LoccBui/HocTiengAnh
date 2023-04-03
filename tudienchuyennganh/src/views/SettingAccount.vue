@@ -50,7 +50,7 @@
                     </el-col>
 
                     <div class="confirm-btn">
-                        <el-button  type="primary" >Xác nhận</el-button>
+                        <el-button  type="primary" @click="handleChangeInfo()" >Xác nhận</el-button>
                     </div>
                 </el-col>
             </div>
@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import { isBuffer } from 'lodash'
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 
@@ -122,6 +123,8 @@ export default {
         return{
             accountID: '',
 
+            roleUser: '',
+
             imageUser: '',
             inputName: '',
             gender: '',
@@ -129,6 +132,8 @@ export default {
             inputClass: '',
             inputFaculty: '',
 
+            maGV: '',
+            maSV: '',
             inputCurrentPassword: '',
             inputNewPassword: '',
 
@@ -175,6 +180,69 @@ export default {
             this.selectedAvatar = source
         },
 
+
+        async handleChangeInfo(){
+            
+            let result, email;
+
+            //send lên account đổi email trước
+            email = await axiosInstance.post('updateInfoAccount', {
+                "AccountID": this.accountID,
+                "Email": `${this.inputEmail}`,
+            })
+
+            console.log(this.roleUser)
+
+            
+            // phân loại để gửi theo loại user
+            try{
+
+                switch(this.roleUser){
+                    case 10:
+                        result = await axiosInstance.post('updateInfoGiaoVien', {
+                            "MaGV": this.maGV,
+                            "Name": `${this.inputName}`,
+                            "Gender": `${this.gender == true ? 'Nam' : 'Nữ'}`
+                        })
+
+
+                        if(result.status == 200 && email.status == 200){
+                            window.location.reload()
+
+                            this.getDataAvailable()
+                            // note: đổi lại get data của main layout
+                            this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                        }
+                        else{
+                            this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+                        }
+                        break;
+
+                    case 1: 
+                        result = await axiosInstance.post('updateInfoSinhVien', {
+                            "MaSV": this.maSV,
+                            "Name": `${this.inputName}`,
+                            "Gender": `${this.gender  == true ? 'Nam' : 'Nữ'}`
+                        })
+      
+                        if(result.status == 200 && email.status == 200){
+                            window.location.reload()
+                            this.getDataAvailable()
+                            // note: đổi lại get data của main layout
+                            this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                        }
+                        else{
+                            this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+                        }
+                        break;
+                }
+            }
+            catch(e){
+                this.showNotification('Thông báo', 'Lỗi khi cập nhật', 'error')
+            }
+
+        },
+
         async confirmAvatar(){
             let result = await axiosInstance.post('changeAvatar', {
                 "AccountID": this.accountID,
@@ -201,12 +269,17 @@ export default {
             })
 
             if(result.status == 200){
+                console.log(result.data[0].Gender)
                 this.imageUser =  result.data[0].Image
                 this.inputName = result.data[0].Name
                 this.gender = result.data[0].Gender == 'Nam' ? true : false
                 this.inputEmail = result.data[0].Email
                 this.inputClass = result.data[0].ClassName
                 this.inputFaculty = result.data[0].FacultyName
+                this.roleUser = result.data[0].Priority
+                this.maGV = result.data[0].MaGV || undefined
+                this.maSV = result.data[0].MaSV || undefined
+                
             }
         }
     }
@@ -214,9 +287,9 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 .setting-account-container{ 
-    position: relative;
+    background-color: transparent;
     height: 100%;
 
     .el-dialog__title{
@@ -262,13 +335,11 @@ export default {
 }
 
 .info-wrapper{
+    display: flex;  
     padding: 0 100px;
-    display: flex;
-    width: 100%;
-
 
     .wrapper{
-        height: auto;
+        height: fit-content;
         padding: 10px;
         border: 1px solid var(--light-blue-90);
         border-radius: 10px;
@@ -276,6 +347,8 @@ export default {
         display: flex;
         align-items: start;
         justify-content: center;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+        margin-bottom: 50px;
     }
 
     .wrapper + .wrapper{
