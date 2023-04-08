@@ -8,26 +8,21 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace HocTiengAnh.Controllers
+namespace HocTiengAnh.Controllers.DetailVocab
 {
-    [Route("learning/topicid={id}")]
     [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
- 
 
-    public class SelectTuVungByTopicIDController : ApiController
+    public class DetailVocabController : ApiController
     {
-        [HttpPost, HttpGet]
+        [Route("vocabdetail/topicid={id}")]
+        [HttpGet]
         public IHttpActionResult SelectTuVungByTopicID(int id)
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("TopicID", id)
                 };
-            var result = new DB().GetDataReader("sp_SelectTuVungByTopicID", param);
+            var result = new DB().GetDataReader("sp_ShowDetailVocab", param);
 
-            if (result == null)
-            {
-                return BadRequest("Error occurred while executing stored procedure.");
-            }
             return Json(result);
         }
     }

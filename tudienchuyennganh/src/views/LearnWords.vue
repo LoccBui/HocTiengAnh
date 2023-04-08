@@ -208,15 +208,16 @@ export default {
      },
 
     getVocabularyByTopicID(topicID){
-      axiosInstance.get(`/learning/topicid=${topicID}`)
-            .then(res => this.handleData(res.data))      
+      axiosInstance.get(`learning/topicid=${topicID}`)
+            .then(res => this.handleData(res.data))    
     },
 
     handleProgress(status){
       const totalStep = (this.vocabLength * 2) 
       const inscreasePercent = (100 / totalStep)
 
-      if(this.progressPercent != 100){``
+
+      if(this.progressPercent != 100){
         switch(status){
           case "correct": 
             this.totalScore += 100
@@ -235,14 +236,17 @@ export default {
             this.progressPercent += inscreasePercent
             break;
         }
+        if(this.progressPercent == 100){
+          alert('hoan thanh bai hoc')
+          this.$router.push('/topic')
+        }
       }
-      else{
-        alert('hoan thanh bai hoc')
-      }
+
 
     },
 
     handleData(dataAPI){
+      console.log(dataAPI)
       
         this.progressLength = dataAPI.length
         console.log(this.progress)
@@ -347,8 +351,7 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-  width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 2% 0;
 }
 .btnNext{

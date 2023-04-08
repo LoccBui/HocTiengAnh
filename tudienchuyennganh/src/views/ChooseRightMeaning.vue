@@ -10,7 +10,7 @@
         </div>
       </h1>
       <div class="w20">
-        <el-button color="#0038FF"  @click="this.selectAnswer()"> 
+        <el-button color="#0038FF"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Chọn
         </el-button>
@@ -74,7 +74,8 @@ export default {
       isFalse: false,
       selectedIndex: -1,
       selectedWord: '',
-      countDownTimes: 30
+      countDownTimes: 30,
+      stopClick: false,
 
     }
   },
@@ -129,32 +130,42 @@ export default {
       this.speak(word)
     },
 
-    selectAnswer(){
-
+    selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
-      if(this.selectedWord == this.Vietnamese){
-        this.$emit('step-Status', 'correct')
-        this.isCorrect = true;
-        this.isFalse = false
-        correct.play()
-        
-        setTimeout(() => {
-          this.finishLearn();
-        }, 2000);
+      if(this.selectedWord){
+        if (this.selectedWord == this.titleQuestion) {
+          this.$emit('step-Status', 'correct');
+          this.stopClick = true;
+          this.isCorrect = true;
+          this.isFalse = false;
+          correct.play();
+
+          const time = setTimeout(() => {
+              this.finishLearn();
+          }, 2000);
+
+        } 
+        else if (this.selectedWord != this.titleQuestion) {
+          this.$emit('step-Status', 'wrong');
+          this.stopClick = true;
+          this.isFalse = true;
+          wrong.play();
+
+          const time = setTimeout(() => {
+              this.finishLearn();
+          }, 2000);
+        }
       }
       else{
-        this.$emit('step-Status', 'wrong')
-        this.isFalse = true
-        wrong.play()  
-        
-        setTimeout(() => {
-          this.finishLearn();
-        }, 2000);
-
+        this.$emit('step-Status', 'wrong');
+        this.stopClick = true;
+        wrong.play();
+        this.finishLearn();
       }
     },
+
 
     speak(word) {
         //set biến đếm để nói 1 lần        

@@ -217,9 +217,10 @@ export default {
 
     methods: {
         getDataTableTopic(){
-            axiosInstance.get(`/detail/topicid=${this.topicID}`)
+            axiosInstance.get(`vocabdetail/topicid=${this.topicID}`)
             .then((res) => {
                 this.vocab = res.data
+                console.log(this.vocab)
             })         
         },
 

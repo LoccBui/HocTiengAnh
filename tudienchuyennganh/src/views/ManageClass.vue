@@ -46,9 +46,6 @@
   </el-table>
 
 
-
-  <el-divider></el-divider>
-
   <AskBox 
       v-if="showAskBox"
       :title="'Bạn có muốn xóa lớp này ?'"

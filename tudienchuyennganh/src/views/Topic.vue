@@ -134,7 +134,7 @@ export default {
         handleDataUser(data){
             console.log("trạng thái", data)
             this.accountID = data.accountID   
-            this.getDataTopic(this.accountID)
+            this.getDataTopic()
         },
 
         // lấy data topic theo id khoa nhận từ emmitter
@@ -169,12 +169,11 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-    height: 100vh;
+    height: 1000px;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: start;
     flex-wrap: wrap;
-    overflow: hidden;
 }
 
 

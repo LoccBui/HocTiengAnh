@@ -61,22 +61,17 @@
                     <h1 class="txt-40">Thay đổi mật khẩu</h1>
 
                     <el-col :span="24">
-                        <h1 class="info-user">Mật khẩu hiện tại</h1>
-                        <el-input v-model="input" />
-                    </el-col>
-
-                    <el-col :span="24">
                         <h1 class="info-user">Mật khẩu mới</h1>
-                        <el-input show-password="true" v-model="inputPassword" 	/>
+                        <el-input show-password v-model="inputNewPassword" 	/>
                     </el-col>
 
                     <el-col :span="24">
-                        <h1 class="info-user">Xác nhận mật khẩu</h1>
-                        <el-input v-model="input" />
+                        <h1 class="info-user" >Xác nhận mật khẩu</h1>
+                        <el-input show-password  v-model="inputNewPasswordConfirm"  @keyup.enter="changePassword()"/>
                     </el-col>
 
                     <div class="confirm-btn">
-                        <el-button type="primary">Thay đổi mật khẩu</el-button>
+                        <el-button type="primary" @click="changePassword()">Thay đổi mật khẩu</el-button>
                     </div>
 
                 </el-col>
@@ -113,10 +108,10 @@
 </template>
 
 <script>
-import { isBuffer } from 'lodash'
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 
+import md5 from 'md5';
 
 export default {
     data(){
@@ -134,7 +129,7 @@ export default {
 
             maGV: '',
             maSV: '',
-            inputCurrentPassword: '',
+            inputNewPasswordConfirm: '',
             inputNewPassword: '',
 
             selectedAvatar: '',
@@ -180,6 +175,21 @@ export default {
             this.selectedAvatar = source
         },
 
+        changePassword(){
+            if(this.inputNewPasswordConfirm != this.inputNewPassword){
+                this.showNotification('Thông báo', 'Mật khẩu không trùng nhau', 'error')
+                    this.$message.error('Mật khẩu phải trùng nhau.');
+            }
+            else{
+                this.showNotification('Thông báo', 'Mật khẩu trùng nhau', 'success')
+
+                let abc = md5(123)
+                axiosInstance.post('test', {
+                    "password": abc
+                })
+
+            }
+        },
 
         async handleChangeInfo(){
             

@@ -14,7 +14,7 @@
       
 
       <div class="w20">
-        <el-button color="#0038FF"  @click="this.selectAnswer()"> 
+        <el-button color="#0038FF"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Chọn
         </el-button>
@@ -80,6 +80,7 @@ export default {
       selectedIndex: -1,
       selectedWord: '',
       countDownTimes: 30,
+      stopClick: false
     }
   },
 
@@ -133,35 +134,39 @@ export default {
       this.speak(word)
     },
 
-    selectAnswer(){
-
+    selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
-      if(this.selectedWord == this.titleQuestion){
+      if(this.selectedWord){
+        if (this.selectedWord == this.titleQuestion) {
+          this.$emit('step-Status', 'correct');
+          this.stopClick = true;
+          this.isCorrect = true;
+          this.isFalse = false;
+          correct.play();
 
-        this.$emit('step-Status', 'correct')
+          const time = setTimeout(() => {
+              this.finishLearn();
+          }, 2000);
 
-        this.isCorrect = true;
-        this.isFalse = false
+        } 
+        else if (this.selectedWord != this.titleQuestion) {
+          this.$emit('step-Status', 'wrong');
+          this.stopClick = true;
+          this.isFalse = true;
+          wrong.play();
 
-        correct.play();
-
-        const time = setTimeout(() => {
-          this.finishLearn();
-        }, 2000);
-
-        
+          const time = setTimeout(() => {
+              this.finishLearn();
+          }, 2000);
+        }
       }
-      else if(this.selectedWord != this.titleQuestion){
-        this.$emit('step-Status', 'wrong')
-
-        this.isFalse = true
-        wrong.play()  
-
-        const time = setTimeout(() => {
-          this.finishLearn();
-        }, 2000);
+      else{
+        this.$emit('step-Status', 'wrong');
+        this.stopClick = true;
+        wrong.play();
+        this.finishLearn();
       }
     },
 

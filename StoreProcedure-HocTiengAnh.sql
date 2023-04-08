@@ -77,7 +77,21 @@ select TOP 5 *
 from TUVUNG
 where TopicID = @TopicID and Learned = 0
 
---exec sp_SelectTuVungByTopicID 4
+--exec sp_SelectTuVungByTopicID 1
+go
+
+alter procedure sp_ShowDetailVocab
+@TopicID int
+as
+BEGIN
+	select *
+	from TUVUNG
+	where TopicID = @TopicID and Learned = 0
+END
+
+go
+
+
 
 
 go
