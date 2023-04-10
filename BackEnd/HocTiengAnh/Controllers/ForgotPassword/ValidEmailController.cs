@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers
 {
     [Route("getEmail/{email}")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
 
     public class ValidEmailController : ApiController
     {

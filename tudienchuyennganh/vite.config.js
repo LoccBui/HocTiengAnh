@@ -6,6 +6,10 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
+// SSl
+import mkcert from 'vite-plugin-mkcert'
+
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -19,6 +23,7 @@ export default defineConfig({
         configFile: 'src/styles/settings.scss',
       },
     }),
+    mkcert() 
   ],
   define: { 'process.env': {} },
   resolve: {
@@ -37,7 +42,9 @@ export default defineConfig({
   },
   server: {
     host: true,
-    port: 8080
+    port: 8080,
+    cors: false,
+    https: true,
   }
 
 })

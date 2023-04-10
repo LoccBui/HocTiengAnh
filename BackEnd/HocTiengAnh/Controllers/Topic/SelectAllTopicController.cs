@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.Topic
 {
     [Route("SelectAllTopics")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class SelectAllTopicController : ApiController
     {
         [HttpGet]

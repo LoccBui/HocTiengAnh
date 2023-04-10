@@ -163,6 +163,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ChooseRightMeaning\ChooseRightMeaningController.cs" />
     <Compile Include="Controllers\ConfirmPassword\ConfirmPasswordController.cs" />
+    <Compile Include="Controllers\DetailClass\DetailClassController.cs" />
     <Compile Include="Controllers\DetailVocab\DetailVocabController.cs" />
     <Compile Include="Controllers\ForgotPassword\GenerateOTPForEmailController.cs" />
     <Compile Include="Controllers\ForgotPassword\ValidEmailController.cs" />

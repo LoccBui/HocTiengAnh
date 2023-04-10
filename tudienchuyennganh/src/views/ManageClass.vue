@@ -31,15 +31,18 @@
       </template>
 
       <template #default="scope">
-        <el-button color="#1565C0" size="large" @click="handleABC(scope.$index, scope.$row)"
-          >Sửa
+        <el-button color="#1565C0" size="large" @click="handleShowDetail(scope.row)"
+          >Chi tiết
         </el-button>
+        
         <el-button
           size="large"
           type="danger"
           @click="handleDeleteClass(scope.row.IDCLASS)"
           >Xóa
         </el-button>
+
+        
       </template>
 
     </el-table-column>
@@ -54,6 +57,15 @@
       @confirm="deleteClass"
       @close="this.showAskBox = false"
   />
+
+  <DetailClass 
+      v-if="showDetailClass"
+      :dataClass="this.detailClass"
+      @close="detailHasClosed"
+      @update-data="refreshData"
+  />
+
+
 
 
   <div>
@@ -104,8 +116,12 @@
 import { ElMessage } from 'element-plus'
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
+import DetailClass from '@/components/DetailClass.vue'
+
+
+
   export default {
-    components: {AskBox},
+    components: {AskBox, DetailClass},
     data () {
       return {
         search: '',
@@ -124,7 +140,11 @@ import AskBox from '@/components/AskBox.vue'
         idClassDelete: '',
         teacherList: [],
         showAskBox: false,
-        showSelectTeacherFaculty: false
+        showSelectTeacherFaculty: false,
+
+        showDetailClass: false,
+        detailClass: ''
+        
         
       }
         
@@ -171,10 +191,17 @@ import AskBox from '@/components/AskBox.vue'
         }
        
       },
-      handleABC(index, row){
-        console.log("chạy nè",index, row)
 
-          console.log(index,row)
+      handleShowDetail(classDetail){
+         this.detailClass = classDetail
+
+         this.showDetailClass = true
+
+      },
+
+      detailHasClosed(){
+        this.showDetailClass = false
+        
       },
 
 

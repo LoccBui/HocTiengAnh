@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.ForgotPassword
 {
     [Route("verify/{id}/{otpcode}")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class VerifyOTPCodeController : ApiController
     {
         [HttpGet]

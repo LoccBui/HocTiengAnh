@@ -1,4 +1,5 @@
 ﻿using HocTiengAnh.Database;
+using HocTiengAnh.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -8,21 +9,20 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace HocTiengAnh.Controllers
+namespace HocTiengAnh.Controllers.DetailClass
 {
-    [Route("learning/topicid={id}")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
- 
 
-    public class SelectTuVungByTopicIDController : ApiController
+    public class DetailClassController : ApiController
     {
-        [HttpPost, HttpGet]
-        public IHttpActionResult SelectTuVungByTopicID(int id)
+        [Route("DetailClass")]
+        [HttpPost]
+        public IHttpActionResult SelectTuVungByTopicID(ClassModel cl)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("TopicID", id)
+                    new SqlParameter("IDCLASS", cl.IDCLASS)
                 };
-            var result = new DB().GetDataReader("sp_SelectTuVungByTopicID", param);
+            var result = new DB().GetDataReader("sp_ShowDetailClass", param);
 
             if (result == null)
             {

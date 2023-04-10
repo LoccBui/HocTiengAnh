@@ -12,7 +12,7 @@ using HocTiengAnh.Database;
 namespace HocTiengAnh.Controllers.Login
 {
     [Route("login/{username}/{password}")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
 
     public class LoginController : ApiController
     {

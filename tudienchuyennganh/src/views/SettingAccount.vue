@@ -183,9 +183,14 @@ export default {
             else{
                 this.showNotification('Thông báo', 'Mật khẩu trùng nhau', 'success')
 
-                let abc = md5(123)
+                let key = '123';
+
+                let data = 1 + key
+
+                let hashPass = md5(data).toString(); // Mã hóa dữ liệu bằng MD5
+
                 axiosInstance.post('test', {
-                    "password": abc
+                    "password": hashPass
                 })
 
             }
@@ -196,59 +201,81 @@ export default {
             let result, email;
 
             //send lên account đổi email trước
-            email = await axiosInstance.post('updateInfoAccount', {
-                "AccountID": this.accountID,
-                "Email": `${this.inputEmail}`,
-            })
+            console.log(this.inputEmail)
+            console.log(this.inputName)
 
-            console.log(this.roleUser)
+            if(this.inputEmail.endsWith('@gmail.com') && this.inputEmail != "" && this.inputName != ""){
 
-            
-            // phân loại để gửi theo loại user
-            try{
+                email = await axiosInstance.post('updateInfoAccount', {
+                    "AccountID": this.accountID,
+                    "Email": `${this.inputEmail}`,
+                })
 
-                switch(this.roleUser){
-                    case 10:
-                        result = await axiosInstance.post('updateInfoGiaoVien', {
-                            "MaGV": this.maGV,
-                            "Name": `${this.inputName}`,
-                            "Gender": `${this.gender == true ? 'Nam' : 'Nữ'}`
-                        })
+                console.log(this.roleUser)
+
+                
+                // phân loại để gửi theo loại user
+                try{
+
+                    switch(this.roleUser){
+                        case 10:
+                            result = await axiosInstance.post('updateInfoGiaoVien', {
+                                "MaGV": this.maGV,
+                                "Name": `${this.inputName}`,
+                                "Gender": `${this.gender == true ? 'Nam' : 'Nữ'}`
+                            })
 
 
-                        if(result.status == 200 && email.status == 200){
-                            window.location.reload()
+                            if(result.status == 200 && email.status == 200){
+                                window.location.reload()
 
-                            this.getDataAvailable()
-                            // note: đổi lại get data của main layout
-                            this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                                this.getDataAvailable()
+                                // note: đổi lại get data của main layout
+                                this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                            }
+                            else{
+                                this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+                            }
+                            break;
+
+                        case 1: 
+                            result = await axiosInstance.post('updateInfoSinhVien', {
+                                "MaSV": this.maSV,
+                                "Name": `${this.inputName}`,
+                                "Gender": `${this.gender  == true ? 'Nam' : 'Nữ'}`
+                            })
+        
+                            if(result.status == 200 && email.status == 200){
+                                window.location.reload()
+                                this.getDataAvailable()
+                                // note: đổi lại get data của main layout
+                                this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                            }
+                            else{
+                                this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+                            }
+                            break;
+
+                        default:{
+                            if(result.status == 200 && email.status == 200){
+                                window.location.reload()
+                                this.getDataAvailable()
+                                // note: đổi lại get data của main layout
+                                this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                            }
+                            else{
+                                this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
+                            }
+                            break;
                         }
-                        else{
-                            this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
-                        }
-                        break;
-
-                    case 1: 
-                        result = await axiosInstance.post('updateInfoSinhVien', {
-                            "MaSV": this.maSV,
-                            "Name": `${this.inputName}`,
-                            "Gender": `${this.gender  == true ? 'Nam' : 'Nữ'}`
-                        })
-      
-                        if(result.status == 200 && email.status == 200){
-                            window.location.reload()
-                            this.getDataAvailable()
-                            // note: đổi lại get data của main layout
-                            this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
-                        }
-                        else{
-                            this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
-                        }
-                        break;
+                    }
+                }
+                catch(e){
+                    this.showNotification('Thông báo', 'Lỗi khi cập nhật', 'error')
                 }
             }
-            catch(e){
-                this.showNotification('Thông báo', 'Lỗi khi cập nhật', 'error')
+            else{
+                this.showNotification('Thông báo', 'Dữ liệu không chính xác', 'error')
             }
 
         },

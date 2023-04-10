@@ -425,8 +425,6 @@ BEGIN
     END CATCH
 END
 
-exec sp_DeleteTopicByID NULL
-
 go
 
 --Thêm từ vựng vào chủ đề mới tạo
@@ -922,6 +920,37 @@ BEGIN
 			return null
 		end
 END
+
+go
+
+-- CHI TIẾT LỚP
+create procedure sp_ShowDetailClass
+@IDCLASS smallint
+as
+BEGIN
+	DECLARE @check int
+
+	select CTL.DetailID, SV.MaSV ,SV.Name, SV.Gender
+	from CHITIETLOP CTL
+	inner join SINHVIEN SV on SV.MaSV = CTL.MaSV
+	where CTL.IDCLASS = @IDCLASS
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check < 0 )
+		begin 
+			return null
+		end
+
+END
+
+
+SELECT DISTINCT GV.MaGV, GV.Name, LOP.ClassName, LOP.IDCLASS
+FROM CHITIETLOP CTL
+INNER JOIN LOP ON CTL.IDCLASS = LOP.IDCLASS
+INNER JOIN GIAOVIEN GV ON LOP.MaGV = GV.MaGV
+where GV.MaGV = 1
+
 
 
 

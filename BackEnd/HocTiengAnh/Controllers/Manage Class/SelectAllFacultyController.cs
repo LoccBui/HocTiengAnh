@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.Manage_Class
 {
     [Route("SelectAllFaculty")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
 
     public class SelectAllFacultyController : ApiController
     {

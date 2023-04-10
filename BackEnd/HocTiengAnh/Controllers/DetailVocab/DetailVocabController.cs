@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailVocab
 {
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
 
     public class DetailVocabController : ApiController
     {
@@ -23,6 +23,10 @@ namespace HocTiengAnh.Controllers.DetailVocab
                 };
             var result = new DB().GetDataReader("sp_ShowDetailVocab", param);
 
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
             return Json(result);
         }
     }

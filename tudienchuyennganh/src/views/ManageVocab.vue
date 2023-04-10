@@ -214,7 +214,6 @@ import * as XLSX from 'xlsx';
 
       detailHasClosed(){
         this.showDetailBox = false
-
       },
 
       refreshData(){
