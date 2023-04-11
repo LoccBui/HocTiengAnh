@@ -1,7 +1,7 @@
 <template>
    <div class="container">
       <div class="laban-wrapper">
-        <iframe class="widget-laban" width="100%" scrolling="no"  src="https://dict.laban.vn/widget/widget?w=1500&h=1000&hl=2&th=3"></iframe>
+        <iframe class="widget-laban" width="100%" scrolling="no"   src="https://dict.laban.vn/widget/widget?w=1500&h=1000&hl=2&th=3"></iframe>
 
         <!-- <el-input placeholder="Nhập từ"
         v-model="inputWord" 
@@ -44,15 +44,8 @@ export default {
 <style lang="scss" scoped>
 .container{
   width: 100%;
-  height: 1000px;
+  height: 100vh;
 }
-
-.widget-laban{
-  padding: 20px;
-  width: 100% !important;
-  height: 1000px;
-}
-
 .poweredby {
   display: none  !important;
 }

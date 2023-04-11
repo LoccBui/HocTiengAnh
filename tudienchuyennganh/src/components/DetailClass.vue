@@ -16,22 +16,35 @@
     
           <el-input v-model="inputClassName" :placeholder="`${this.inputClassName}`" @input="this.checkChange()"  />
 
-            <div>
-                Số lượng sinh viên
-              <el-button plain>{{ this.class.length }} </el-button> 
-            </div>
-              
+          <div style="margin-top: 20px;">
+                Số lượng sinh viên trong lớp: 
+                <el-button type="primary" plain disabled >  
+                  {{ arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === true).length}} 
+                </el-button> 
+          </div>
+          
+
+          <div style="margin-top: 20px;">
+              <el-badge :value="`${arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false).length}`" class="item">
+                <el-button plain @click="this.showListNeedApproved = true"> 
+                  Đang chờ xét duyệt
+                </el-button> 
+            </el-badge>
+
+          </div>
+            
+        
           <el-divider></el-divider>
     
             <!-- Data table -->
           <el-table 
             max-height="400px"
-            :data="filteredVocab" 
+            :data="filterStundentHasApproved" 
             :default-sort="{ prop: 'TopicID', order: 'ascending' }"
+            empty-text="Bạn cần phê duyệt để thấy danh sách sinh viên"
           >
     
           <el-table-column label="ID" prop="DetailID"  sortable/>
-          <el-table-column label="Mã SV" prop="MaSV" />
           <el-table-column label="Họ và tên" prop="Name" />
           <el-table-column label="Giới tính" prop="Gender" />
           <el-table-column align="center">
@@ -153,13 +166,51 @@
        
     
       </template>
+
+
+
+
+      <!-- Approved Box -->
+      <el-dialog v-model="showListNeedApproved" title="Danh sách sinh viên cần phê duyệt vào lớp" width="70%">
+
+        <el-table 
+            max-height="400px"
+            :data="filterStundentNotApproved" 
+            :default-sort="{ prop: 'DetailID', order: 'ascending' }"
+            empty-text="Không có sinh viên cần phê duyệt"
+          >
+    
+          <el-table-column label="ID" prop="DetailID"  sortable/>
+          <el-table-column label="Họ và tên" prop="Name" />
+          <el-table-column label="Giới tính" prop="Gender" />
+          <el-table-column align="center">
+    
+          <template #header>
+            <el-input v-model="search" size="large" placeholder="Nhập tên sinh viên" @input="handleSearch"/>
+          </template>
+    
+          <template #default="scope">
+            <el-button type="primary" size="large" @click="approveStudent(scope.row)"
+              >Phê duyệt
+            </el-button>
+          </template>  
+        </el-table-column>
+      </el-table>
+
+      <template #footer>
+        <el-button type="primary" @click="handleVocabChoose(scope.row)">Phê duyệt tất cả</el-button>
+        <el-button @click="showListNeedApproved = false">Đóng</el-button>
+      </template>
+
+        
+      </el-dialog>
     
     
       </div>
     </template>
     
     <script>
-    import axiosInstance from '../axios'
+import axiosInstance from '../axios'
     import { ElNotification } from 'element-plus'
     
     
@@ -171,15 +222,19 @@
                 inputClassName: this.dataClass.ClassName,
                 classID: this.dataClass.IDCLASS,
                 className: this.dataClass.ClassName,
-                filteredVocab: [],
+                filteredClass: [],
+                filterPeopleApproved:[],
                 innerVisible: false,
     
                 detailVocab: '',
                 labelPosition: 'left',
     
+                arrClass: [],
                 search: '',
                 class: '',
                 isChange: false,
+
+                showListNeedApproved: false,
     
           
     
@@ -207,12 +262,26 @@
     
         computed: {
         // Mảng sản phẩm đã lọc theo giá trị tìm kiếm
-            filteredVocab() {
+            filteredClass() {
               if (!this.search) {
                 return this.class;
               }
-            return this.class.filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
-          }
+             return this.class.filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
+            },
+
+            filterStundentHasApproved(){
+              if (!this.search) {
+                return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === true)
+              }
+             return this.arrClass.flatMap(cls => cls).filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
+            },
+
+            filterStundentNotApproved(){
+              if (!this.search) {
+                return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false)
+              }
+             return this.arrClass.flatMap(cls => cls).filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
+            }
         },
     
         mounted(){
@@ -228,11 +297,23 @@
                 })
                 
                 if(result.status == 200){
-                    console.log(result.data)
                     this.class = result.data
+
+                    this.arrClass.length = 0
+                    this.arrClass.push(result.data)
+                  
                 }       
             },
+
+            handleIsNotApproved(){
+              this.arrClass.map(cls => {
+                if(cls.IsApproved == false){
+                  console.log(cls)
+                }
+              });
+            },
     
+
             showNotification(title ,message, type){
                 ElNotification({
                     title: `${title}`,
@@ -295,6 +376,28 @@
                 console.log('xác nhận chưa thay đổi')
                 this.innerVisible = false
               }
+            },
+
+
+            async approveStudent(dataStudent){
+              try{
+
+                let result = await axiosInstance.post('updateStudentApproved', {
+                  "DetailID": dataStudent.DetailID
+                })
+
+                if(result.status == 200){
+                  this.showNotification('Thông báo', 'Phê duyệt thành công', 'success')
+                  
+                }
+
+
+
+              }
+              catch(e){
+                this.showNotification('Thông báo', 'Không thể lấy dữ liệu', 'error')
+              }
+
             },
     
             async confirmTopic(){

@@ -930,7 +930,7 @@ as
 BEGIN
 	DECLARE @check int
 
-	select CTL.DetailID, SV.MaSV ,SV.Name, SV.Gender
+	select CTL.DetailID, SV.MaSV ,SV.Name, SV.Gender, CTL.IsApproved
 	from CHITIETLOP CTL
 	inner join SINHVIEN SV on SV.MaSV = CTL.MaSV
 	where CTL.IDCLASS = @IDCLASS
@@ -944,12 +944,42 @@ BEGIN
 
 END
 
+go
 
+alter procedure sp_UpdateApprovedStudent
+@DetailID int
+as
+BEGIN
+	DECLARE @check int
+	UPDATE CHITIETLOP 	
+	SET IsApproved = 1
+	where DetailID = @DetailID
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Cập nhật phê duyệt thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+
+select * from CHITIETLOP
+
+
+
+
+--Phân tích
 SELECT DISTINCT GV.MaGV, GV.Name, LOP.ClassName, LOP.IDCLASS
 FROM CHITIETLOP CTL
 INNER JOIN LOP ON CTL.IDCLASS = LOP.IDCLASS
 INNER JOIN GIAOVIEN GV ON LOP.MaGV = GV.MaGV
-where GV.MaGV = 1
+where GV.MaGV = 1 
 
 
 
