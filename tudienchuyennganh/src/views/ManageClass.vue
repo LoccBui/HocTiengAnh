@@ -1,7 +1,7 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" color="#1565C0" @click="addNewClass()"
+    <el-button class="mt-4" color="#1565C0" @click="openOptionAddClass()"
     >Thêm lớp</el-button> 
 
 
@@ -17,7 +17,7 @@
       prop="FacultyName" 
       sortable
       :filters="[
-        { text: 'CNTT', value: 'CNTT' },
+        { text: 'Công Nghệ Thông Tin', value: 'Công Nghệ Thông Tin' },
         { text: 'Dược', value: 'Dược' }
       ]"
       :filter-method="filterHandler"
@@ -49,6 +49,82 @@
   </el-table>
 
 
+  <!-- Option box -->
+  <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
+      <div class="options-container">
+        <div class="option-area">
+          <el-button type="success" @click="openWith('excel')">
+            <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
+            Thêm qua excel
+          </el-button>
+        </div>
+
+        <div class="option-area">
+          <el-button type="primary" @click="openWith('default')">
+            <v-icon class="option-icon">mdi-plus-thick</v-icon>
+            Thêm thủ công
+          </el-button>         
+        </div>
+      </div>
+  </el-dialog>
+
+    <!-- Add By Excel -->
+    <template>
+    <el-dialog
+        v-model="addByExcel"
+        width="50%"
+        title="Thêm lớp bằng Excel"
+        append-to-body
+        fullscreen
+        destroy-on-close	
+      >
+      <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề">Nhập tên chủ đề muốn tạo</el-input>
+      <el-input v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
+      
+      <el-divider />
+
+      <el-upload
+        class="upload-demo"
+        :auto-upload="false"
+        :limit="1"
+        :action="''"
+        drag
+        :on-change="handleUpload"
+        :before-upload="beforeUpload"
+      >
+        <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
+
+        <div class="el-upload__text">
+          Thả file ở đây hoặc <em>chọn file</em>
+        </div>
+
+        <template #tip>
+          <div class="el-upload__tip">
+            Chỉ chọn 1 file (dạng xls)
+          </div>
+        </template>
+
+      </el-upload>
+
+      <el-table :data="tableData" max-width="1000px" max-height="500px" 
+      empty-text="Chưa có dữ liệu"
+      >
+        <el-table-column prop="ClassName" label="Tên lớp"></el-table-column>
+        <el-table-column prop="Faculty" label="Khoa" ></el-table-column>
+     </el-table>
+
+     <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" size="large" @click="addNewClass()" > Thêm </el-button>
+        </div>
+      </template>
+
+    </el-dialog>
+  </template>
+
+
+
+
   <AskBox 
       v-if="showAskBox"
       :title="'Bạn có muốn xóa lớp này ?'"
@@ -67,57 +143,17 @@
 
 
 
-
-  <div>
-      <v-dialog
-        v-model="dialog"
-        width="auto"
-        transition="dialog-bottom-transition"
-      >
-        <v-card width="500px" >
-          <v-card-text>
-
-            <v-text-field 
-             label="Tên lớp"
-             placeholder="Nhập tên lớp"
-             variant="outlined"
-             focused
-             /> 
-
-             <v-select
-              label="Chọn khoa"
-              :items="facultyList"
-              @update:modelValue="selectFaculty"
-            ></v-select>
-
-            <v-select
-              v-show="showSelectTeacherFaculty"
-              label="Giáo viên chủ nhiệm"
-              :items="teacherList"
-            ></v-select>
-
-            <v-btn color="primary" block>Thêm</v-btn>
-            <v-btn  color="success" block>Import Excel</v-btn>
-
-          </v-card-text>
-
-          <v-card-actions>          
-            <v-btn color="error" variant="flat" block @click="dialog = false">Đóng</v-btn>
-          </v-card-actions>
-        </v-card>
-    </v-dialog>
-
-  </div> 
-
   </div>
 </template>
 
 <script>
-import { ElMessage } from 'element-plus'
+import { ElNotification } from 'element-plus'
+
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailClass from '@/components/DetailClass.vue'
 
+import * as XLSX from 'xlsx';
 
 
   export default {
@@ -127,7 +163,6 @@ import DetailClass from '@/components/DetailClass.vue'
         search: '',
         idTeacher: '',
         searchString: "",
-        dialog: false,
         headers: [
           {title: "Mã Lớp"},
           {title: "Tên Lớp"},
@@ -143,8 +178,13 @@ import DetailClass from '@/components/DetailClass.vue'
         showSelectTeacherFaculty: false,
 
         showDetailClass: false,
-        detailClass: ''
-        
+        detailClass: '',
+
+        optionsAdd: false,
+        addByExcel: false,
+        addByDefault: false,
+        tableData: [],
+
         
       }
         
@@ -161,6 +201,14 @@ import DetailClass from '@/components/DetailClass.vue'
       changeTitle(){
           document.title = "Quản lý lớp"
       },
+
+      showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },
  
       getAllClasses(){
         axiosInstance.get('SelectAllClasses')
@@ -186,7 +234,10 @@ import DetailClass from '@/components/DetailClass.vue'
         if (result.status == 200) {
            this.getAllClasses()
           this.showAskBox = false
-          this.showMessage('Xóa thành công', 'success')
+          this.showNotification('Hệ thống','Xóa thành công', 'success')
+
+        }else{
+          this.showNotification('Hệ thống','Xóa thất bại', 'error')
 
         }
        
@@ -199,16 +250,86 @@ import DetailClass from '@/components/DetailClass.vue'
 
       },
 
+      
+
       detailHasClosed(){
-        this.showDetailClass = false
+        this.showDetailClass = false    
+      },
+
+      openOptionAddClass(){
+        this.optionsAdd = true
+      },
+
+      openWith(typeOpen){
+        if(typeOpen == 'excel'){
+          this.addByExcel = true
+        }
+        else{
+          this.addByDefault = true
+        }
+      },
+
+       // Handle upload file 
+       handleUpload(file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result)
+          const workbook = XLSX.read(data, { type: 'array' })
+          const sheetName = workbook.SheetNames[0]
+          const worksheet = workbook.Sheets[sheetName]
+          const jsonData = XLSX.utils.sheet_to_json(worksheet)
+          this.tableData = jsonData
+          console.log(this.tableData)
+        }
+        reader.readAsArrayBuffer(file.raw)
+      },
         
+      //handle file is excel or not
+      beforeUpload(file) {
+        const isExcel =
+          file.type === 'application/vnd.ms-excel' ||
+          file.type ===
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        if (!isExcel) {
+          this.showNotification('Hệ thống','Chỉ chấp nhận định dạng Excel', 'error')
+        }
+        return isExcel
       },
 
+      async addNewClass(){
 
+        if( this.tableData.length > 0 ){
 
-      addNewClass(){
-        this.dialog = true
+          for (var i = 0; i < this.tableData.length; i++){
+              console.log(this.tableData[i].ClassName)
+              console.log(this.tableData[i].Faculty)
+              try{
+                let result = await axiosInstance.post('newClass',{
+                    "ClassName": `${this.tableData[i].ClassName}`,
+                    "FacultyName": `${this.tableData[i].Faculty}`,            
+                })
+
+                if(result.status == 200){
+                  this.addByExcel = false
+                  this.getAllClasses()
+                  this.getAllFaculty()
+                }else{
+                  this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }
+                
+              }
+              catch(error){
+                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+              }
+            }
+        }
+        else{
+          this.$message.error('Chưa có dữ liệu excel');
+        }
+
+       
       },
+
 
       getAllFaculty(){
         // add faculty name to v-select
@@ -242,15 +363,6 @@ import DetailClass from '@/components/DetailClass.vue'
           // console.log(value.FacultyName === value )
           return row.FacultyName === value 
       },
-
-      showMessage(message, type){
-        ElMessage({
-          message: `${message}`,
-          type: `${type}`,
-          effect:"dark"
-        })
-      }
-
       
       
     }
@@ -262,4 +374,43 @@ import DetailClass from '@/components/DetailClass.vue'
 .container{
   height: 100vh;
 }
+
+
+// Option Add
+.options-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100% ;
+    height: 200px;
+  }
+
+  .option-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    font-size: 50px;
+
+
+    .el-button{
+      width: 100%;
+      height: 100%;
+    }
+
+    .option-icon{
+      font-size: 50px;
+     
+    }
+  }
+
+
+.dialog-footer{
+  .el-button{
+    width: 100%;
+  }
+}
+
 </style>

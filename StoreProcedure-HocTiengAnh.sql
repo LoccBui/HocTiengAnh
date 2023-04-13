@@ -29,7 +29,8 @@ BEGIN
 			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join LOP L on L.MaGV = GV.MaGV
+			inner join CHITIETLOP CTL on CTL.MaGV = GV.MaGV
+			inner join LOP L on L.IDCLASS = CTL.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
@@ -50,7 +51,6 @@ BEGIN
 			where AccountID =  @AccountID
 		end
 END
---exec sp_AuthUser 6
 
 
 go
@@ -80,7 +80,7 @@ where TopicID = @TopicID and Learned = 0
 --exec sp_SelectTuVungByTopicID 1
 go
 
-alter procedure sp_ShowDetailVocab
+create procedure sp_ShowDetailVocab
 @TopicID int
 as
 BEGIN
@@ -88,11 +88,6 @@ BEGIN
 	from TUVUNG
 	where TopicID = @TopicID and Learned = 0
 END
-
-go
-
-
-
 
 go
 
@@ -125,7 +120,9 @@ BEGIN
 		begin
 			select @IDFaculty = L.IDFACULTY
 			from SINHVIEN SV
-			inner join LOP L on L.IDCLASS = SV.IDCLASS
+			inner join CHITIETLOP CT on CT.MaSV = SV.MaSV
+			inner join LOP L on L.IDCLASS = CT.IDCLASS
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			where SV.AccountID = @AccountID
 
 			exec sp_ShowTopicByFaculty @IDFaculty
@@ -133,17 +130,16 @@ BEGIN
 
 	ELSE 
 		begin
-			select @IDFaculty = L.IDFACULTY
+			select DISTINCT @IDFaculty = L.IDFACULTY
 			from GIAOVIEN GV
-			inner join LOP L on L.MaGV = GV.MaGV
+			inner join CHITIETLOP CT on CT.MaGV = GV.MaGV
+			inner join LOP L on L.IDCLASS = CT.IDCLASS
+			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			where GV.AccountID = @AccountID;
 
 			exec sp_ShowTopicByFaculty @IDFaculty
 		end	
 END
-
---exec sp_userFalculty 1
---exec sp_ShowTopicByFaculty 1
 
 
 go
@@ -267,7 +263,6 @@ go
 --Thêm Class mới
 create procedure sp_AddNewClass
 @ClassName varchar(50),
-@MaGV smallint,
 @IDFaculty tinyint
 as 
 BEGIN
@@ -277,8 +272,8 @@ BEGIN
 
 	SET IDENTITY_INSERT LOP ON 
 	
-	INSERT INTO LOP(IDCLASS, ClassName, MaGV, IDFACULTY)
-	VALUES(@lastestID, @ClassName, @MaGV, @IDFaculty)
+	INSERT INTO LOP(IDCLASS, ClassName, IDFACULTY)
+	VALUES(@lastestID, @ClassName, @IDFaculty)
 
 
 	SELECT @@ROWCOUNT as RowAdd
@@ -687,7 +682,6 @@ go
 
 create procedure sp_AddGiaoVienToClass
 @ClassName varchar(50),
-@MaGV smallint, 
 @IDFACULTY tinyint
 as
 BEGIN 
@@ -698,8 +692,8 @@ BEGIN
 	SET IDENTITY_INSERT LOP ON 
 
 
-	INSERT INTO LOP(IDCLASS, ClassName, MaGV, IDFACULTY)
-	VALUES(@lastestIDCLASS, @ClassName, @MaGV, @IDFACULTY )
+	INSERT INTO LOP(IDCLASS, ClassName, IDFACULTY)
+	VALUES(@lastestIDCLASS, @ClassName, @IDFACULTY )
 	set @check = (select @@ROWCOUNT) 
 
 	if(@check > 0 )
@@ -764,8 +758,6 @@ BEGIN
     WHERE Word LIKE '%' + @firstCharacter + '%' and Word not like @Word
 END
 
-exec sp_GetDataListenAndChoose 
-@Word = 'include'
 
 go
 
@@ -797,7 +789,8 @@ BEGIN
 			select GV.AccountID, GV.MaGV,  GV.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join LOP L on L.MaGV = GV.MaGV
+			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
+			inner join LOP L on L.IDCLASS = CTL.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
@@ -807,7 +800,8 @@ BEGIN
 			select SV.AccountID, SV.MaSV, SV.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
-			inner join LOP L on L.IDCLASS = SV.IDCLASS
+			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
+			inner join LOP L on L.IDCLASS = CTL.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where SV.AccountID = @AccountID
@@ -843,6 +837,7 @@ BEGIN
 		end
 END
 
+go
 --Update bảng tài khoản 
 create procedure sp_UpdateInfoAccount
 @AccountID int,
@@ -870,7 +865,7 @@ END
 go
 
 --Update dữ liệu tài khoản GIÁO VIÊN
-alter procedure sp_UpdateInfoAccountGiaoVien
+create procedure sp_UpdateInfoAccountGiaoVien
 @MaGV smallint,
 @Name nvarchar(100),
 @Gender nvarchar(10)
@@ -898,7 +893,7 @@ go
 
 --Update dữ liệu tài khoản SINH VIÊN
 
-alter procedure sp_UpdateInfoAccountSinhVien
+create procedure sp_UpdateInfoAccountSinhVien
 @MaSV int,
 @Name nvarchar(100),
 @Gender nvarchar(10)
@@ -946,7 +941,7 @@ END
 
 go
 
-alter procedure sp_UpdateApprovedStudent
+create procedure sp_UpdateApprovedStudent
 @DetailID int
 as
 BEGIN
@@ -967,19 +962,48 @@ BEGIN
 		end
 END
 
+go
+
+alter procedure sp_AddClass
+@ClassName varchar(50),
+@FacultyName nvarchar(100)
+as
+BEGIN
+
+  DECLARE @lastestIDCLASS INT
+  DECLARE @findIDFACULTY INT
+  DECLARE @check int
 
 
-select * from CHITIETLOP
+  SET @lastestIDCLASS = (SELECT MAX(IDCLASS) FROM LOP) + 1
+
+  set @findIDFACULTY = (SELECT IDFACULTY FROM KHOA WHERE FacultyName like @FacultyName)
+  
+  IF NOT EXISTS (SELECT * FROM LOP WHERE ClassName = @ClassName)
+	BEGIN
+		SET IDENTITY_INSERT LOP ON 
+
+	  INSERT INTO LOP(IDCLASS, ClassName, IDFACULTY)
+	  VALUES(@lastestIDCLASS, @ClassName, @findIDFACULTY)
+	  set @check = (select @@ROWCOUNT) 
+    END
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thêm lớp thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
 
 
-
-
---Phân tích
-SELECT DISTINCT GV.MaGV, GV.Name, LOP.ClassName, LOP.IDCLASS
-FROM CHITIETLOP CTL
-INNER JOIN LOP ON CTL.IDCLASS = LOP.IDCLASS
-INNER JOIN GIAOVIEN GV ON LOP.MaGV = GV.MaGV
-where GV.MaGV = 1 
+--Trang phân tích: lọc ra lớp của giáo viêb
+--select LOP.ClassName
+--from CHITIETLOP CTL
+--inner join LOP on LOP.IDCLASS = CTL.IDCLASS
+--where MaGV = 1
 
 
 
@@ -1066,6 +1090,3 @@ where GV.MaGV = 1
 --FROM CHITIETHOC
 --WHERE AccountID = 1
 --GROUP BY VocabID
-
-go
-

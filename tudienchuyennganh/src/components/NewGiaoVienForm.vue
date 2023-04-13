@@ -185,12 +185,10 @@ export default {
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
                 })
 
-                let MaGV = addToGiaoVien.data[0].MaGV
 
 
                 let addToClass =  await axiosInstance.post('addGiaoVienToClass', {
                     "ClassName": `${this.ruleForm.class.label}`, 
-                    "MaGV": MaGV,
                     "IDFACULTY":this.ruleForm.faculty 
                 })
 

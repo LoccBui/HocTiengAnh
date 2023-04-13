@@ -9,12 +9,7 @@
             destroy-on-close
             >
     
-            <div class="addVocab">
-              <el-button type="primary">Thêm sinh viên</el-button>
-            </div>
-        
-    
-          <el-input v-model="inputClassName" :placeholder="`${this.inputClassName}`" @input="this.checkChange()"  />
+          <el-input v-model="inputClassName" :placeholder="`${this.inputClassName}`" disabled />
 
           <div style="margin-top: 20px;">
                 Số lượng sinh viên trong lớp: 
@@ -50,13 +45,10 @@
           <el-table-column align="center">
     
           <template #header>
-            <el-input v-model="search" size="large" placeholder="Nhập từ cần tìm" @input="handleSearch"/>
+            <el-input v-model="search" size="large" placeholder="Nhập tên sinh viên" @input="handleSearch"/>
           </template>
     
           <template #default="scope">
-            <el-button type="primary" size="large" @click="handleVocabChoose(scope.row)"
-              >Sửa
-            </el-button>
             <el-button
               size="large"
               type="danger"
@@ -236,7 +228,8 @@ import axiosInstance from '../axios'
 
                 showListNeedApproved: false,
     
-          
+                refreshKey: 0,
+
     
                 dataDetailVocab: {
                   Word: '',
@@ -277,6 +270,7 @@ import axiosInstance from '../axios'
             },
 
             filterStundentNotApproved(){
+              this.refreshKey;
               if (!this.search) {
                 return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false)
               }
@@ -388,7 +382,9 @@ import axiosInstance from '../axios'
 
                 if(result.status == 200){
                   this.showNotification('Thông báo', 'Phê duyệt thành công', 'success')
-                  
+                  this.getDataTableTopic()
+                  this.refreshKey++;
+
                 }
 
 

@@ -54,12 +54,9 @@ go
 create table LOP(
 	IDCLASS smallint IDENTITY(1,1) UNIQUE,
 	ClassName varchar(50),
-	MaGV smallint,
-
 	IDFACULTY tinyint,
 
 	PRIMARY KEY (IDCLASS),
-	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV),
 	FOREIGN KEY (IDFACULTY) REFERENCES KHOA(IDFACULTY)
 )
 
@@ -230,7 +227,7 @@ GO
 
 
 SET IDENTITY_INSERT [dbo].[KHOA] ON 
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (1, N'CNTT')
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (1, N'Công nghệ thông tin')
 INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (2, N'Dược')
 INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (3, N'Maketing')
 SET IDENTITY_INSERT [dbo].[KHOA] OFF
@@ -245,9 +242,9 @@ INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Name], [Gender], [DateCreated]) V
 GO
 
 SET IDENTITY_INSERT [dbo].[LOP] ON 
-INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [MaGV], [IDFACULTY]) VALUES (1, N'19CT114', 1, 1)
-INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [MaGV], [IDFACULTY]) VALUES (2, N'19DC001', 2, 2)
-INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [MaGV], [IDFACULTY]) VALUES (3, N'19MK112', 3, 3)
+INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [IDFACULTY]) VALUES (1, N'19CT114', 1)
+INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [IDFACULTY]) VALUES (2, N'19DC001', 2)
+INSERT [dbo].[LOP] ([IDCLASS], [ClassName], [IDFACULTY]) VALUES (3, N'19MK112', 3)
 SET IDENTITY_INSERT [dbo].[LOP] OFF
 
 GO
@@ -256,6 +253,14 @@ INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Name], [Gender], [DateCreated], [I
 INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Name], [Gender], [DateCreated], [IDCLASS]) VALUES (2, 3, N'Nguyễn Lê An',N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 1)
 
 GO
+
+SET IDENTITY_INSERT [dbo].[CHITIETLOP] ON 
+INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[MaGV],[IDCLASS],[IsApproved]) VALUES (1, 1, 1, 1, 0)
+INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[MaGV],[IDCLASS],[IsApproved]) VALUES (2, 2, 1, 1, 0)
+SET IDENTITY_INSERT [dbo].[CHITIETLOP] OFF
+
+
+go
 
 
 

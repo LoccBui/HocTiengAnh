@@ -193,6 +193,7 @@
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\ClassModel.cs" />
     <Compile Include="Models\DetailClassModel.cs" />
+    <Compile Include="Models\FacultyModel.cs" />
     <Compile Include="Models\GiaoVienModel.cs" />
     <Compile Include="Models\SachModel.cs" />
     <Compile Include="Models\StudentModel.cs" />

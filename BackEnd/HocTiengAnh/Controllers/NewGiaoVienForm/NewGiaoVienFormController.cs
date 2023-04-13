@@ -40,7 +40,6 @@ namespace HocTiengAnh.Controllers.NewGiaoVienForm
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@ClassName", cls.ClassName),
-                    new SqlParameter("@MaGV", cls.MaGV),
                     new SqlParameter("@IDFACULTY", cls.IDFACULTY)
             };
 
