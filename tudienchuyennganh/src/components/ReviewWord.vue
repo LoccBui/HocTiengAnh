@@ -1,16 +1,65 @@
 <template>
   <div class="container">
-    {{ dataReview }}
-    <div class="word-cover" v-for="word in dataReview" :key="word.VocabID">
-          {{ word.Word }}
-          {{ word.Label }}
-          {{ word.Vietnamese }}
-          {{ word.Cluster }}
-          {{ word.Position }}
+    <!-- {{ dataReview }} -->
 
-          <el-button>Thêm vào từ của tôi</el-button>
+    <div class="heading">
+      <h1 class="main-text">   Bạn vừa hoàn thành bài học !  </h1>
     </div>
     
+
+    <div>Tổng điểm bạn nhận được: 132</div>
+
+
+    <div class="table-cover">
+
+      <div class="word-cover">
+
+        <h1 class="main-text"> Bạn vừa học...</h1>
+
+        <div class="scrolling">
+
+          <div class="word" v-for="word in dataReview" :key="word.VocabID">        
+                <div>
+                  <h3> {{ word.Word }} </h3>          
+                  <h3> {{ word.Vietnamese }} </h3>  
+                </div>  
+                
+                <div>
+                  <el-button color="var(--main-color)">Thêm vào từ của tôi</el-button>
+                </div>
+          </div>
+
+        </div>
+      </div>
+      
+
+      <div class="ranking-cover">
+        <div class="leader-board">
+          <h1 class="main-text"> Bảng xếp hạng</h1>
+          
+          
+          <div class="scrolling">
+            <div v-for="user in users" :key="user.name" class="detail-user">
+                <div class="left-side">
+                  <span>
+                    <el-avatar :src="`../../assets/img/avatar/${user.avatar}.png`" class="avatar"/>
+                  </span>
+                  <span class="user-name">{{ user.name }}</span>
+                </div>
+
+                <div>{{ user.score }}</div>
+            </div>
+          </div>  
+
+        </div>
+      </div>  
+    </div>
+    
+    Gợi ý cho bạn
+    <div>
+      <el-button size="large" color="var(--main-color)">Quay về học từ</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -19,7 +68,19 @@ export default {
     props: ['dataReview'],
     data(){
         return{
-            
+            users:[
+                {'name': 'A', 'avatar': 'default', 'score': 100},
+                {'name': 'A1', 'avatar': 'default', 'score': 100},
+                {'name': 'A2', 'avatar': 'default', 'score': 100},
+                {'name': 'A3', 'avatar': 'default', 'score': 100},
+                {'name': 'A4', 'avatar': 'default', 'score': 100},
+                {'name': 'A5', 'avatar': 'default', 'score': 100},
+                {'name': 'A5', 'avatar': 'default', 'score': 100},
+                {'name': 'A5', 'avatar': 'default', 'score': 100},
+                {'name': 'A5', 'avatar': 'default', 'score': 100},
+                {'name': 'A5', 'avatar': 'default', 'score': 100},
+                {'name': 'Điểm của bạn', 'avatar': 'default', 'score': 100},
+            ]
         }
     },
 
@@ -31,13 +92,93 @@ export default {
 <style lang="scss" scoped>
 .container{
   width: 100%;
-  padding: 20px 0 0 0 !important;
 }
 
-.word-cover{
-  width: 200px;
-  height: 200px;
-  padding: 5px;
-  border: 1px solid black
+.heading{
+  display: flex;
+  justify-content: center;
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-image: radial-gradient(circle at center center, #0038FF, #e5e5f7), repeating-radial-gradient(circle at center center, #0038FF, #0038FF, 40px, transparent 80px, transparent 40px);
+  background-blend-mode: multiply;
+  .main-text{
+    font-size: 45px;
+  }
 }
+
+
+.main-text{
+    font-size: 30px;
+    color: white;
+  }
+
+
+
+.table-cover{
+  display: flex;
+
+  .word-cover,
+  .ranking-cover{
+    width: 50%;
+    padding: 2%;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: var(--tints-20);
+  }
+
+  .scrolling{
+    max-height: 400px;
+    overflow-y: scroll;
+
+  }
+
+
+  .ranking-cover{
+    margin-left: 2%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .leader-board{
+    
+    .detail-user{
+      
+      background-color: white;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--main-color);
+      padding: 2%;
+      color: var(--main-color);
+
+
+      .left-side{
+        display: flex;
+        align-items: center;
+        height: 50px;
+        width: 40%;
+
+        .user-name{
+          margin-left: 10%;
+        }
+      }
+
+    }
+  }
+
+
+  .word-cover{
+    border: 1px solid transparent;
+  }
+
+  .word{
+    background-color: white;
+    padding: 2%;
+    color: var(--main-color);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--main-color);
+  }
+}
+
 </style>

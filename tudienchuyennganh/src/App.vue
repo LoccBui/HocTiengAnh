@@ -27,6 +27,7 @@
 
   --tints-80: #ccd7ff;
   --tints-90: #e6ebff;
+  --tints-20: #3360ff;
 
   --success: #28A745;
   --error: #FF0000;
