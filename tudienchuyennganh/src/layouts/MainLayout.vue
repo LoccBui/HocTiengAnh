@@ -90,7 +90,7 @@
                     plain
                     v-bind="props" 
                     size="large" 
-                    color="#0038FF" 
+                    color="var(--main-color)" 
                     @click="()=>  this.$router.push(`${item.route}`)">
                     <v-icon>{{ item.icon }}</v-icon>
                   </el-button>
@@ -266,7 +266,7 @@ export default {
 .header{
   padding: 10px 0;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  border: 1px solid var(--light-blue-90);
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
   justify-content: start;
@@ -363,7 +363,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 
-  border: 1px solid var(--light-blue-90);
+  border: 1px solid transparent;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 20px;
   width: auto;
@@ -408,7 +408,7 @@ export default {
 
 
 .showNav{
-  color: #0038FF;
+  color: var(--main-color);
   width: inherit;
 }
 

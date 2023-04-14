@@ -15,7 +15,7 @@
                     model-value= 30
                     :buffer-value="bufferValue"
                     height="20"
-                    color="#0038FF"
+                    color="var(--main-color)"
                     rounded
                     ></v-progress-linear>
                 </div>
@@ -34,16 +34,17 @@
                     
                     <br>
 
-                    <v-btn color="primary" width="100px" 
+                    <!-- <v-btn color="var(--main-color)" width="100px" 
                     router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
-                    >
+                    >Học </v-btn> -->
 
-                    Học
-                    </v-btn>
+                    <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.TopicID}`)"
+                    router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
+                    >Học</el-button>
 
-                    <v-btn color="primary" @click=" this.showOption = !this.showOption">
+                    <el-button size="large" color="var(--main-color)" @click=" this.showOption = !this.showOption">
                         <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
+                    </el-button>
                 </div>
             </div>
 
@@ -183,7 +184,7 @@ export default {
     margin: 20px;
     padding: 10px;
 
-    border: 1px solid var(--light-blue-90);
+    border: 1px solid transparent;
     border-radius: 15px;
 
     line-height: 50px;

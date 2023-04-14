@@ -111,6 +111,8 @@
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 
+import CryptoJS from 'crypto-js';
+
 import md5 from 'md5';
 
 export default {
@@ -183,15 +185,22 @@ export default {
             else{
                 this.showNotification('Thông báo', 'Mật khẩu trùng nhau', 'success')
 
-                let key = '123';
+                // const secretKey = 123;
+                // const data = 'passwordHere';
+                //  const encryptedData = CryptoJS.AES.encrypt(data, secretKey).toString();
 
-                let data = 1 + key
-
-                let hashPass = md5(data).toString(); // Mã hóa dữ liệu bằng MD5
-
-                axiosInstance.post('test', {
-                    "password": hashPass
+                axiosInstance.post('test1', {
+                    encryptedData
                 })
+                .then(response => {
+                    console.log(response);
+                    // Xử lý phản hồi từ server
+                })
+                .catch(error => {
+                    // Xử lý lỗi
+                    console.log(error);
+                });
+
 
             }
         },
@@ -378,7 +387,7 @@ export default {
     .wrapper{
         height: fit-content;
         padding: 10px;
-        border: 1px solid var(--light-blue-90);
+        border: 1px solid transparent;
         border-radius: 10px;
         width: 50%;
         display: flex;

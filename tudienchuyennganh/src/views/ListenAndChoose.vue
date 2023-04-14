@@ -11,7 +11,7 @@
       </h1>
 
       <div class="w20">
-        <el-button color="#0038FF"  @click="this.selectAnswer()" :disabled="stopClick"> 
+        <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Chọn
         </el-button>
@@ -290,7 +290,7 @@ export default {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: #0038FF;
+    background-color: var(--main-color);
   }
 }
 
@@ -337,7 +337,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,#0038FF 0px 2px 16px 0px;
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,var(--main-color) 0px 2px 16px 0px;
     }
   }
 }

@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
+
+
 namespace HocTiengAnh.Controllers.Manage_Class
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]  

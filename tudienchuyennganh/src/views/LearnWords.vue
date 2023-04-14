@@ -24,11 +24,10 @@
 
     <div class="progress-learning"> 
       <router-view></router-view>
+
+
     </div>
 
-
-
-    
     <v-divider></v-divider>
 
     
@@ -38,13 +37,6 @@
         <img src="../../assets/icon/ic_audio.png" class="size-icon-48px" alt="Audio">
       </button> 
     </div>
-
-    <h1 v-if="ChooseRightMeaning">step1</h1>
-    <h1 v-if="FillInABlank">step2</h1>
-    <h1 v-if="ListenAndChoose">step3</h1>
-    <h1 v-if="ChooseRightWord">step4</h1>
-    <h1 v-if="CorrectListening">step5</h1>
-
   
   </div>
 
@@ -55,7 +47,7 @@
     <div class="header">
 
         <div class="w80">
-          <el-progress v-model="progressLearning" :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
+          <el-progress color="var(--main-color)" v-model="progressLearning" :text-inside="true" :stroke-width="26" :percentage="progressPercent" />
         </div>
       
         <div class="flex1 score-cover">
@@ -98,9 +90,16 @@
     @finish-learn="handleFinishLearn"
     @step-Status="handleProgress"
     />  
+    
+    <ReviewWord v-if="showReviewWord"
+      :dataReview="dataAPI"
+    />
         
+    
+  </div>
+  
+   
 
-   </div>
   
   </div>
 </template>
@@ -116,9 +115,11 @@ import FillInABlank from './FillInABlank.vue'
 import ListenAndChoose from './ListenAndChoose.vue'
 import ChooseRightWord from './ChooseRightWord.vue'
 import CorrectListening from './CorrectListening.vue'
- 
+
+import ReviewWord from '@/components/ReviewWord.vue'
+
 export default {
-  components: {LearnByMeaningVue, ChooseRightMeaning, FillInABlank, ListenAndChoose, ChooseRightWord, CorrectListening},
+  components: {LearnByMeaningVue, ChooseRightMeaning, FillInABlank, ListenAndChoose, ChooseRightWord, CorrectListening, ReviewWord},
   data(){
     return {
       idTopic: this.$route.params.id,
@@ -170,7 +171,9 @@ export default {
           'id': 5,
           'name': 'CorrectListening'
         }
-      ]
+      ],
+
+      showReviewWord:false,
 
     }
   },
@@ -238,7 +241,15 @@ export default {
         }
         if(this.progressPercent == 100){
           alert('hoan thanh bai hoc')
-          this.$router.push('/topic')
+
+          this.learnByMeaning = false
+          this.ChooseRightMeaning =  false
+          this.FillInABlank = false
+          this.ListenAndChoose = false
+          this.ChooseRightWord = false
+          this.CorrectListening = false
+
+          this.showReviewWord = true
         }
       }
 
@@ -274,7 +285,9 @@ export default {
       else{
         this.reviewWords = false
         // this.learnByMeaning = true
+   
         this.randomLearningType()
+        
       }
 
     },
@@ -285,6 +298,11 @@ export default {
     },
 
     randomLearningType() {
+      if(this.progressPercent == 100){
+        alert('ko random')
+      }
+      else{
+
         let valueRandom;
 
         //Random id trong mảng step đã có
@@ -327,22 +345,25 @@ export default {
             console.log('random times:', this.randomTimes)
           }
 
-        }
-        else{
-          //nếu full mảng -> xóa mảng đã chứa các phần tử trước và random add lại
-          if(this.randomHasAppear.length == this.learningSteps.length){
-            console.warn('Mảng full -> reset', valueRandom)
-            this.randomHasAppear.length = 0
-            this.randomLearningType()
           }
-          // Giá trị random đã có trong mảng -> random lại
           else{
-            console.log('Không add ->  random lại', valueRandom)
-            this.randomLearningType()
-          }
+            //nếu full mảng -> xóa mảng đã chứa các phần tử trước và random add lại
+            if(this.randomHasAppear.length == this.learningSteps.length){
+              console.warn('Mảng full -> reset', valueRandom)
+              this.randomHasAppear.length = 0
+              this.randomLearningType()
+            }
+            // Giá trị random đã có trong mảng -> random lại
+            else{
+              console.log('Không add ->  random lại', valueRandom)
+              this.randomLearningType()
+            }
 
-        }
-        console.log('Giá trị đã random:', this.randomHasAppear);
+          }
+          console.log('Giá trị đã random:', this.randomHasAppear);
+
+      }
+
     },
   }
 }
@@ -351,8 +372,8 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-  height: 100vh;
-  padding: 2% 0;
+  min-height: 600px;
+  padding: 0 2%;
 }
 .btnNext{
   color: red !important;
@@ -381,14 +402,27 @@ export default {
 }
 
 .audio-wrapper{
-  background-color: var(--light-blue-90);
-  width: 100px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, var(--main-color) 0px 3px 7px -3px;
+  width: 150px;
   height: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 5px;
   padding: 5px;
+  animation: sparkle infinite 3s linear;
+}
+
+
+@keyframes sparkle{
+  0%{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 3px 6px -0px, var(--main-color) 0px 3px 7px -3px;
+
+  }
+  100%{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 10px 15px 4px, var(--main-color) 0px 3px 7px -3px;
+
+  }
 }
 
 

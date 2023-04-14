@@ -155,7 +155,9 @@ GO
 create table TUVUNGCANHAN(
 	PersonalVocabID int IDENTITY(1,1),
 	VocabID int,
+
 	AccountID int, 
+	VocabName NVARCHAR(50),
 
 	Frequency int,
 	Word varchar(50),

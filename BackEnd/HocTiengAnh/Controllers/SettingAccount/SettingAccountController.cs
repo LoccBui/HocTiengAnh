@@ -3,9 +3,12 @@ using HocTiengAnh.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -105,6 +108,47 @@ namespace HocTiengAnh.Controllers.SettingAccount
                 return BadRequest("Error occurred while executing stored procedure.");
             }
             return Json(result);
+        }
+
+        public class EncryptedDataModel
+        {
+            public string EncryptedData { get; set; }
+        }
+
+
+        [HttpPost]
+        [Route("test")]
+        public IHttpActionResult Test([FromBody] EncryptedDataModel encryptedDataModel)
+        {
+            try
+            {
+                string encryptedData = encryptedDataModel.EncryptedData;
+                byte[] secretKey = Encoding.UTF8.GetBytes("12345678901234567890123456789012"); // 32 bytes (256 bits)
+
+                // Giải mã dữ liệu
+                byte[] encryptedBytes = Convert.FromBase64String(encryptedData);
+                using (AesManaged aesAlg = new AesManaged())
+                {
+                    aesAlg.Key = secretKey;
+                    aesAlg.IV = new byte[16]; // IV là 16 bytes (128 bits), có thể tự sinh hoặc truyền từ phía gửi dữ liệu
+                    using (MemoryStream memoryStream = new MemoryStream(encryptedBytes))
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, aesAlg.CreateDecryptor(), CryptoStreamMode.Read))
+                        {
+                            using (StreamReader streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
+                            {
+                                string decryptedData = streamReader.ReadToEnd();
+                                return Ok(decryptedData);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to decrypt data: " + ex.Message);
+            }
+
         }
     }
 }

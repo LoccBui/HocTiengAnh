@@ -15,12 +15,14 @@
   position: relative;
   width: 100vw;
   height: auto;
+  border:none
 }
+
 
 /* color pallete picker: https://imagecolorpicker.com/color-code/0038ff */
 :root{
   --main-color: #0038FF;
-  --light-blue-90: #e6ebff;
+  --light-blue-90: #010101;
   --gray-text: #888888;
 
   --tints-80: #ccd7ff;
@@ -35,6 +37,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: red;
   font-size: 100%;
   font-family: 'Noto Sans JP', 'Nunito Sans', Roboto, Arial, sans-serif;    
  }
