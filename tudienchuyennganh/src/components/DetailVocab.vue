@@ -10,7 +10,7 @@
         >
 
         <div class="addVocab">
-          <el-button type="primary">Thêm từ vựng</el-button>
+          <el-button color="var(--main-color)">Thêm từ vựng</el-button>
         </div>
     
 
@@ -37,7 +37,7 @@
       </template>
 
       <template #default="scope">
-        <el-button type="primary" size="large" @click="handleVocabChoose(scope.row)"
+        <el-button color="var(--main-color)" size="large" @click="handleVocabChoose(scope.row)"
           >Sửa
         </el-button>
         <el-button
@@ -54,9 +54,9 @@
       
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="this.showBox = false">Đóng</el-button>
+        <el-button color="danger" size="large" @click="this.showBox = false">Đóng</el-button>
 
-        <el-button type="primary" @click="this.confirmTopic()">
+        <el-button color="var(--main-color)" size="large" @click="this.confirmTopic()">
          Xác nhận 
          </el-button>
       </div>

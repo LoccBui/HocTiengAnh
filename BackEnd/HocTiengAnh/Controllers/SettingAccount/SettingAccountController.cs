@@ -78,7 +78,6 @@ namespace HocTiengAnh.Controllers.SettingAccount
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@MaGV", gv.MaGV),
-                    new SqlParameter("@Name", gv.Name),
                     new SqlParameter("@Gender", gv.Gender),
             };
 
@@ -97,7 +96,6 @@ namespace HocTiengAnh.Controllers.SettingAccount
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@MaSV", sv.MaSV),
-                    new SqlParameter("@Name", sv.Name),
                     new SqlParameter("@Gender", sv.Gender),
             };
 

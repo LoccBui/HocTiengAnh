@@ -21,7 +21,6 @@ namespace HocTiengAnh.Controllers.NewGiaoVienForm
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@AccountID", teacher.AccountID),
-                    new SqlParameter("@Name", teacher.Name),
                     new SqlParameter("@Gender", teacher.Gender)
             };
 

@@ -188,7 +188,8 @@ export default {
             {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: 4, route: '/manage/class', roles: [100]},
             {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
             {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Chi tiết học', value: 6, route: '/manage/vocab', roles: [10,100]},
+            {icon: 'mdi-alpha-v-circle ', title: 'Chi tiết học', value: 7, route: '/manage/vocab', roles: [10,100]},
+            {icon: 'mdi-alpha-v-circle ', title: 'Bộ từ của tôi', value: 7, route: '/manage/vocab', roles: [10,100]},
 
           ]
       }
@@ -293,7 +294,7 @@ export default {
 }
 
 .content{
-  margin-top: 60px;
+  margin-top: 20px;
   height: auto;
 }
 
@@ -303,18 +304,27 @@ export default {
   height: auto;
   z-index: 10;
   bottom: 0;
+
+  .el-button:hover{
+    outline: #ccc solid thin !important;
+    background-color: transparent !important;
+    transition: 1s;
+  }
 }
+
+
+
 
 .navbar-item{
   border: 2px solid var(--light-blue-90);
   
 
-&:hover{
-  background-color:  var(--main-color) !important;
-  color: white !important;
-  font-size: 30px;
-  transition: all 500ms;  
-}
+  &:hover{
+    background-color:  var(--main-color) !important;
+    color: white !important;
+    font-size: 30px;
+    transition: all 500ms;  
+  }
 
 }
 
@@ -376,6 +386,8 @@ export default {
     padding: 10px;
 
     .el-button{
+        border: none;
+
         &:hover{
           background-color:  var(--main-color) !important;
           color: white !important;

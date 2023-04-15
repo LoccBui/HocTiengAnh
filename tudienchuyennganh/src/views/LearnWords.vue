@@ -2,7 +2,6 @@
   <div class="container">
 
   <div v-if="reviewWords">
-
     <div class="info-word-area">
       <div class="info-word" v-for="words in currentVocab" :key="words.VocabID">
           <span class="txt-20"> ENGLISH </span>
@@ -42,7 +41,7 @@
 
 
   
-   <div v-else>
+   <div v-else-if="learning">
 
     <div class="header">
 
@@ -91,11 +90,16 @@
     @step-Status="handleProgress"
     />  
     
+
+    
+  </div>
+
+  <div v-else>
     <ReviewWord v-if="showReviewWord"
       :dataReview="dataAPI"
+      :idTopic="idTopic"
+      :totalScore="totalScore"
     />
-        
-    
   </div>
   
    
@@ -174,6 +178,8 @@ export default {
       ],
 
       showReviewWord:false,
+
+      learning: false,
 
     }
   },
@@ -284,6 +290,7 @@ export default {
       }
       else{
         this.reviewWords = false
+        this.learning = true
         // this.learnByMeaning = true
    
         this.randomLearningType()
@@ -300,6 +307,7 @@ export default {
     randomLearningType() {
       if(this.progressPercent == 100){
         alert('ko random')
+        this.learning = false
       }
       else{
 
@@ -383,13 +391,14 @@ export default {
   height: auto;
 
   .info-word{
-    width: 90%;
+    width: 85%;
   }
 
   .next-action{
     flex: 1;
 
     .el-button{
+      font-size: 25px;
       width: 100%;
       height: 100%;
       background-color: var(--main-color);

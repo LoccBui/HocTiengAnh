@@ -21,40 +21,23 @@
                 </div>
             </div>
 
-            <div class="body-info">
+            <div class="body-info mt-4" >
                 <div class="temporary"></div>
                 <div class="action-info">
-                    <h1 title="Từ cần ôn tập">
-                        <v-icon>mdi-history</v-icon> 10 
-                    </h1>
-
-                    <h1 title="Từ khó">
-                        <v-icon>mdi-alert-circle</v-icon> 20
-                    </h1>           
-                    
-                    <br>
 
                     <!-- <v-btn color="var(--main-color)" width="100px" 
                     router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
                     >Học </v-btn> -->
 
                     <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.TopicID}`)"
-                    router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
-                    >Học</el-button>
-
-                    <el-button size="large" color="var(--main-color)" @click=" this.showOption = !this.showOption">
-                        <v-icon>mdi-dots-vertical</v-icon>
+                    
+                    >Học
                     </el-button>
                 </div>
             </div>
 
         </div>
 
-
-
-        <OptionLearning  v-if="showOption"
-            @close-option = this.closeOptionBox()
-        />
 
         <NewSinhVienForm v-if="showSinhVienForm"
         @finish-update-information = handleFinishForm
@@ -78,7 +61,6 @@ export default {
     components: {OptionLearning,NewSinhVienForm, NewGiaoVienForm},
     data(){
         return{
-            showOption: false,
             dataTopicsAPI: [],
             accountID: '',
             showSinhVienForm: false,
@@ -152,10 +134,6 @@ export default {
             this.dataTopicsAPI.push(dataAPI)
         },
 
-        closeOptionBox(){
-            this.showOption = false
-        },
-
         handleFinishForm(){
             this.showSinhVienForm = false
             this.showGiaoVienForm = false
@@ -206,6 +184,10 @@ export default {
             display: flex;
             justify-content: space-around;
             align-items: center;
+
+            .el-button{
+                width: 100%;
+            }
         }
     }
 

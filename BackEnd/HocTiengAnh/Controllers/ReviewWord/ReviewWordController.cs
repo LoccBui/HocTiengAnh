@@ -1,5 +1,4 @@
 ﻿using HocTiengAnh.Database;
-using HocTiengAnh.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -9,24 +8,21 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace HocTiengAnh.Controllers.NewUserForm
+namespace HocTiengAnh.Controllers.ReviewWord
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
 
-
-    public class NewUserFormController : ApiController
+    public class ReviewWordController : ApiController
     {
         [HttpPost]
-        [Route("addInfoNewSinhVien")]
-        public IHttpActionResult AddInfoNewUser(StudentModel student)
+        [Route("ranking/topicid={id}")]
+        public IHttpActionResult GetRanking(int id)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@AccountID", student.AccountID),
-                    new SqlParameter("@Gender", student.Gender),
-                    new SqlParameter("@IDCLASS", student.IDCLASS)
+                    new SqlParameter("@TopicID", id),
             };
 
-            var result = new DB().GetDataReader("sp_AddNewSinhVien", param);
+            var result = new DB().GetDataReader("sp_GetRanking", param);
 
             if (result == null)
             {

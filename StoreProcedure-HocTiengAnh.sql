@@ -26,7 +26,7 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, GV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
+			select GV.AccountID, GV.MaGV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join CHITIETLOP CTL on CTL.MaGV = GV.MaGV
@@ -37,7 +37,7 @@ BEGIN
 		end
 	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image  
+			select SV.AccountID, SV.MaSV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image  
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
@@ -77,7 +77,6 @@ select TOP 5 *
 from TUVUNG
 where TopicID = @TopicID and Learned = 0
 
---exec sp_SelectTuVungByTopicID 1
 go
 
 create procedure sp_ShowDetailVocab
@@ -98,7 +97,7 @@ as
 BEGIN
 	select CD.TopicID, CD.TopicDescribe, CD.TopicName, CD.CreatedBy, CD.QuantityWords
 	from CHUDE CD
-	where CD.IDFACULTY = @IDFACULTY
+	where CD.IDFACULTY = @IDFACULTY and CD.QuantityWords >= 5
 END
 
 go
@@ -614,7 +613,6 @@ go
 
 create procedure sp_AddNewSinhVien
 @AccountID int,
-@Name nvarchar(100),
 @Gender nvarchar(10),
 @IDCLASS smallint
 as
@@ -629,8 +627,8 @@ BEGIN
 	where AccountID = @AccountID
 
 
-	INSERT INTO SINHVIEN(MaSV, AccountID, Name, Gender, DateCreated, IDCLASS)
-	VALUES (@lastestMaSV, @AccountID, @Name, @Gender, GETDATE(), @IDCLASS)
+	INSERT INTO SINHVIEN(MaSV, AccountID, Gender, DateCreated, IDCLASS)
+	VALUES (@lastestMaSV, @AccountID, @Gender, GETDATE(), @IDCLASS)
 	set @check = (select @@ROWCOUNT) 
 
 	if(@check > 0 )
@@ -648,7 +646,6 @@ go
 --Cập nhật thông tin giáo viên
 create procedure sp_AddInfoGiaoVien
 @AccountID int,
-@Name nvarchar(100),
 @Gender nvarchar(10)
 as
 BEGIN
@@ -663,8 +660,8 @@ BEGIN
 
 	if not EXISTS (select * from GIAOVIEN where AccountID = @AccountID)
 	BEGIN
-		INSERT INTO GIAOVIEN(MaGV, AccountID, Name, Gender, DateCreated)
-		VALUES (@lastestMaGV, @AccountID, @Name, @Gender, GETDATE())
+		INSERT INTO GIAOVIEN(MaGV, AccountID, Gender, DateCreated)
+		VALUES (@lastestMaGV, @AccountID, @Gender, GETDATE())
 		set @check = (select @@ROWCOUNT) 
 	END
 
@@ -786,7 +783,7 @@ as
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV,  GV.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
+			select GV.AccountID, GV.MaGV,  TK.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
@@ -797,7 +794,7 @@ BEGIN
 		end
 	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.MaSV, SV.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
+			select SV.AccountID, SV.MaSV, TK.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
@@ -867,14 +864,13 @@ go
 --Update dữ liệu tài khoản GIÁO VIÊN
 create procedure sp_UpdateInfoAccountGiaoVien
 @MaGV smallint,
-@Name nvarchar(100),
 @Gender nvarchar(10)
 as
 BEGIN
 	DECLARE @check int
-
+	 
 	UPDATE GIAOVIEN
-	SET Name = @Name, Gender = @Gender
+	SET Gender = @Gender
 	where MaGV = @MaGV
 	set @check = (select @@ROWCOUNT) 
 	
@@ -895,14 +891,13 @@ go
 
 create procedure sp_UpdateInfoAccountSinhVien
 @MaSV int,
-@Name nvarchar(100),
 @Gender nvarchar(10)
 as
 BEGIN
 	DECLARE @check int
 
 	UPDATE SINHVIEN
-	SET Name = @Name, Gender = @Gender
+	SET Gender = @Gender
 	where MaSV = @MaSV
 	set @check = (select @@ROWCOUNT) 
 
@@ -925,9 +920,10 @@ as
 BEGIN
 	DECLARE @check int
 
-	select CTL.DetailID, SV.MaSV ,SV.Name, SV.Gender, CTL.IsApproved
+	select CTL.DetailID, SV.MaSV, TK.Name, SV.Gender, CTL.IsApproved
 	from CHITIETLOP CTL
 	inner join SINHVIEN SV on SV.MaSV = CTL.MaSV
+	inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 	where CTL.IDCLASS = @IDCLASS
 
 	set @check = (select @@ROWCOUNT) 
@@ -964,7 +960,7 @@ END
 
 go
 
-alter procedure sp_AddClass
+create procedure sp_AddClass
 @ClassName varchar(50),
 @FacultyName nvarchar(100)
 as
@@ -996,6 +992,20 @@ BEGIN
 		begin
 			return null
 		end
+END
+
+go
+
+alter procedure sp_GetRanking
+@TopicID int
+as
+BEGIN 
+	SELECT TOP 9 CHITIETHOC.AccountID, TK.Name, TK.Image ,VocabID, SUM(Score) AS TotalScore
+	FROM CHITIETHOC 
+	inner join TAIKHOAN TK on TK.AccountID = CHITIETHOC.AccountID
+	WHERE TopicID = 4
+	GROUP BY CHITIETHOC.AccountID, VocabID, TK.Name,  TK.Image
+	ORDER BY TotalScore DESC
 END
 
 

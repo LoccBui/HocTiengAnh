@@ -15,7 +15,18 @@
   position: relative;
   width: 100vw;
   height: auto;
-  border:none
+  border: none;
+}
+
+.el-button:focus,
+.el-button:active,
+.el-button:hover{
+  
+  outline: none;
+  border: none !important;
+  background-color: rgba(0, 56, 255, 0.5) !important; /* Giảm độ đậm của màu gốc */
+
+
 }
 
 

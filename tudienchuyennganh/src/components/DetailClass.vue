@@ -63,9 +63,9 @@
           
         <template #footer>
           <div class="dialog-footer">
-            <el-button @click="this.showBox = false">Đóng</el-button>
+            <el-button type="danger" size="large" @click="this.showBox = false">Đóng</el-button>
     
-            <el-button type="primary" @click="this.confirmTopic()">
+            <el-button color="var(--main-color)" size="large" @click="this.confirmTopic()">
              Xác nhận 
              </el-button>
           </div>
@@ -201,9 +201,9 @@
       </div>
     </template>
     
-    <script>
+<script>
 import axiosInstance from '../axios'
-    import { ElNotification } from 'element-plus'
+import { ElNotification } from 'element-plus'
     
     
     export default {

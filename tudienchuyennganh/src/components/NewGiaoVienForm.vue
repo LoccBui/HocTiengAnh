@@ -181,7 +181,6 @@ export default {
 
                 let addToGiaoVien = await axiosInstance.post('addInfoNewGiaoVien', {
                     "AccountID": dataUser.accountID,
-                    "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
                 })
 

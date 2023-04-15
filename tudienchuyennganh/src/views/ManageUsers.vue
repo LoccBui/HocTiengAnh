@@ -1,10 +1,11 @@
 <template>
     <div class="container">
-        <el-button class="mt-4" type="primary" @click="this.optionsAdd = true">Thêm tài khoản mới</el-button>
+      <el-button color="var(--main-color)" size="large" @click="this.optionsAdd = true" >Thêm tài khoản mới</el-button>
      
       <el-table 
-        :data="dataUsersAPI" 
+        :data="filterUser" 
         :default-sort="{ prop: 'AccountID', order: 'ascending' }"
+        empty-text="Không có dữ liệu"
       >
   
       <el-table-column label="ID" prop="AccountID" width="150" sortable/>
@@ -31,12 +32,12 @@
       <el-table-column>
   
         <template #header>
-          <el-input v-model="search" size="large" placeholder="Tìm kiếm tài khoản" clearable @keyup="searchUser">
+          <el-input v-model="search" size="large" placeholder="Tìm kiếm tài khoản" clearable>
         </el-input>
         </template>
   
         <template #default="scope">
-          <el-button type="primary" size="large" @click="handleDetail(scope.row)"
+          <el-button color="var(--main-color)" size="large" @click="handleDetail(scope.row)"
             >Chi tiết
           </el-button>
           <el-button
@@ -119,7 +120,7 @@
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewUserByExcel()" > Thêm </el-button>
+          <el-button color="var(--main-color)" size="large" @click="addNewUserByExcel()" > Thêm </el-button>
         </div>
       </template>
 
@@ -244,6 +245,15 @@
         }
           
       },
+
+      computed: {
+        filterUser(){
+          if (!this.search) {
+              return this.dataUsersAPI;
+            }
+            return this.dataUsersAPI.filter(cls => cls.UserName.toLowerCase().includes(this.search.toLowerCase()));
+        }
+      },    
   
       mounted(){
         this.changeTitle()
@@ -312,10 +322,6 @@
         
         filterHandler(value, row){
              return row.RoleID == value 
-        },
-
-        searchUser(){  
-            return this.dataUsersAPI == this.search
         },
 
         openWith(typeOpen){

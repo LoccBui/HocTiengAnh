@@ -50,7 +50,7 @@
                     </el-col>
 
                     <div class="confirm-btn">
-                        <el-button  type="primary" @click="handleChangeInfo()" >Xác nhận</el-button>
+                        <el-button  color="var(--main-color)" size="large" @click="handleChangeInfo()" >Xác nhận</el-button>
                     </div>
                 </el-col>
             </div>
@@ -71,7 +71,7 @@
                     </el-col>
 
                     <div class="confirm-btn">
-                        <el-button type="primary" @click="changePassword()">Thay đổi mật khẩu</el-button>
+                        <el-button color="var(--main-color)" size="large" @click="changePassword()">Thay đổi mật khẩu</el-button>
                     </div>
 
                 </el-col>
@@ -83,7 +83,7 @@
 
        
 
-        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="45%">
+        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="45%"  align-center>
             <span>
                 Hãy chọn avatar mới
 
@@ -95,8 +95,8 @@
             </span>
             <template #footer>
             <span class="dialog-footer">
-                <el-button @click="openPickAvatar = false">Đóng</el-button>
-                <el-button type="primary" @click="this.confirmAvatar()">
+                <el-button @click="openPickAvatar = false" type="danger" size="large">Đóng</el-button>
+                <el-button color="var(--main-color)" size="large" @click="this.confirmAvatar()">
                 Xác nhận
                 </el-button>
             </span>
@@ -186,12 +186,21 @@ export default {
                 this.showNotification('Thông báo', 'Mật khẩu trùng nhau', 'success')
 
                 // const secretKey = 123;
-                // const data = 'passwordHere';
-                //  const encryptedData = CryptoJS.AES.encrypt(data, secretKey).toString();
+                // const dataWithKey = 'passwordHere' + secretKey;
+
+                // const encryptedDataMd5 = md5(dataWithKey);
+
+                const data = "hello"; // Chuỗi dữ liệu cần mã hóa
+                const key = "secretKey"; // Khóa bí mật
+
+                const dataWithKey = data + key; // Kết hợp dữ liệu và khóa bí mật
+                const encryptedDataMd5 = CryptoJS.MD5(dataWithKey).toString(); 
+
 
                 axiosInstance.post('test1', {
-                    encryptedData
+                    encryptedDataMd5
                 })
+
                 .then(response => {
                     console.log(response);
                     // Xử lý phản hồi từ server
@@ -230,7 +239,6 @@ export default {
                         case 10:
                             result = await axiosInstance.post('updateInfoGiaoVien', {
                                 "MaGV": this.maGV,
-                                "Name": `${this.inputName}`,
                                 "Gender": `${this.gender == true ? 'Nam' : 'Nữ'}`
                             })
 
@@ -250,7 +258,6 @@ export default {
                         case 1: 
                             result = await axiosInstance.post('updateInfoSinhVien', {
                                 "MaSV": this.maSV,
-                                "Name": `${this.inputName}`,
                                 "Gender": `${this.gender  == true ? 'Nam' : 'Nữ'}`
                             })
         
@@ -377,6 +384,14 @@ export default {
 
     .change-img{
         margin-left: 40px;
+
+        .el-button{
+            background-color: transparent !important;
+        }
+
+        .el-button:hover{
+            background-color: transparent !important;
+        }
     }
 }
 

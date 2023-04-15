@@ -1,13 +1,11 @@
 <template>
   <div class="container">
-    <!-- {{ dataReview }} -->
-
+    
     <div class="heading">
       <h1 class="main-text">   Bạn vừa hoàn thành bài học !  </h1>
     </div>
-    
-
-    <div>Tổng điểm bạn nhận được: 132</div>
+  
+    <div>Tổng điểm bạn nhận được: {{ totalScore }}</div>
 
 
     <div class="table-cover">
@@ -32,22 +30,20 @@
         </div>
       </div>
       
-
       <div class="ranking-cover">
         <div class="leader-board">
           <h1 class="main-text"> Bảng xếp hạng</h1>
           
-          
           <div class="scrolling">
-            <div v-for="user in users" :key="user.name" class="detail-user">
+            <div v-for="user in listRanking" :key="user.AccountID" class="detail-user">
                 <div class="left-side">
                   <span>
-                    <el-avatar :src="`../../assets/img/avatar/${user.avatar}.png`" class="avatar"/>
+                    <el-avatar :src="`../../assets/img/avatar/${user.Image}.png`" class="avatar"/>
                   </span>
-                  <span class="user-name">{{ user.name }}</span>
+                  <span class="user-name">{{ user.Name }}</span>
                 </div>
 
-                <div>{{ user.score }}</div>
+                <div>{{ user.TotalScore }}</div>
             </div>
           </div>  
 
@@ -64,27 +60,33 @@
 </template>
 
 <script>
+import axiosInstance from '@/axios';
+
 export default {
-    props: ['dataReview'],
+    props: ['dataReview', 'idTopic', 'totalScore'],
     data(){
         return{
-            users:[
-                {'name': 'A', 'avatar': 'default', 'score': 100},
-                {'name': 'A1', 'avatar': 'default', 'score': 100},
-                {'name': 'A2', 'avatar': 'default', 'score': 100},
-                {'name': 'A3', 'avatar': 'default', 'score': 100},
-                {'name': 'A4', 'avatar': 'default', 'score': 100},
-                {'name': 'A5', 'avatar': 'default', 'score': 100},
-                {'name': 'A5', 'avatar': 'default', 'score': 100},
-                {'name': 'A5', 'avatar': 'default', 'score': 100},
-                {'name': 'A5', 'avatar': 'default', 'score': 100},
-                {'name': 'A5', 'avatar': 'default', 'score': 100},
-                {'name': 'Điểm của bạn', 'avatar': 'default', 'score': 100},
-            ]
+
+            listRanking: '',
         }
     },
 
     mounted(){
+      this.getRanking()
+    },
+
+
+    methods:{
+      async getRanking(){
+        console.log("topic id =", this.idTopic)
+
+        let result = await axiosInstance.post(`ranking/topicid=${this.idTopic}`)
+
+        if(result.status == 200){
+          console.log(result.data)
+          this.listRanking=(result.data)
+        }
+      }
     }
 }
 </script>
@@ -99,10 +101,10 @@ export default {
   justify-content: center;
   background-color: #e5e5f7;
   opacity: 0.8;
-  background-image: radial-gradient(circle at center center, #0038FF, #e5e5f7), repeating-radial-gradient(circle at center center, #0038FF, #0038FF, 40px, transparent 80px, transparent 40px);
+  background-image: radial-gradient(circle at center center, #0038FF, #e5e5f7), repeating-radial-gradient(circle at center center, #0038FF, #0038FF, 10px, transparent 80px, transparent 40px);
   background-blend-mode: multiply;
   .main-text{
-    font-size: 45px;
+    font-size: 30px;
   }
 }
 

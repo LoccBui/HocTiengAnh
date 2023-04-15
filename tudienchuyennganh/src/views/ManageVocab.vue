@@ -1,11 +1,14 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" type="primary" @click="this.optionsAdd = true"
-    >Thêm chủ đề mới</el-button> 
+    <el-button type="primary" @click="this.optionsAdd = true" size="large" color="var(--main-color)"
+      >Thêm chủ đề mới
+    </el-button>  
+
     <el-table 
-      :data="dataTopicsAPI" 
+      :data="filterVocab" 
       :default-sort="{ prop: 'TopicID', order: 'ascending' }"
+      empty-text="Không có dữ liệu"
     >
 
     <el-table-column label="ID" prop="TopicID" width="150" sortable/>
@@ -16,11 +19,11 @@
     <el-table-column align="center">
 
       <template #header>
-        <el-input v-model="search" size="large" placeholder="Nhập tên chủ đề" />
+        <el-input v-model="search" size="large" placeholder="Nhập tên chủ đề" clearable/>
       </template>
 
       <template #default="scope">
-        <el-button type="primary" size="large" @click="handleDetail(scope.row)"
+        <el-button type="primary" color="var(--main-color)" size="large" @click="handleDetail(scope.row)"
           >Chi tiết 
         </el-button>
         <el-button
@@ -63,7 +66,7 @@
         fullscreen
       >
       <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề">Nhập tên chủ đề muốn tạo</el-input>
-      <el-input v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
+      <el-input class="mt-4" v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề" type="textarea">Nhập miêu tả chủ đề</el-input>
       
       <el-divider />
 
@@ -105,7 +108,7 @@
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewTopic()" > Thêm </el-button>
+          <el-button color="var(--main-color)" size="large" @click="addNewTopic()" > Thêm </el-button>
         </div>
       </template>
 
@@ -174,6 +177,15 @@ import * as XLSX from 'xlsx';
       }
         
     },
+
+    computed: {
+        filterVocab(){
+          if (!this.search) {
+              return this.dataTopicsAPI;
+            }
+            return this.dataTopicsAPI.filter(cls => cls.TopicName.toLowerCase().includes(this.search.toLowerCase()));
+        }
+      },    
 
     mounted(){
       this.getAllClasses()

@@ -187,7 +187,6 @@ export default {
             try{
                 let result = await axiosInstance.post('addInfoNewSinhVien', {
                     "AccountID": dataUser.accountID,
-                    "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
                     "IDCLASS": this.ruleForm.class
                 })

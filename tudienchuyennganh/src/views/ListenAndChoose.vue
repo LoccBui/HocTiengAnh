@@ -1,5 +1,5 @@
 <template>
-  <div class="container"> 
+  <div class="container mt-10"> 
 
     <div class="header"> 
       <h1 class="left-side w80 normal-text">

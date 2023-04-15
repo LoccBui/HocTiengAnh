@@ -6,8 +6,9 @@
 
 
   <el-table 
-    :data="dataClass" 
+    :data="filterClass" 
     :default-sort="{ prop: 'IDCLASS', order: 'ascending' }"
+    empty-text="Không có dữ liệu"
   >
 
     <el-table-column label="Mã lớp" prop="IDCLASS" width="150" sortable/>
@@ -27,7 +28,7 @@
     <el-table-column align="center">
 
       <template #header>
-        <el-input v-model="search" size="large" placeholder="Nhập tên lớp" />
+        <el-input v-model="search" size="large" placeholder="Nhập tên lớp"  clearable/>
       </template>
 
       <template #default="scope">
@@ -115,7 +116,7 @@
 
      <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewClass()" > Thêm </el-button>
+          <el-button color="var(--main-color)" size="large" @click="addNewClass()" > Thêm </el-button>
         </div>
       </template>
 
@@ -195,6 +196,15 @@ import * as XLSX from 'xlsx';
 
       this.getAllClasses()
       this.getAllFaculty()
+    },
+
+    computed: {
+      filterClass(){
+        if (!this.search) {
+            return this.dataClass;
+          }
+          return this.dataClass.filter(cls => cls.ClassName.toLowerCase().includes(this.search.toLowerCase()));
+      }
     },
 
     methods:{
@@ -313,13 +323,10 @@ import * as XLSX from 'xlsx';
                   this.addByExcel = false
                   this.getAllClasses()
                   this.getAllFaculty()
-                }else{
-                  this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                  this.optionsAdd = false
                 }
-                
               }
               catch(error){
-                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
               }
             }
         }
