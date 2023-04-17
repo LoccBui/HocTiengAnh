@@ -188,7 +188,7 @@ export default {
             {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: 4, route: '/manage/class', roles: [100]},
             {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
             {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Chi tiết học', value: 7, route: '/manage/vocab', roles: [10,100]},
+            {icon: 'mdi-alpha-v-circle ', title: 'Chi tiết học', value: 7, route: '/analyst/1', roles: [10,100]},
             {icon: 'mdi-alpha-v-circle ', title: 'Bộ từ của tôi', value: 7, route: '/manage/vocab', roles: [10,100]},
 
           ]

@@ -835,16 +835,50 @@ BEGIN
 END
 
 go
+
+create procedure sp_ChangePassword
+@Password varchar(100),
+@AccountID  int
+as
+BEGIN
+    DECLARE @password_binary VARBINARY(100)
+	DECLARE @check int
+
+	
+    -- Chuyển đổi mật khẩu sang kiểu varbinary
+    SET @password_binary = PWDENCRYPT(@Password )
+
+	UPDATE TAIKHOAN
+	SET Password = @password_binary
+	WHERE AccountID = @AccountID
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Đổi mật khẩu thành công' as Status
+		end
+	else
+		begin
+			return null
+		end
+END
+exec sp_ChangePassword '123', 1
+
+	
+
+
+go
 --Update bảng tài khoản 
 create procedure sp_UpdateInfoAccount
 @AccountID int,
-@Email varchar(100)
+@Email varchar(100),
+@Name nvarchar(100)
 as
 BEGIN
 	DECLARE @check int
 	
 	UPDATE TAIKHOAN 
-	SET Email = @Email
+	SET Email = @Email, Name = @Name
 	WHERE AccountID = @AccountID
 
 	set @check = (select @@ROWCOUNT) 
@@ -970,7 +1004,6 @@ BEGIN
   DECLARE @findIDFACULTY INT
   DECLARE @check int
 
-
   SET @lastestIDCLASS = (SELECT MAX(IDCLASS) FROM LOP) + 1
 
   set @findIDFACULTY = (SELECT IDFACULTY FROM KHOA WHERE FacultyName like @FacultyName)
@@ -996,7 +1029,7 @@ END
 
 go
 
-alter procedure sp_GetRanking
+create procedure sp_GetRanking
 @TopicID int
 as
 BEGIN 
@@ -1008,14 +1041,79 @@ BEGIN
 	ORDER BY TotalScore DESC
 END
 
+go
+
+create procedure sp_MostWrongWordByTopic
+@TopicID int
+as
+BEGIN
+    DECLARE @check int
+	
+	select CHITIETHOC.VocabID, TV.Word, SUM(WrongTimes) as TotalWrong
+	from CHITIETHOC 
+	inner join TUVUNG TV on TV.VocabID = CHITIETHOC.VocabID
+	where CHITIETHOC.TopicID = @TopicID
+	group by CHITIETHOC.VocabID, TV.Word
+	order by TotalWrong desc
+
+	set @check = (select @@ROWCOUNT) 
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+go
+
+alter procedure sp_MostScoreInTopic
+@TopicID int
+as
+BEGIN
+    DECLARE @check int
+
+	select CHITIETHOC.AccountID, TK.Name, L.ClassName, SUM(Score) as TotalScore
+	from CHITIETHOC 
+	inner join TUVUNG TV on TV.VocabID = CHITIETHOC.VocabID
+	inner join TAIKHOAN TK on TK.AccountID = CHITIETHOC.AccountID
+	inner join SINHVIEN SV on SV.AccountID = TK.AccountID
+	inner join LOP L on L.IDCLASS = SV.IDCLASS
+	where CHITIETHOC.TopicID = @TopicID
+	group by CHITIETHOC.AccountID, TK.Name, L.ClassName
+	order by TotalScore desc
+
+	set @check = (select @@ROWCOUNT) 
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+exec sp_MostScoreInTopic 4
+
+
+select CHITIETHOC.AccountID, TK.Name, L.ClassName, SUM(Score) as TotalScore
+	from CHITIETHOC 
+	inner join TUVUNG TV on TV.VocabID = CHITIETHOC.VocabID
+	inner join TAIKHOAN TK on TK.AccountID = CHITIETHOC.AccountID
+	inner join SINHVIEN SV on SV.AccountID = TK.AccountID
+	inner join LOP L on L.IDCLASS = SV.IDCLASS
+	where CHITIETHOC.TopicID = 4
+	group by CHITIETHOC.AccountID, TK.Name, L.ClassName
+	order by TotalScore desc
 
 --Trang phân tích: lọc ra lớp của giáo viêb
---select LOP.ClassName
+--select DISTINCT CTL.MaGV, LOP.ClassName
 --from CHITIETLOP CTL
 --inner join LOP on LOP.IDCLASS = CTL.IDCLASS
 --where MaGV = 1
-
-
 
 
 

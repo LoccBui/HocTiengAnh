@@ -60,6 +60,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@AccountID", account.AccountID),
                     new SqlParameter("@Email", account.Email),
+                    new SqlParameter("@Name", account.Name),
             };
 
             var result = new DB().GetDataReader("sp_UpdateInfoAccount", param);
@@ -108,45 +109,24 @@ namespace HocTiengAnh.Controllers.SettingAccount
             return Json(result);
         }
 
-        public class EncryptedDataModel
-        {
-            public string EncryptedData { get; set; }
-        }
-
-
         [HttpPost]
-        [Route("test")]
-        public IHttpActionResult Test([FromBody] EncryptedDataModel encryptedDataModel)
+        [Route("changePassword")]
+        public IHttpActionResult ChangePassword(AccountModel acc)
         {
-            try
-            {
-                string encryptedData = encryptedDataModel.EncryptedData;
-                byte[] secretKey = Encoding.UTF8.GetBytes("12345678901234567890123456789012"); // 32 bytes (256 bits)
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@Password", acc.Password),
+                    new SqlParameter("@AccountID", acc.AccountID)
+            };
 
-                // Giải mã dữ liệu
-                byte[] encryptedBytes = Convert.FromBase64String(encryptedData);
-                using (AesManaged aesAlg = new AesManaged())
-                {
-                    aesAlg.Key = secretKey;
-                    aesAlg.IV = new byte[16]; // IV là 16 bytes (128 bits), có thể tự sinh hoặc truyền từ phía gửi dữ liệu
-                    using (MemoryStream memoryStream = new MemoryStream(encryptedBytes))
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, aesAlg.CreateDecryptor(), CryptoStreamMode.Read))
-                        {
-                            using (StreamReader streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
-                            {
-                                string decryptedData = streamReader.ReadToEnd();
-                                return Ok(decryptedData);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed to decrypt data: " + ex.Message);
-            }
+            var result = new DB().GetDataReader("sp_ChangePassword", param);
 
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
         }
+
+
     }
 }

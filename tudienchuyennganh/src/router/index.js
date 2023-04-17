@@ -17,6 +17,7 @@ import ForgotPassword from '../views/ForgotPassword.vue'
 import ManageVocab from '../views/ManageVocab.vue'
 import ManageUsers from '../views/ManageUsers.vue'
 import SettingAccount from '../views/SettingAccount.vue'
+import AnalystLearning from '../views/AnalystLearning.vue'
 
 import TopicDetail from '../views/TopicDetail.vue'
 
@@ -64,6 +65,10 @@ const routes = [
       {
         path: '/manage/users',
         component: ManageUsers
+      },
+      {
+        path: '/analyst/1',
+        component: AnalystLearning
       },
 
       

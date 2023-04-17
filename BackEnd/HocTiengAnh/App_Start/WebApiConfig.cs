@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace HocTiengAnh
 {
@@ -11,6 +12,10 @@ namespace HocTiengAnh
         {
             config.EnableCors();
             // Web API configuration and services
+
+            var cors = new EnableCorsAttribute("https://localhost:8080", "*", "*");
+            config.EnableCors(cors);
+
 
             // Web API routes
             config.MapHttpAttributeRoutes();

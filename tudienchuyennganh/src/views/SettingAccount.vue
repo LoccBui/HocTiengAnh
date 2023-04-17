@@ -111,9 +111,6 @@
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 
-import CryptoJS from 'crypto-js';
-
-import md5 from 'md5';
 
 export default {
     data(){
@@ -177,38 +174,29 @@ export default {
             this.selectedAvatar = source
         },
 
-        changePassword(){
+        async changePassword(){
             if(this.inputNewPasswordConfirm != this.inputNewPassword){
                 this.showNotification('Thông báo', 'Mật khẩu không trùng nhau', 'error')
                     this.$message.error('Mật khẩu phải trùng nhau.');
             }
             else{
-                this.showNotification('Thông báo', 'Mật khẩu trùng nhau', 'success')
 
-                // const secretKey = 123;
-                // const dataWithKey = 'passwordHere' + secretKey;
-
-                // const encryptedDataMd5 = md5(dataWithKey);
-
-                const data = "hello"; // Chuỗi dữ liệu cần mã hóa
-                const key = "secretKey"; // Khóa bí mật
-
-                const dataWithKey = data + key; // Kết hợp dữ liệu và khóa bí mật
-                const encryptedDataMd5 = CryptoJS.MD5(dataWithKey).toString(); 
-
-
-                axiosInstance.post('test1', {
-                    encryptedDataMd5
+            
+                let result = await axiosInstance.post('changePassword', {
+                    "Password": `${this.inputNewPasswordConfirm}`,
+                    "AccountID": this.accountID
                 })
 
-                .then(response => {
-                    console.log(response);
-                    // Xử lý phản hồi từ server
-                })
-                .catch(error => {
-                    // Xử lý lỗi
-                    console.log(error);
-                });
+                if(result.status == 200){
+                    this.inputNewPassword = this.inputNewPasswordConfirm = ''
+                    this.showNotification('Thông báo', 'Đổi mật khẩu thành công', 'success')
+                }
+                else{
+                    this.showNotification('Thông báo', 'Đổi mật khẩu không thành công', 'error')
+                    
+                }
+
+                
 
 
             }
@@ -227,6 +215,7 @@ export default {
                 email = await axiosInstance.post('updateInfoAccount', {
                     "AccountID": this.accountID,
                     "Email": `${this.inputEmail}`,
+                    "Name": `${this.inputName}`,
                 })
 
                 console.log(this.roleUser)
