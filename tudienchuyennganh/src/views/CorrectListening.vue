@@ -91,15 +91,16 @@ export default {
   },
 
   methods:{
-    countDown(){
-      let countDown = setInterval(()=>{
-        this.countDownTimes -= 1
-        if(this.countDownTimes === 0){
-          clearInterval(countDown)
-          this.handleOvertime()
+    countDown() {
+      let countDown = setInterval(() => {
+        this.countDownTimes -= 1;
+        if (this.countDownTimes === 0) {
+          clearInterval(countDown);
+          this.handleOvertime();
         }
-      },1000)
+      }, 1000);
     },
+
 
     handleOvertime(){
       this.$emit('step-Status', 'overtime')

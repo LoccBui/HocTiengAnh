@@ -23,16 +23,20 @@
                 </div>  
                 
                 <div>
-                  <el-button color="var(--main-color)">Thêm vào từ của tôi</el-button>
+                  <el-button color="var(--main-color)" @click="handleShowPersonCollection()">Thêm vào từ của tôi</el-button>
                 </div>
           </div>
 
         </div>
       </div>
+
+
       
-      <div class="ranking-cover">
+      <div class="ranking-cover" >
         <div class="leader-board">
-          <h1 class="main-text"> Bảng xếp hạng</h1>
+          <h1 class="main-text" > Bảng xếp hạng</h1>
+          
+          <div class="loading" v-loading="loading" element-loading-text="Chưa có dữ liệu..." element-loading-background="#e6ebff">
           
           <div class="scrolling">
             <div v-for="user in listRanking" :key="user.AccountID" class="detail-user">
@@ -47,14 +51,44 @@
             </div>
           </div>  
 
+          </div>
         </div>
       </div>  
     </div>
     
     Gợi ý cho bạn
     <div>
-      <el-button size="large" color="var(--main-color)">Quay về học từ</el-button>
+      <el-button size="large" color="var(--main-color)" @click="this.$router.push('/topic')">Quay về học từ</el-button>
     </div>
+
+
+    <el-dialog
+      v-model="personCollection"
+      title="Chọn bộ từ cá nhân của bạn"
+      width="30%"
+      :before-close="handleClose"
+    >
+
+    
+    <div v-if="notHaveCollectionWarn">
+      <h1 class="warning-text">Bạn chưa có bộ từ vựng của riêng mình</h1>
+    </div>
+    
+    
+    <div class="collection-cover">
+      <el-button v-for="collection in arrCollection" :key="collection" class="collection">
+        {{ collection.VocabName }}
+      </el-button>
+    </div>
+    
+    <template #footer>    
+      <div class="btn-create-new">
+       <el-button color="var(--main-color)" size="large" >Tạo mới 
+        <v-icon>mdi-plus</v-icon>
+       </el-button>
+      </div>
+    </template>
+    </el-dialog>
 
   </div>
 </template>
@@ -66,8 +100,12 @@ export default {
     props: ['dataReview', 'idTopic', 'totalScore'],
     data(){
         return{
-
             listRanking: '',
+            loading: true,
+            personCollection: false,
+            notHaveCollectionWarn: false,
+            AccountID: '',
+            arrCollection: []
         }
     },
 
@@ -80,11 +118,41 @@ export default {
       async getRanking(){
         console.log("topic id =", this.idTopic)
 
-        let result = await axiosInstance.post(`ranking/topicid=${this.idTopic}`)
+        let result = await axiosInstance.post('rankingTopic',{
+          "TopicID": this.idTopic
+        })
 
         if(result.status == 200){
-          console.log(result.data)
+          this.loading = false
           this.listRanking=(result.data)
+        }
+      },
+
+      handleShowPersonCollection(){
+        this.personCollection = true
+        this.getPersonCollection()
+      },
+
+      handleClose(){
+        this.personCollection = false
+      },
+
+      async getPersonCollection(){
+        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+        this.accountID = dataUser.accountID
+
+
+        try{
+          let result = await axiosInstance.post('getPersonalCollection',{
+            "AccountID": this.accountID
+          })
+
+          if(result.status == 200){
+            this.arrCollection = result.data
+          }
+        }
+        catch(ex) {
+          this.notHaveCollectionWarn = true
         }
       }
     }
@@ -149,6 +217,7 @@ export default {
       background-color: white;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--main-color);
       padding: 2%;
       color: var(--main-color);
@@ -168,6 +237,9 @@ export default {
     }
   }
 
+  .loading{
+    height: 400px;
+  }
 
   .word-cover{
     border: 1px solid transparent;
@@ -180,7 +252,49 @@ export default {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid var(--main-color);
-  }
+  }  
 }
+
+.el-dialog{
+  border-radius: 20px !important;
+
+  .warning-text{
+    font-size: 30px;
+  }
+
+  .btn-create-new{
+    .el-button{
+      width: 100%;
+      border-radius: 5px !important;
+    }
+
+    &:hover{
+        color: white;
+    }
+  }
+
+}
+
+.collection-cover{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .collection{
+      padding: 10%;
+      width: 100%;
+      margin: 0;
+      
+      &:hover{
+        color: white;
+      }
+    }
+
+    .collection + .collection{
+      margin-top: 4%;
+    }
+
+  }
 
 </style>

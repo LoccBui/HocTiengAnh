@@ -1033,12 +1033,12 @@ create procedure sp_GetRanking
 @TopicID int
 as
 BEGIN 
-	SELECT TOP 9 CHITIETHOC.AccountID, TK.Name, TK.Image ,VocabID, SUM(Score) AS TotalScore
-	FROM CHITIETHOC 
-	inner join TAIKHOAN TK on TK.AccountID = CHITIETHOC.AccountID
-	WHERE TopicID = 4
-	GROUP BY CHITIETHOC.AccountID, VocabID, TK.Name,  TK.Image
-	ORDER BY TotalScore DESC
+		SELECT CHITIETHOC.AccountID, TK.Name, TK.Image, SUM(Score) AS TotalScore
+		FROM CHITIETHOC
+		INNER JOIN TAIKHOAN TK ON TK.AccountID = CHITIETHOC.AccountID
+		WHERE TopicID = @TopicID
+		GROUP BY CHITIETHOC.AccountID, TK.Name, TK.Image
+		ORDER BY TotalScore DESC
 END
 
 go
@@ -1069,7 +1069,7 @@ END
 
 go
 
-alter procedure sp_MostScoreInTopic
+create procedure sp_MostScoreInTopic
 @TopicID int
 as
 BEGIN
@@ -1096,18 +1096,29 @@ BEGIN
 		end
 END
 
-exec sp_MostScoreInTopic 4
+go
+
+create procedure sp_GetPersonalWordCollection
+@AccountID int
+as
+BEGIN
+    DECLARE @check int
+
+	select DISTINCT VocabName 
+	from TUVUNGCANHAN
+	where AccountID = @AccountID
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
 
 
-select CHITIETHOC.AccountID, TK.Name, L.ClassName, SUM(Score) as TotalScore
-	from CHITIETHOC 
-	inner join TUVUNG TV on TV.VocabID = CHITIETHOC.VocabID
-	inner join TAIKHOAN TK on TK.AccountID = CHITIETHOC.AccountID
-	inner join SINHVIEN SV on SV.AccountID = TK.AccountID
-	inner join LOP L on L.IDCLASS = SV.IDCLASS
-	where CHITIETHOC.TopicID = 4
-	group by CHITIETHOC.AccountID, TK.Name, L.ClassName
-	order by TotalScore desc
 
 --Trang phân tích: lọc ra lớp của giáo viêb
 --select DISTINCT CTL.MaGV, LOP.ClassName

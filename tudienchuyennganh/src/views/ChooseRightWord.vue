@@ -88,15 +88,16 @@ import { ElNotification } from 'element-plus'
     },
   
     methods:{
-      countDown(){
-        let countDown = setInterval(()=>{
-          this.countDownTimes -= 1
-          if(this.countDownTimes === 0){
-            clearInterval(countDown)
-            this.handleOvertime()
-          }
-        },1000)
-      },
+
+      countDown() {
+      let countDown = setInterval(() => {
+        this.countDownTimes -= 1;
+        if (this.countDownTimes === 0) {
+          clearInterval(countDown);
+          this.handleOvertime();
+        }
+      }, 1000);
+    },
 
       handleOvertime(){
         this.$emit('step-Status', 'overtime')
