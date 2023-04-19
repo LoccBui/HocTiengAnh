@@ -22,15 +22,26 @@
                   <h3> {{ word.Vietnamese }} </h3>  
                 </div>  
                 
-                <div>
-                  <el-button color="var(--main-color)" @click="handleShowPersonCollection()">Thêm vào từ của tôi</el-button>
+                <div class="btn-cover">
+                  <el-button title="Lưu vào bộ từ mặc định" color="var(--main-color)"  @click="handleShowPersonCollection(word)" v-if="!word.isAdded && word.VocabID != WordExists.WordExists">
+                    Thêm vào từ của tôi
+                  </el-button>
+
+                  <el-button title="Đã thêm" color="var(--main-color)"  v-if="word.isAdded && word.VocabID != WordExists.WordExists">
+                    Đã thêm
+                  </el-button>
+
+                  <el-button color="var(--success)"  v-if="word.VocabID == WordExists.WordExists">
+                    Đã có trong bộ từ
+                  </el-button>
+
+                  <el-button title="Chọn bộ từ khác" color="var(--main-color)" size="small" @click="openPersonalCollection()">...</el-button>
+
                 </div>
           </div>
 
         </div>
       </div>
-
-
       
       <div class="ranking-cover" >
         <div class="leader-board">
@@ -77,8 +88,15 @@
     
     <div class="collection-cover">
       <el-button v-for="collection in arrCollection" :key="collection" class="collection">
-        {{ collection.VocabName }}
+        <div class="w80">
+          {{ collection.PersonalVocabName }}
+        </div>
+
+        <div class="w20 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
+
       </el-button>
+
+
     </div>
     
     <template #footer>    
@@ -95,6 +113,7 @@
 
 <script>
 import axiosInstance from '@/axios';
+import { ElNotification } from 'element-plus'
 
 export default {
     props: ['dataReview', 'idTopic', 'totalScore'],
@@ -105,16 +124,39 @@ export default {
             personCollection: false,
             notHaveCollectionWarn: false,
             AccountID: '',
-            arrCollection: []
-        }
+            arrCollection: [],
+            isAdded: false,
+
+            defaultCollection: '',
+
+            WordExists: [],
+          }
     },
 
     mounted(){
+      this.handleDataLocal()
+
+      this.getDefaultCollection()
       this.getRanking()
+      this.CheckWordExistInPersonalCollection()
     },
 
 
     methods:{
+
+      showNotification(title ,message, type){
+          ElNotification({
+              title: `${title}`,
+              message: `${message}`,
+              type: `${type}`,
+          })
+      },
+
+      handleDataLocal(){
+        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+        this.AccountID = dataUser.accountID
+      },
+
       async getRanking(){
         console.log("topic id =", this.idTopic)
 
@@ -128,33 +170,111 @@ export default {
         }
       },
 
-      handleShowPersonCollection(){
-        this.personCollection = true
-        this.getPersonCollection()
-      },
-
-      handleClose(){
-        this.personCollection = false
-      },
-
-      async getPersonCollection(){
-        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
-        this.accountID = dataUser.accountID
-
-
+      async getDefaultCollection(){
         try{
           let result = await axiosInstance.post('getPersonalCollection',{
-            "AccountID": this.accountID
+            "AccountID": this.AccountID
           })
 
           if(result.status == 200){
             this.arrCollection = result.data
+
+            this.defaultCollection = this.arrCollection.filter(item => item.IsDefault === true)
+
+            console.log("default collection", this.defaultCollection[0].PersonalVocabID)
+
           }
         }
         catch(ex) {
           this.notHaveCollectionWarn = true
         }
-      }
+      },
+
+      async CheckWordExistInPersonalCollection(){
+        console.info("datasend", this.defaultCollection)
+
+        for(let i=0; i<this.dataReview.length; i++){
+
+          console.info("datasend",this.dataReview[i].VocabID)
+          console.info("datasend",this.AccountID  )
+
+          let result = await axiosInstance.post('wordExists', {
+            "PersonalVocabID": this.defaultCollection[0].PersonalVocabID,
+            "VocabID": this.dataReview[i].VocabID,
+            "AccountID": this.AccountID
+          })
+
+          if(result.status==200){
+            this.WordExists = result.data
+            console.info("datareturrn",result.data[0])
+            console.log(this.WordExists)
+          }
+
+        }   
+      },
+
+      handleShowPersonCollection(word){
+        this.getPersonCollection(word)
+      },
+
+      async getPersonCollection(word){
+      
+
+        try{
+          let result = await axiosInstance.post('getPersonalCollection',{
+            "AccountID": this.AccountID
+          })
+
+          if(result.status == 200){
+            this.arrCollection = result.data
+            this.addToPersonalVocab(word)
+          }
+        }
+        catch(ex) {
+          this.notHaveCollectionWarn = true
+        }
+      },
+
+      async addToPersonalVocab(word){
+        console.log(this.dataReview)
+     
+
+        const filterDefault = this.arrCollection.filter(item => item.IsDefault === true)
+
+        try{
+          let result = await axiosInstance.post('addToPersonalVocab',{
+            "PersonalVocabID": filterDefault[0].PersonalVocabID,
+            "VocabID": word.VocabID,
+            "AccountID": this.AccountID
+         })
+
+         if(result.status == 200){
+            word.isAdded = true;
+            this.$forceUpdate();
+            this.showNotification('Thông báo', 'Thêm thành công', 'success')
+         }
+
+        }
+        catch(e){
+          this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+
+        }        
+      },
+
+
+      handleClose(){
+        this.personCollection = false
+      },
+
+      openPersonalCollection(){
+        this.personCollection = true
+        this.getPersonCollection()
+      },
+
+
+
+
+    
     }
 }
 </script>
@@ -252,6 +372,15 @@ export default {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid var(--main-color);
+
+    .btn-cover{
+      display: flex;
+      align-items: center;
+
+      .el-button{
+        padding: 20px;
+      }
+    }
   }  
 }
 
@@ -279,7 +408,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     .collection{
       padding: 10%;
@@ -288,6 +417,10 @@ export default {
       
       &:hover{
         color: white;
+      }
+      
+      .defaul-word{
+        font-weight: 800;
       }
     }
 

@@ -24,7 +24,6 @@ namespace HocTiengAnh.Controllers.ConfirmPassword
                 };
             var result = new DB().GetDataReader("sp_GetUsername", param);
 
-            return Json(result);
 
             if (result == null)
             {

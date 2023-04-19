@@ -1,4 +1,4 @@
-﻿--drop database HocTiengAnh
+﻿--create database HocTiengAnh
 
 create database HocTiengAnh
 go
@@ -154,27 +154,26 @@ GO
 
 create table TUVUNGCANHAN(
 	PersonalVocabID int IDENTITY(1,1),
-	VocabID int,
-
+	PersonalVocabName nvarchar(200),
 	AccountID int, 
-	VocabName NVARCHAR(50),
+	IsDefault bit default 0,
 
-	Frequency int,
-	Word varchar(50),
-	IPA nvarchar(100),
-	Label varchar(50),
-	Lemma varchar(200),
-	Vietnamese nvarchar(200),
-	Cluster varchar(100),
-	Position varchar(100),
-	Example varchar(400),
-	VN_Example nvarchar(400),
-	Resources varchar(400),
-
-	PRIMARY KEY (PersonalVocabID, AccountID),
-	FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID),
+	PRIMARY KEY (PersonalVocabID),
 	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID)
 )
+go
+
+create TABLE CHITIETTUCANHAN (
+    PersonalDetailID int IDENTITY(1,1),
+    PersonalVocabID int,
+    VocabID int,
+    AccountID int,
+    PRIMARY KEY (PersonalDetailID),
+    FOREIGN KEY (PersonalVocabID) REFERENCES TUVUNGCANHAN(PersonalVocabID),
+    FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID),
+    FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID)
+);
+
 
 go 
 

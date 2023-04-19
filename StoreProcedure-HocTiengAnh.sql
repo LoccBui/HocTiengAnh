@@ -1104,9 +1104,10 @@ as
 BEGIN
     DECLARE @check int
 
-	select DISTINCT VocabName 
+	select PersonalVocabID, PersonalVocabName, IsDefault
 	from TUVUNGCANHAN
 	where AccountID = @AccountID
+	set @check = (select @@ROWCOUNT) 
 
 	if(@check > 0 )
 		begin 
@@ -1118,6 +1119,48 @@ BEGIN
 		end
 END
 
+go
+
+create procedure sp_AddToPersonalVocab
+@PersonalVocabID int, 
+@VocabID int, 
+@AccountID int
+as
+BEGIN
+	DECLARE @check int
+	INSERT INTO CHITIETTUCANHAN(PersonalVocabID, VocabID, AccountID)
+	VALUES(@PersonalVocabID, @VocabID, @AccountID)
+	
+	set @check = (select @@ROWCOUNT) 
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+
+END
+
+go
+
+create procedure sp_CheckWordPersonExists
+@PersonalVocabID int, 
+@VocabID int, 
+@AccountID int
+as
+BEGIN
+	IF EXISTS(select * from CHITIETTUCANHAN 
+		where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID and VocabID = @VocabID)
+		BEGIN
+			Select VocabID as WordExists from CHITIETTUCANHAN  
+		END
+	ELSE
+		BEGIN
+			Select VocabID as WordExists  from CHITIETTUCANHAN 
+		END
+END
 
 
 --Trang phân tích: lọc ra lớp của giáo viêb

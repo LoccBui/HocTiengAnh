@@ -48,5 +48,46 @@ namespace HocTiengAnh.Controllers.ReviewWord
             }
             return Json(result);
         }
+
+        [HttpPost]
+        [Route("addToPersonalVocab")]
+        public IHttpActionResult GetPersonalCollection(DetailPersonalVocabModel vocabPersonDetail)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@PersonalVocabID", vocabPersonDetail.PersonalVocabID),
+                    new SqlParameter("@VocabID", vocabPersonDetail.VocabID),
+                    new SqlParameter("@AccountID", vocabPersonDetail.AccountID)
+            };
+
+            var result = new DB().GetDataReader("sp_AddToPersonalVocab", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        
+        }
+
+
+
+        [HttpPost]
+        [Route("wordExists")]
+        public IHttpActionResult CheckWordExists(DetailPersonalVocabModel vocabPersonDetail)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@PersonalVocabID", vocabPersonDetail.PersonalVocabID),
+                    new SqlParameter("@VocabID", vocabPersonDetail.VocabID),
+                    new SqlParameter("@AccountID", vocabPersonDetail.AccountID)
+            };
+
+            var result = new DB().GetDataReader("sp_CheckWordPersonExists", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
     }
 }
