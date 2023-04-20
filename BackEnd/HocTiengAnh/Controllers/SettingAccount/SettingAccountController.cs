@@ -128,5 +128,43 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
 
+        [HttpPost]
+        [Route("changeDefaultPersonalVocab")]
+        public IHttpActionResult ChangeDefaultPersonalVocab(PersonalVocabModel personalVocab)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", personalVocab.AccountID),
+                    new SqlParameter("@PersonalVocabID", personalVocab.PersonalVocabID)
+            };
+
+            var result = new DB().GetDataReader("sp_UpdateDefaultPersonalVocab", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        [Route("createPersonalVocab")]
+        public IHttpActionResult CreatePersonalVocab(PersonalVocabModel personalVocab)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", personalVocab.AccountID),
+                    new SqlParameter("@PersonalVocabName", personalVocab.PersonalVocabName)
+            };
+
+            var result = new DB().GetDataReader("sp_CreateNewPersonalVocab", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+
+
     }
 }

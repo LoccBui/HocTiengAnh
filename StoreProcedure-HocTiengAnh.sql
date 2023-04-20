@@ -1164,4 +1164,54 @@ BEGIN
 END
 
 
+go
+
+create procedure sp_UpdateDefaultPersonalVocab
+@AccountID int,
+@PersonalVocabID int
+as
+BEGIN
+	DECLARE @check int
+	UPDATE TUVUNGCANHAN SET IsDefault = 0 where AccountID = 1
+
+	UPDATE TUVUNGCANHAN SET IsDefault = 1
+	where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID
+
+	set @check = (select @@ROWCOUNT) 
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+go
+
+create procedure sp_CreateNewPersonalVocab
+@AccountID int,
+@PersonalVocabName nvarchar(200)
+as
+BEGIN
+	DECLARE @check int
+
+	INSERT INTO TUVUNGCANHAN(PersonalVocabName, AccountID)
+	VALUES(@PersonalVocabName, @AccountID)
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+
+
 ----------------- TESTING AREA

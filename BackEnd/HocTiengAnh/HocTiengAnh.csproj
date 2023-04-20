@@ -198,6 +198,7 @@
     <Compile Include="Models\DetailPersonalVocabModel.cs" />
     <Compile Include="Models\FacultyModel.cs" />
     <Compile Include="Models\GiaoVienModel.cs" />
+    <Compile Include="Models\PersonalVocabModel.cs" />
     <Compile Include="Models\SachModel.cs" />
     <Compile Include="Models\StudentModel.cs" />
     <Compile Include="Models\TopicModel.cs" />

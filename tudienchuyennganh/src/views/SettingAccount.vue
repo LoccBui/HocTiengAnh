@@ -119,7 +119,7 @@
         </el-dialog>
 
 
-        <div class="personalCollection">
+    <div class="personalCollection">
 
         <el-dialog
             v-model="personCollection"
@@ -128,7 +128,7 @@
             :before-close="handleClose"
             align-center
 
-            >
+        >
 
             
             <div v-if="notHaveCollectionWarn">
@@ -137,27 +137,57 @@
             
             
             <div class="collection-cover">
-                <el-button v-for="collection in arrCollection" :key="collection" class="collection">
-                <div class="w80">
-                {{ collection.PersonalVocabName }}
-                </div>
-
-                <div class="w20 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
+                <el-button v-for="collection in arrCollection" :key="collection" class="collection" @click="setDefaultPersonalVocab(collection)">
+                    <div class="w80">
+                    {{ collection.PersonalVocabName }}
+                    </div>
+                    <div class="w20 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
 
                 </el-button>
             </div>
             
             <template #footer>    
             <div class="btn-create-new">
-            <el-button color="var(--main-color)" size="large" >Tạo mới 
+            <el-button color="var(--main-color)" size="large" @click="handleOpenCreateNewVocab()">Tạo mới 
                 <v-icon>mdi-plus</v-icon>
             </el-button>
             </div>
             </template>
         </el-dialog>
 
-        </div>
+    </div>
 
+ <!-- Dialog input new personal vocab -->
+    <div class="personalVocabDialog">
+        <el-dialog
+            v-model="showPersonalVocabDialog"
+            title="Thêm bộ từ mới"
+            width="30%"
+            :before-close="() => this.showPersonalVocabDialog = false"
+        >
+
+            <el-form  
+                ref="ruleFormRef"
+                :model="ruleForm"
+                :rules="rules"
+                status-icon
+                label-width="20%" :label-position="'left'" >
+
+                <el-form-item label="Tên bộ từ" prop="personalVocabname" >
+                    <el-input prop="inputPersonalVocabName" size="large" 
+                    v-model="ruleForm.personalVocabname" placeholder="Nhập tên bộ từ"   />
+                </el-form-item>
+
+            </el-form>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button color="var(--main-color)" size="large" @click="createNewPersonalVocab()">
+                    Xác nhận
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+    </div>
 
     </div>
 </template>
@@ -204,6 +234,16 @@ export default {
             personCollection: false,
             notHaveCollectionWarn: false,
             arrCollection: [],
+
+            showPersonalVocabDialog: false,
+
+            ruleForm : {
+                inputPersonalVocabName: '',
+            },
+
+            rules: {
+                personalVocabname: [{ required: true, message: 'Bạn cần nhập tên bộ từ mới', trigger: 'change' }],
+            }       
 
         }
     },
@@ -382,12 +422,12 @@ export default {
         },
 
 
-    handleShowPersonCollection(word){
+    handleShowPersonCollection(){
         this.personCollection = true
-        this.getPersonCollection(word)
+        this.getPersonCollection()
       },
 
-      async getPersonCollection(word){
+    async getPersonCollection(){
             try{
                 let result = await axiosInstance.post('getPersonalCollection',{
                     "AccountID": this.accountID
@@ -401,7 +441,68 @@ export default {
                 this.notHaveCollectionWarn = true
             }
       },
+
+    // Personal vocab
+    setDefaultPersonalVocab(collection){
+        try{
+            axiosInstance.post('changeDefaultPersonalVocab', {
+            "AccountID": this.accountID,
+            "PersonalVocabID": collection.PersonalVocabID
+            })
+            .then(() => {
+                this.getPersonCollection()
+                this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+            })
+
+        }
+        catch(e){
+            this.showNotification('Thông báo', 'Cập nhật ảnh không thành công', 'error')
+        }  
+    },
+
+    handleOpenCreateNewVocab(){
+        this.showPersonalVocabDialog = true
+    },
+
+
+    async createNewPersonalVocab(){
+
+        await  this.$refs.ruleFormRef.validate((valid) => {
+                if (valid) {
+                    try{
+                        axiosInstance.post('createPersonalVocab', {
+                            "AccountID": this.accountID,
+                            "PersonalVocabName": `${this.ruleForm.personalVocabname}`
+                        })
+                        .then(() => {
+                            this.showPersonalVocabDialog = false
+                            this.ruleForm.personalVocabname = ''
+                            this.getPersonCollection()
+                            this.showNotification('Thông báo', 'Thêm thành công', 'success')
+                        })
+
+                    }
+                    catch(e){
+                        this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                    }  
+
+                } else {
+                    console.log('chưa valid')
+                    this.$message.error('Dữ liệu còn thiếu.');
+                    return false;
+                }
+            });
+
+
+
     }
+},
+
+
+
+
+   
+
 
 }
 </script>
@@ -537,6 +638,7 @@ export default {
       
       .defaul-word{
         font-weight: 800;
+        color: var(--main-color);
       }
     }
 
@@ -545,5 +647,17 @@ export default {
     }
 
   }
+
+.personalVocabDialog{
+
+
+    .dialog-footer{
+        
+        .el-button{
+            width: 100%;
+        }
+    }
+
+}
 </style>
 
