@@ -16,22 +16,27 @@
 
         <div class="scrolling">
 
-          <div class="word" v-for="word in dataReview" :key="word.VocabID">        
+          <div class="word" v-for="word,index in dataReview" :key="index">        
                 <div>
                   <h3> {{ word.Word }} </h3>          
                   <h3> {{ word.Vietnamese }} </h3>  
                 </div>  
-                
-                <div class="btn-cover">
-                  <el-button title="Lưu vào bộ từ mặc định" color="var(--main-color)"  @click="handleShowPersonCollection(word)" v-if="!word.isAdded && word.VocabID != WordExists.WordExists">
-                    Thêm vào từ của tôi
-                  </el-button>
 
-                  <el-button title="Đã thêm" color="var(--main-color)"  v-if="word.isAdded && word.VocabID != WordExists.WordExists">
+                <div class="btn-cover" >
+
+                    <el-button
+                        title="Lưu vào bộ từ mặc định" color="var(--main-color)"  
+                        @click="handleShowPersonCollection(word)" v-if="!word.isAdded && WordExists.length > 0 && index < WordExists.length  &&  word.VocabID != WordExists[index].VocabExists"
+                        >
+                      Thêm vào bộ từ của tôi
+                    </el-button>
+
+                  <el-button title="Đã thêm" color="var(--main-color)"  v-if="word.isAdded && WordExists.length > 0 && index < WordExists.length && word.VocabID != WordExists[index].VocabExists">
                     Đã thêm
                   </el-button>
+                  
 
-                  <el-button color="var(--success)"  v-if="word.VocabID == WordExists.WordExists">
+                  <el-button type="primary" disabled color="green" v-if=" WordExists.length > 0 && index < WordExists.length && word.VocabID == WordExists[index].VocabExists">
                     Đã có trong bộ từ
                   </el-button>
 
@@ -128,8 +133,10 @@ export default {
             isAdded: false,
 
             defaultCollection: '',
+            defaultPersonalVocabID: '',
 
             WordExists: [],
+            arrWordExists: [],
           }
     },
 
@@ -138,7 +145,6 @@ export default {
 
       this.getDefaultCollection()
       this.getRanking()
-      this.CheckWordExistInPersonalCollection()
     },
 
 
@@ -151,6 +157,7 @@ export default {
               type: `${type}`,
           })
       },
+      
 
       handleDataLocal(){
         let dataUser = JSON.parse(localStorage.getItem('userInfo'))
@@ -158,8 +165,6 @@ export default {
       },
 
       async getRanking(){
-        console.log("topic id =", this.idTopic)
-
         let result = await axiosInstance.post('rankingTopic',{
           "TopicID": this.idTopic
         })
@@ -181,8 +186,9 @@ export default {
 
             this.defaultCollection = this.arrCollection.filter(item => item.IsDefault === true)
 
-            console.log("default collection", this.defaultCollection[0].PersonalVocabID)
+            this.defaultPersonalVocabID = this.defaultCollection[0].PersonalVocabID
 
+            this.CheckWordExistInPersonalCollection()
           }
         }
         catch(ex) {
@@ -190,27 +196,21 @@ export default {
         }
       },
 
-      async CheckWordExistInPersonalCollection(){
-        console.info("datasend", this.defaultCollection)
 
-        for(let i=0; i<this.dataReview.length; i++){
-
-          console.info("datasend",this.dataReview[i].VocabID)
-          console.info("datasend",this.AccountID  )
-
-          let result = await axiosInstance.post('wordExists', {
-            "PersonalVocabID": this.defaultCollection[0].PersonalVocabID,
-            "VocabID": this.dataReview[i].VocabID,
-            "AccountID": this.AccountID
+      CheckWordExistInPersonalCollection(){
+        // Dùng promise để đảm bảo response trả về đúng thứ tự, dùng async sẽ response theo kết quả nào trả về nhanh hơn
+        const promises = this.dataReview.map(word => {
+            return axiosInstance.post('wordExists', {
+              "PersonalVocabID": this.defaultPersonalVocabID,
+              "VocabID": word.VocabID,
+              "AccountID": this.AccountID
+            })
           })
 
-          if(result.status==200){
-            this.WordExists = result.data
-            console.info("datareturrn",result.data[0])
+          Promise.all(promises).then(responses => {
+            this.WordExists = responses.map(res => res.data[0])
             console.log(this.WordExists)
-          }
-
-        }   
+          })
       },
 
       handleShowPersonCollection(word){
@@ -236,8 +236,6 @@ export default {
       },
 
       async addToPersonalVocab(word){
-        console.log(this.dataReview)
-     
 
         const filterDefault = this.arrCollection.filter(item => item.IsDefault === true)
 

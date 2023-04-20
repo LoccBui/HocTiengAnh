@@ -57,24 +57,39 @@
 
             <div class="wrapper">
 
-                <el-col>
-                    <h1 class="txt-40">Thay đổi mật khẩu</h1>
+                <el-row style="width: 100%; " >
 
-                    <el-col :span="24">
-                        <h1 class="info-user">Mật khẩu mới</h1>
-                        <el-input show-password v-model="inputNewPassword" 	/>
+                    <el-col>
+                        <h1 class="txt-40">Thay đổi mật khẩu</h1>
+
+                        <el-col :span="24">
+                            <h1 class="info-user">Mật khẩu mới</h1>
+                            <el-input show-password v-model="inputNewPassword" 	/>
+                        </el-col>
+
+                        <el-col :span="24">
+                            <h1 class="info-user" >Xác nhận mật khẩu</h1>
+                            <el-input show-password  v-model="inputNewPasswordConfirm"  @keyup.enter="changePassword()"/>
+                        </el-col>
+
+                        <div class="confirm-btn">
+                            <el-button color="var(--main-color)" size="large" @click="changePassword()">Thay đổi mật khẩu</el-button>
+                        </div>
+
+                        
                     </el-col>
 
-                    <el-col :span="24">
-                        <h1 class="info-user" >Xác nhận mật khẩu</h1>
-                        <el-input show-password  v-model="inputNewPasswordConfirm"  @keyup.enter="changePassword()"/>
-                    </el-col>
+                    
+                     <el-divider />
 
-                    <div class="confirm-btn">
-                        <el-button color="var(--main-color)" size="large" @click="changePassword()">Thay đổi mật khẩu</el-button>
-                    </div>
+                     <el-col>
+                        <h1 class="txt-40">Bộ từ cá nhân</h1>
+                        <div class="confirm-btn">
+                            <el-button color="var(--main-color)" size="large" @click="handleShowPersonCollection()">Thay đổi mặc định bộ từ cá nhân</el-button>
+                        </div>
+                     </el-col>
 
-                </el-col>
+                </el-row>
 
             </div>
             
@@ -102,6 +117,46 @@
             </span>
             </template>
         </el-dialog>
+
+
+        <div class="personalCollection">
+
+        <el-dialog
+            v-model="personCollection"
+            title="Chọn bộ từ cá nhân của bạn"
+            width="30%"
+            :before-close="handleClose"
+            align-center
+
+            >
+
+            
+            <div v-if="notHaveCollectionWarn">
+                <h1 class="warning-text">Bạn chưa có bộ từ vựng của riêng mình</h1>
+            </div>
+            
+            
+            <div class="collection-cover">
+                <el-button v-for="collection in arrCollection" :key="collection" class="collection">
+                <div class="w80">
+                {{ collection.PersonalVocabName }}
+                </div>
+
+                <div class="w20 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
+
+                </el-button>
+            </div>
+            
+            <template #footer>    
+            <div class="btn-create-new">
+            <el-button color="var(--main-color)" size="large" >Tạo mới 
+                <v-icon>mdi-plus</v-icon>
+            </el-button>
+            </div>
+            </template>
+        </el-dialog>
+
+        </div>
 
 
     </div>
@@ -144,7 +199,12 @@ export default {
                 {'id': 7, 'source': 'female3'},
                 {'id': 8, 'source': 'female4'},
                 {'id': 9, 'source': 'default'},
-            ]
+            ],
+
+            personCollection: false,
+            notHaveCollectionWarn: false,
+            arrCollection: [],
+
         }
     },
 
@@ -195,10 +255,6 @@ export default {
                     this.showNotification('Thông báo', 'Đổi mật khẩu không thành công', 'error')
                     
                 }
-
-                
-
-
             }
         },
 
@@ -323,7 +379,28 @@ export default {
                 this.maSV = result.data[0].MaSV || undefined
                 
             }
-        }
+        },
+
+
+    handleShowPersonCollection(word){
+        this.personCollection = true
+        this.getPersonCollection(word)
+      },
+
+      async getPersonCollection(word){
+            try{
+                let result = await axiosInstance.post('getPersonalCollection',{
+                    "AccountID": this.accountID
+                })
+
+                if(result.status == 200){
+                    this.arrCollection = result.data
+                }
+                }
+            catch(ex) {
+                this.notHaveCollectionWarn = true
+            }
+      },
     }
 
 }
@@ -420,5 +497,53 @@ export default {
     }
 
 }
+
+
+.personalCollection{
+    .el-dialog{
+    border-radius: 20px !important;
+
+    .warning-text{
+        font-size: 20px;
+    }
+
+    .btn-create-new{
+        .el-button{
+        width: 100%;
+        border-radius: 5px !important;
+        }
+
+        &:hover{
+            color: white;
+        }
+    }
+    }
+}
+
+.collection-cover{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    .collection{
+      padding: 8%;
+      width: 100%;
+      margin: 0;
+      
+      &:hover{
+        color: white;
+      }
+      
+      .defaul-word{
+        font-weight: 800;
+      }
+    }
+
+    .collection + .collection{
+      margin-top: 4%;
+    }
+
+  }
 </style>
 

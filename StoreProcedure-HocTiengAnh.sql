@@ -1151,104 +1151,17 @@ create procedure sp_CheckWordPersonExists
 @AccountID int
 as
 BEGIN
-	IF EXISTS(select * from CHITIETTUCANHAN 
-		where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID and VocabID = @VocabID)
+	IF EXISTS(select * from CHITIETTUCANHAN where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID and VocabID = @VocabID)
 		BEGIN
-			Select VocabID as WordExists from CHITIETTUCANHAN  
+			Select VocabID as VocabExists 
+			from CHITIETTUCANHAN  
+			where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID and VocabID = @VocabID
 		END
 	ELSE
 		BEGIN
-			Select VocabID as WordExists  from CHITIETTUCANHAN 
+			Select '0' as VocabExists 
 		END
 END
 
 
---Trang phân tích: lọc ra lớp của giáo viêb
---select DISTINCT CTL.MaGV, LOP.ClassName
---from CHITIETLOP CTL
---inner join LOP on LOP.IDCLASS = CTL.IDCLASS
---where MaGV = 1
-
-
-
 ----------------- TESTING AREA
-
---select * from LOP
---select * from GIAOVIEN
---select * from NHOMTK
---select * from TAIKHOAN
---select * from SINHVIEN
---select * from KHOA
-
-
-
-
---CREATE TABLE CHITIETHOC(
---	IDHOC INT IDENTITY(1,1),
---	AccountID INT,
---	VocabID INT,
---	DateCreated DATETIME,
---	NumberCorrect INT,
---	NumberIncorrect INT,
---	PRIMARY KEY (IDHOC),
---	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
---	FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
---);
-
-
--- Tạo bảng THANHTUU
---CREATE TABLE THANHTUU(
---	IDTHANHTUU INT IDENTITY(1,1),
---	AccountID INT,
---	TopicID INT,
---	NumberLearned INT,
---	Streak INT,
---	PRIMARY KEY (IDTHANHTUU),
---	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
---	FOREIGN KEY (TopicID) REFERENCES CHUDE(TopicID)
---);
-
-
--- Thống kê từ sai nhiều trong mỗi chủ đề
---SELECT TOP 1 WITH TIES CHUDE.TopicID, CHUDE.TopicName, COUNT(*) AS WrongAnswers
---FROM TUVUNG
---INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
---WHERE TUVUNG.Learned = 1 AND TUVUNG.Active = 1 AND TUVUNG.Level < 5
---GROUP BY CHUDE.TopicID, CHUDE.TopicName, TUVUNG.Word
---ORDER BY ROW_NUMBER() OVER (PARTITION BY CHUDE.TopicID ORDER BY COUNT(*) DESC)
-
-
--- Tạo bảng CHITIETHOC
---CREATE TABLE CHITIETTUHOC (
---  ChiTietTuHocID int IDENTITY(1,1),
---  AccountID int,
---  VocabID int,
---  Learned bit,
---  Level tinyint,
-  
---  PRIMARY KEY (ChiTietTuHocID),
---  FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
---  FOREIGN KEY (VocabID) REFERENCES TUVUNG(VocabID)
---)
-
-
---SELECT CHUDE.TenChuDe, SUM(CHITIETTUHOC.SoLanSai) AS TongSoLanSai
---FROM CHITIETTUHOC
---INNER JOIN TUVUNG ON CHITIETTUHOC.TuvungID = TUVUNG.VocabID
---INNER JOIN CHUDE ON TUVUNG.TopicID = CHUDE.TopicID
---GROUP BY CHUDE.TenChuDe
---ORDER BY TongSoLanSai DESC;
-
-
---SELECT SUM(Score) AS TotalScore
---FROM CHITIETHOC
---WHERE AccountID = 1 AND VocabID = 5
-
---Kết quả sẽ trả về tổng số điểm mà tài khoản có AccountID=1 học được ở chủ đề có VocabID=5.
-
---Nếu bạn muốn thống kê số điểm học được của tất cả các chủ đề của một tài khoản, bạn có thể sử dụng câu lệnh sau:
-
---SELECT VocabID, SUM(Score) AS TotalScore
---FROM CHITIETHOC
---WHERE AccountID = 1
---GROUP BY VocabID
