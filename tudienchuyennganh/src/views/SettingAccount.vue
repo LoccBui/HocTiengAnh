@@ -138,11 +138,11 @@
             
             <div class="collection-cover">
                 <el-button v-for="collection in arrCollection" :key="collection" class="collection" @click="setDefaultPersonalVocab(collection)">
-                    <div class="w80">
-                    {{ collection.PersonalVocabName }}
+                    <div>
+                        {{ collection.PersonalVocabName }}
                     </div>
-                    <div class="w20 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
-
+                    
+                    <div class="ml-4 defaul-word" v-if="collection.IsDefault == true" >Mặc định</div>
                 </el-button>
             </div>
             
@@ -624,12 +624,9 @@ export default {
 .collection-cover{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
 
     .collection{
       padding: 8%;
-      width: 100%;
       margin: 0;
       
       &:hover{
@@ -638,6 +635,7 @@ export default {
       
       .defaul-word{
         font-weight: 800;
+        font-size: 20px;
         color: var(--main-color);
       }
     }

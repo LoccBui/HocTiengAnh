@@ -37,7 +37,7 @@
               class="navbar-item"
               :prepend-icon="`${item.icon}`" 
               :title="`${item.title}`" 
-              @click="directTo(`${item.route}`)"
+              :to="`${item.route}`"
               :active="selectedItems.includes(item.value)"
               active-class="bg-active"
             >
@@ -169,59 +169,62 @@ export default {
       return {
         drawer: true,
         rail: true,
-          emailUser: '',
-          nameUser: '',
-          accountID: '',
-          checkStorage: [],
+        emailUser: '',
+        nameUser: '',
+        accountID: '',
+        checkStorage: [],
 
-          roleUser: 1,
-          selectedItems: [],
+        roleUser: 1,
+        selectedItems: [],
 
-          imageUser: '',
+        imageUser: '',
 
-          menuVisible: false,
+        menuVisible: false,
 
-          menuListItem: [
-            {icon: 'mdi-magnify', title: 'Tra từ', value: 1, route: '/searching', roles: [1, 10, 100]},
-            {icon: 'mdi-bookshelf', title: 'Học từ', value: 2, route: '/topic', roles: [1, 10, 100]},
-            {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: 3, route: '/account/setting', roles: [1, 10, 100]},
-            {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: 4, route: '/manage/class', roles: [100]},
-            {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Chi tiết học', value: 7, route: '/analyst/1', roles: [10,100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Bộ từ của tôi', value: 7, route: '/manage/vocab', roles: [10,100]},
-
-          ]
+        menuListItem: []
       }
+  },
+
+  beforeMount(){
+    this.getData()
   },
 
 
   mounted(){  
      this.getDataUser()
 
-     this.getData()
   },
 
 
   methods:{
 
-    async getData(){
+    getData(){
       let dataUser = JSON.parse(localStorage.getItem('userInfo'))
-
-
       this.accountID = dataUser.accountID
 
-      let result = await axiosInstance.post('settingAccount', {
+
+      axiosInstance.post('settingAccount', {
           "AccountID": this.accountID
       })
 
-      if(result.status == 200){
-        console.log("getData", result.data[0])
+      .then(result=>{
           this.imageUser =  result.data[0].Image
           this.nameUser =  result.data[0].Name
           this.emailUser = result.data[0].Email
 
-      }
+          // truyền vào để có thể lấy các giá trị như accountID
+          this.menuListItem = [
+            {icon: 'mdi-magnify', title: 'Tra từ', value: 1, route: '/searching', roles: [1, 10, 100]},
+            {icon: 'mdi-bookshelf', title: 'Học từ', value: 2, route: '/topic', roles: [1, 10, 100]},
+            {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: 3, route: '/account/setting', roles: [1, 10, 100]},
+            {icon: 'mdi-account-group ', title: 'Quản lý lớp - Admin', value: 4, route: '/manage/class', roles: [100]},
+            {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
+            {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
+            {icon: 'mdi-google-analytics ', title: 'Chi tiết học', value: 7, route: '/analyst/1', roles: [10,100]},
+            {icon: 'mdi-file-word-box ', title: 'Bộ từ của tôi', value: 8, route: `/manage/personal/${this.accountID}`, roles: [10,100]},
+          ]
+        })
+
     },
   
 
@@ -237,14 +240,10 @@ export default {
           this.$router.push('/login')
         }
         else{
-
           this.roleUser = dataUser.Role
         }
     },
 
-    directTo(path){
-        this.$router.push(`${path}`)
-    },
 
     logOut(){
       localStorage.removeItem('userInfo')

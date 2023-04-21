@@ -18,6 +18,7 @@ import ManageVocab from '../views/ManageVocab.vue'
 import ManageUsers from '../views/ManageUsers.vue'
 import SettingAccount from '../views/SettingAccount.vue'
 import AnalystLearning from '../views/AnalystLearning.vue'
+import ManagePersonalVocab from '../views/ManagePersonalVocab.vue'
 
 import TopicDetail from '../views/TopicDetail.vue'
 
@@ -69,6 +70,10 @@ const routes = [
       {
         path: '/analyst/1',
         component: AnalystLearning
+      },
+      {
+        path: '/manage/personal/:id',
+        component: ManagePersonalVocab
       },
 
       

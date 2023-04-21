@@ -23,7 +23,6 @@
 .el-button:hover{
   outline: none;
   border: none !important;
-  background-color: rgba(0, 56, 255, 0.5) !important; /* Giảm độ đậm của màu gốc */
 }
 
 .el-dialog{

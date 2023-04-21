@@ -1212,6 +1212,72 @@ BEGIN
 		end
 END
 
+go
+
+create procedure sp_SelectAllPersonalVocab
+@AccountID int
+as
+BEGIN
+	DECLARE @check int
+	select * from TUVUNGCANHAN where AccountID = @AccountID
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+go
+
+create procedure sp_DeletePersonalVocab
+@AccountID int,
+@PersonalVocabID int 
+as
+BEGIN
+
+	DELETE from TUVUNGCANHAN where AccountID = @AccountID and PersonalVocabID = @PersonalVocabID
+	SELECT @@ROWCOUNT as RowDelete
+
+END
+
+go
+
+create procedure sp_SelectVocabFromCollection
+@AccountID int,
+@PersonalVocabID int 
+as
+BEGIN
+	DECLARE @check int
+
+	select TVCN.PersonalVocabID, TVCN.PersonalVocabName, CT.VocabID, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example
+	from TUVUNGCANHAN TVCN
+	inner join CHITIETTUCANHAN CT on TVCN.PersonalVocabID = CT.PersonalVocabID
+	inner join TUVUNG TV on TV.VocabID = CT.VocabID
+	where CT.AccountID = @AccountID and CT.PersonalVocabID = @PersonalVocabID
+
+	set @check = (select @@ROWCOUNT) 
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END
+
+exec sp_SelectVocabFromCollection 1, 1
+
+
+
+
 
 
 ----------------- TESTING AREA
