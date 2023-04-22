@@ -245,7 +245,6 @@ export default {
 
         // Nếu có input nào thay đổi thì thay đổi thành có sự thành đổi -> không cần phải post lên api mỗi khi ko có xác nhận
         checkChange(){
-          console.log(this.dataDetailVocab.Active)
           this.isChange = true
         },  
 

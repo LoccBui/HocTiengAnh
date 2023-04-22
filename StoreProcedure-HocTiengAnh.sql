@@ -1255,7 +1255,7 @@ as
 BEGIN
 	DECLARE @check int
 
-	select TVCN.PersonalVocabID, TVCN.PersonalVocabName, CT.VocabID, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example
+	select CT.PersonalDetailID, TVCN.PersonalVocabID, TVCN.PersonalVocabName, CT.VocabID, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example
 	from TUVUNGCANHAN TVCN
 	inner join CHITIETTUCANHAN CT on TVCN.PersonalVocabID = CT.PersonalVocabID
 	inner join TUVUNG TV on TV.VocabID = CT.VocabID
@@ -1273,9 +1273,30 @@ BEGIN
 		end
 END
 
-exec sp_SelectVocabFromCollection 1, 1
+go
 
+create procedure sp_DeleteVocabOfPerson
+@AccountID int,
+@PersonalDetailID int
+as
+BEGIN 
+	DELETE FROM CHITIETTUCANHAN
+	where AccountID = @AccountID and PersonalDetailID = @PersonalDetailID
+	SELECT @@ROWCOUNT as RowDelete
+END
 
+go
+
+create procedure sp_ChangePersonalVocabName
+@PersonalVocabID int,
+@PersonalVocabName nvarchar(200)
+as
+BEGIN
+	UPDATE TUVUNGCANHAN
+	SET PersonalVocabName = @PersonalVocabName
+	where PersonalVocabID = @PersonalVocabID
+	SELECT @@ROWCOUNT as RowDelete
+END
 
 
 

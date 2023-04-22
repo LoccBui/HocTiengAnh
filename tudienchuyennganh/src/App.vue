@@ -118,6 +118,14 @@ a:visited {
   font-size: 40px;
 }
 
+.txt-60{
+  font-size: 60px;
+}
+
+.m-ud-8{
+  margin: 8px 0;
+}
+
 .size-icon-48px{
   width: 48px;
 }

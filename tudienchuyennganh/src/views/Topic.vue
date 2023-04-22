@@ -1,42 +1,79 @@
 <template>
     <div class="container">
 
+    <div>
+        <h1 class="txt-20 m-ud-8">Kho từ chung</h1>
+    </div>
+
+    <div class="wrapper">
+
         <div class="topic-cover" v-for="topic in dataTopicsAPI[0]" :key="topic.TopicID">
-            <div class="header-info" >
-                <div class="image-topic">
-                    <img src="../../assets/img/default-topic.jpg" alt="Topic Image" class="img-topic">
+            <div class="body-info" >
+                <div class="left-info" >
+
+                    <div class="info-topic">
+                        <h1>{{ topic.TopicName }}</h1>
+                        <h1> 1/ {{ topic.QuantityWords }} từ đã học</h1>
+                    
+                        <v-progress-linear
+                        model-value= 30
+                        :buffer-value="bufferValue"
+                        height="20"
+                        color="var(--main-color)"
+                        rounded
+                        ></v-progress-linear>
+                    </div>
                 </div>
 
-                <div class="info-topic">
-                    <h1>{{ topic.TopicName }}</h1>
-                    <h1> 1/ {{ topic.QuantityWords }} từ đã học</h1>
-                
-                    <v-progress-linear
-                    model-value= 30
-                    :buffer-value="bufferValue"
-                    height="20"
-                    color="var(--main-color)"
-                    rounded
-                    ></v-progress-linear>
-                </div>
-            </div>
-
-            <div class="body-info mt-4" >
                 <div class="temporary"></div>
-                <div class="action-info">
 
-                    <!-- <v-btn color="var(--main-color)" width="100px" 
-                    router :to="{params: {id: topic.TopicID}, name: 'LearnTopic' }"
-                    >Học </v-btn> -->
+                <div class="right-info">
 
                     <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.TopicID}`)"
-                    
                     >Học
                     </el-button>
                 </div>
             </div>
 
         </div>
+    </div>
+
+    <el-divider /> 
+    <div>
+        <h1 class="txt-20 m-ud-8">Kho từ của tôi</h1>
+    </div>
+
+    <div class="wrapper">
+
+        <div class="topic-cover" v-for="topic in dataPersonalVocabAPI" :key="topic.PersonalVocabID">
+            <div class="body-info" >
+                
+                <div class="left-info" >
+
+                    <div class="info-topic">
+                        <h1>{{ topic.PersonalVocabName }}</h1>
+                    
+                        <v-progress-linear
+                        model-value= 30
+                        :buffer-value="bufferValue"
+                        height="20"
+                        color="var(--main-color)"
+                        rounded
+                        ></v-progress-linear>
+                    </div>
+                </div>
+
+                <div class="temporary"></div>
+
+                <div class="right-info">
+                    <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.PersonalVocabID}`)"   
+                    >Ôn
+                    </el-button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 
         <NewSinhVienForm v-if="showSinhVienForm"
@@ -65,6 +102,7 @@ export default {
             accountID: '',
             showSinhVienForm: false,
             showGiaoVienForm: false,
+            dataPersonalVocabAPI: '',
 
         }
     },
@@ -74,6 +112,9 @@ export default {
         this.changeTitle()
         this.getDataTopic()
     
+
+        this.getPersonalVocab()
+
 
     },
 
@@ -103,8 +144,6 @@ export default {
                 }        
             }
             else if(isNew == false){
-                console.log(' ko show form')
-
                 this.showSinhVienForm = false
             }
             else{
@@ -115,7 +154,6 @@ export default {
         
         //lấy data từ emitter
         handleDataUser(data){
-            console.log("trạng thái", data)
             this.accountID = data.accountID   
             this.getDataTopic()
         },
@@ -138,7 +176,16 @@ export default {
             this.showSinhVienForm = false
             this.showGiaoVienForm = false
             window.location.reload()
-        }
+        },
+
+        getPersonalVocab(){
+            axiosInstance.post('getPersonalVocab', {
+                "AccountID": this.accountID
+            })
+            .then((res) => {
+                this.dataPersonalVocabAPI = res.data
+            })
+        },
         
 
     }
@@ -148,7 +195,12 @@ export default {
 <style lang="scss" scoped>
 
 .container{
-    height: 1000px;
+    min-height: 700px;
+    padding: 2%;
+
+}
+
+.wrapper{
     display: flex;
     justify-content: start;
     align-items: start;
@@ -157,60 +209,54 @@ export default {
 
 
 .topic-cover{
-    flex-basis: 400px;
-    max-height: 200px;
-    margin: 20px;
-    padding: 10px;
-
+    min-height: 200px;
+    max-width: 400px;
+    min-width: 400px;
     border: 1px solid transparent;
     border-radius: 15px;
-
     line-height: 50px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    .header-info{
-        display: flex;
-    }
-    
-    .body-info{
-        display: flex;
-        
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2%;
+
+
+    .body-info{
+        width: 100%;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .left-info{
+            width: 50%;
+        }
+    
         .temporary{
-            width: 30%;
+            width: 10%;
         }
 
-        .action-info{
+        .right-info{
             flex: 1;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-
+            height: 100%;
             .el-button{
                 width: 100%;
+                height: inherit;
             }
         }
     }
 
 
-    .image-topic{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30%;
-
-        .img-topic{
-            width: 50%;
-            height: 50%;
-            border-radius: 50%;
-            object-fit: contain ;
-        }
-    }
 
     .info-topic{
         flex: 1;
-        // display: flex;
-        // flex-direction: column;
     }
+}
+
+.topic-cover + .topic-cover{
+    margin: 0 20px;
 }
 
 

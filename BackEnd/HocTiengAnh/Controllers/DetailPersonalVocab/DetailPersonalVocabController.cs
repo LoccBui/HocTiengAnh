@@ -32,5 +32,41 @@ namespace HocTiengAnh.Controllers.DetailPersonalVocab
             }
             return Json(result);
         }
+
+        [HttpPost]
+        [Route("deleteVocabOfCollection")]
+        public IHttpActionResult DeleteVocabOfCollection(DetailPersonalVocabModel personalVocab)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", personalVocab.AccountID),
+                    new SqlParameter("@PersonalDetailID", personalVocab.PersonalDetailID),
+            };
+
+            var result = new DB().GetDataReader("sp_DeleteVocabOfPerson", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+        [HttpPatch]
+        [Route("changeCollectionName")]
+        public IHttpActionResult ChangeCollectionName(PersonalVocabModel personalVocab)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@PersonalVocabID", personalVocab.PersonalVocabID),
+                    new SqlParameter("@PersonalVocabName", personalVocab.PersonalVocabName),
+            };
+
+            var result = new DB().GetDataReader("sp_ChangePersonalVocabName", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
     }
 }

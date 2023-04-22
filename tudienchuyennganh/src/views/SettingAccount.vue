@@ -62,15 +62,24 @@
                     <el-col>
                         <h1 class="txt-40">Thay đổi mật khẩu</h1>
 
-                        <el-col :span="24">
-                            <h1 class="info-user">Mật khẩu mới</h1>
-                            <el-input show-password v-model="inputNewPassword" 	/>
-                        </el-col>
+                        <el-form  
+                            ref="ruleFormRef"
+                            :model="ruleForm"
+                            :rules="rules"
+                            status-icon
+                            :label-position="'left'" >
 
-                        <el-col :span="24">
-                            <h1 class="info-user" >Xác nhận mật khẩu</h1>
-                            <el-input show-password  v-model="inputNewPasswordConfirm"  @keyup.enter="changePassword()"/>
-                        </el-col>
+                        <el-form-item prop="newPassword" >
+                            <el-input prop="inputNewPassword" size="large"   show-password
+                            v-model="ruleForm.newPassword" placeholder="Mật khẩu mới"   />
+                        </el-form-item>
+
+                        <el-form-item prop="confirmNewPasword" >
+                            <el-input prop="inputConfirmNewPassword" size="large"   show-password
+                            v-model="ruleForm.confirmNewPasword" placeholder="Xác nhận mật khẩu"   />
+                        </el-form-item>
+            </el-form>
+
 
                         <div class="confirm-btn">
                             <el-button color="var(--main-color)" size="large" @click="changePassword()">Thay đổi mật khẩu</el-button>
@@ -213,8 +222,6 @@ export default {
 
             maGV: '',
             maSV: '',
-            inputNewPasswordConfirm: '',
-            inputNewPassword: '',
 
             selectedAvatar: '',
 
@@ -239,10 +246,14 @@ export default {
 
             ruleForm : {
                 inputPersonalVocabName: '',
+                inputNewPassword: '',
+                inputConfirmNewPassword: ''
             },
 
             rules: {
                 personalVocabname: [{ required: true, message: 'Bạn cần nhập tên bộ từ mới', trigger: 'change' }],
+                newPassword: [{ required: true, message: 'Bạn cần mật khẩu mới', trigger: 'change' }],
+                confirmNewPasword: [{ required: true, message: 'Bạn cần nhập xác nhận mật khẩu', trigger: 'change' }],
             }       
 
         }
@@ -275,36 +286,46 @@ export default {
         },
 
         async changePassword(){
-            if(this.inputNewPasswordConfirm != this.inputNewPassword){
-                this.showNotification('Thông báo', 'Mật khẩu không trùng nhau', 'error')
-                    this.$message.error('Mật khẩu phải trùng nhau.');
-            }
-            else{
 
-            
-                let result = await axiosInstance.post('changePassword', {
-                    "Password": `${this.inputNewPasswordConfirm}`,
-                    "AccountID": this.accountID
-                })
+            await  this.$refs.ruleFormRef.validate((valid) => {
+             if (valid) {
+                try{
+                    if(this.ruleForm.newPassword != this.ruleForm.confirmNewPasword){
+                        this.showNotification('Thông báo', 'Mật khẩu không trùng nhau', 'error')
+                    }
+                    else{
 
-                if(result.status == 200){
-                    this.inputNewPassword = this.inputNewPasswordConfirm = ''
-                    this.showNotification('Thông báo', 'Đổi mật khẩu thành công', 'success')
+                        axiosInstance.post('changePassword', {
+                            "Password": `${this.ruleForm.confirmNewPasword}`,
+                            "AccountID": this.accountID
+                        })
+
+                        .then(() => {
+                            this.showNotification('Thông báo', 'Đổi mật khẩu thành công', 'success')
+                            this.$refs.ruleFormRef.resetFields();
+
+                        })
+                    }
+
                 }
-                else{
-                    this.showNotification('Thông báo', 'Đổi mật khẩu không thành công', 'error')
-                    
-                }
+                catch(e){
+                    this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }  
+
+            } else {
+                this.$message.error('Dữ liệu còn thiếu.');
+                return false;
             }
+        });
+
+
+           
         },
 
         async handleChangeInfo(){
             
             let result, email;
 
-            //send lên account đổi email trước
-            console.log(this.inputEmail)
-            console.log(this.inputName)
 
             if(this.inputEmail.endsWith('@gmail.com') && this.inputEmail != "" && this.inputName != ""){
 
@@ -313,8 +334,6 @@ export default {
                     "Email": `${this.inputEmail}`,
                     "Name": `${this.inputName}`,
                 })
-
-                console.log(this.roleUser)
 
                 
                 // phân loại để gửi theo loại user
@@ -468,33 +487,29 @@ export default {
     async createNewPersonalVocab(){
 
         await  this.$refs.ruleFormRef.validate((valid) => {
-                if (valid) {
-                    try{
-                        axiosInstance.post('createPersonalVocab', {
-                            "AccountID": this.accountID,
-                            "PersonalVocabName": `${this.ruleForm.personalVocabname}`
-                        })
-                        .then(() => {
-                            this.showPersonalVocabDialog = false
-                            this.ruleForm.personalVocabname = ''
-                            this.getPersonCollection()
-                            this.showNotification('Thông báo', 'Thêm thành công', 'success')
-                        })
+            if (valid) {
+                try{
+                    axiosInstance.post('createPersonalVocab', {
+                        "AccountID": this.accountID,
+                        "PersonalVocabName": `${this.ruleForm.personalVocabname}`
+                    })
+                    .then(() => {
+                        this.showPersonalVocabDialog = false
+                        this.ruleForm.personalVocabname = ''
+                        this.getPersonCollection()
+                        this.showNotification('Thông báo', 'Thêm thành công', 'success')
+                    })
 
-                    }
-                    catch(e){
-                        this.showNotification('Thông báo', 'Thêm không thành công', 'error')
-                    }  
-
-                } else {
-                    console.log('chưa valid')
-                    this.$message.error('Dữ liệu còn thiếu.');
-                    return false;
                 }
-            });
+                catch(e){
+                    this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }  
 
-
-
+            } else {
+                this.$message.error('Dữ liệu còn thiếu.');
+                return false;
+            }
+        });
     }
 },
 

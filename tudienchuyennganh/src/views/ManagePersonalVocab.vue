@@ -1,5 +1,7 @@
 <template>
     <div class="container">
+
+      <el-button size="large" color="var(--main-color)" @click="handleOpenCreateNewVocab()"> Thêm bộ từ mới </el-button>
      
       <el-table 
         :data="filterPersonalVocab" 
@@ -38,115 +40,37 @@
     </el-table>
 
 
-    <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
-      <div class="options-container">
-        <div class="option-area">
-          <el-button type="success" @click="openWith('excel')">
-            <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
-            Thêm qua excel
-          </el-button>
-        </div>
+  <div class="personalVocabDialog">
+        <el-dialog
+            v-model="showPersonalVocabDialog"
+            title="Thêm bộ từ mới"
+            width="30%"
+            :before-close="() => this.showPersonalVocabDialog = false"
+        >
 
-        <div class="option-area">
-          <el-button type="primary" @click="openWith('default')">
-            <v-icon class="option-icon">mdi-plus-thick</v-icon>
-            Thêm thủ công
-          </el-button>         
-        </div>
-      </div>
-  </el-dialog>
+            <el-form  
+                ref="ruleFormRef"
+                :model="ruleForm"
+                :rules="rules"
+                status-icon
+                label-width="20%" :label-position="'left'" >
 
+                <el-form-item label="Tên bộ từ" prop="personalVocabname" >
+                    <el-input prop="inputPersonalVocabName" size="large" 
+                    v-model="ruleForm.personalVocabname" placeholder="Nhập tên bộ từ"   />
+                </el-form-item>
 
-  <!-- Add By Excel -->
-  <template>
-    <el-dialog
-        v-model="addByExcel"
-        width="50%"
-        title="Thêm bằng Excel"
-        append-to-body
-      >
+            </el-form>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button color="var(--main-color)" size="large" @click="createNewPersonalVocab()">
+                    Xác nhận
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+    </div>
 
-      <el-upload
-        class="upload-demo"
-        drag
-        :auto-upload="false"
-        :limit="1"
-        :action="''"
-        :on-change="handleUpload"
-        :before-upload="beforeUpload"
-      >
-        <v-icon style="font-size: 80px;">mdi-progress-upload</v-icon>
-
-        <div class="el-upload__text">
-          Thả file ở đây hoặc <em>chọn file</em>
-        </div>
-
-        <template #tip>
-          <div class="el-upload__tip">
-            Chỉ chọn 1 file (dạng xls)
-          </div>
-        </template>
-
-
-      </el-upload>
-
-      
-      <el-switch
-          v-model="typeUser"
-          size="large"
-          active-text="Dữ liệu là giáo viên "
-          inactive-text="Dữ liệu là sinh viên"
-        />
-
-      <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="Account" label="Tài khoản"></el-table-column>
-      <el-table-column prop="Email" label="Email"></el-table-column>
-      <el-table-column prop="Password" label="Password"></el-table-column>
-    </el-table>
-
-     <template #footer>
-        <div class="dialog-footer">
-          <el-button color="var(--main-color)" size="large" @click="addNewUserByExcel()" > Thêm </el-button>
-        </div>
-      </template>
-
-    </el-dialog>
-  </template>
-
-  <!-- Add By default -->
-  <template>
-    <el-dialog
-        v-model="addByDefault"
-        width="50%"
-        title="Thêm thủ công"
-        append-to-body
-      >
-     
-      <el-input v-model="inputNewUsername" size="large" placeholder="Nhập tài khoản" />
-      <el-input v-model="inputNewPassword" size="large" placeholder="Nhập mật khẩu" />
-      <el-input v-model="inputNewEmail" size="large" placeholder="Nhập email" />
-
-      
-      <div>
-        <el-select  v-model="value"  placeholder="Quyền truy cập" size="large" clearable >
-        <el-option
-          v-for="item in optionsRole"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      </div>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" size="large" @click="addNewUserByDefault()"> Thêm </el-button>
-        </div>
-      </template>
-
-
-    </el-dialog>
-  </template>
   
   
   
@@ -173,6 +97,7 @@
         :dataPersonalVocab="dataPersonalVocab"
         :accountID="accountID"
         @close="()=>this.showDetail = false"
+        @update="updateTable"
     />
   
     </div>
@@ -185,7 +110,6 @@
 
   import axiosInstance from '../axios'
   import AskBox from '@/components/AskBox.vue'
-  import * as XLSX from 'xlsx';
 
     export default {
       components: {AskBox, DetailPersonalVocab},
@@ -198,10 +122,18 @@
             dataVocabDelete: '',
             showAskBox: false,
             warnDefaultCollection: false,
-
             showDetail: false,
             detailPersonalVocabID: '',
-            dataPersonalVocab: ''
+            dataPersonalVocab: '',
+            showPersonalVocabDialog: false,
+
+            ruleForm : {
+                inputPersonalVocabName: '',
+            },
+
+            rules: {
+                personalVocabname: [{ required: true, message: 'Bạn cần nhập tên bộ từ mới', trigger: 'change' }],
+            }       
         }
           
       },
@@ -300,9 +232,44 @@
             this.showDetail = true
             this.dataPersonalVocab = data
             this.detailPersonalVocabID = data.PersonalVocabID
-        }
+        },
 
-        
+        updateTable(){
+          this.getPersonalVocab()
+        },
+
+
+        handleOpenCreateNewVocab(){
+          this.showPersonalVocabDialog = true
+       },
+
+       async createNewPersonalVocab(){
+
+        await  this.$refs.ruleFormRef.validate((valid) => {
+            if (valid) {
+                try{
+                    axiosInstance.post('createPersonalVocab', {
+                        "AccountID": this.accountID,
+                        "PersonalVocabName": `${this.ruleForm.personalVocabname}`
+                    })
+                    .then(() => {
+                        this.showPersonalVocabDialog = false
+                        this.$refs.ruleFormRef.resetFields();
+                        this.getPersonalVocab()
+                        this.showNotification('Thông báo', 'Thêm thành công', 'success')
+                    })
+
+                }
+                catch(e){
+                    this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }  
+
+                } else {
+                    this.$message.error('Dữ liệu còn thiếu.');
+                    return false;
+                }
+         });
+        }  
       }
     }
   </script>

@@ -2,13 +2,13 @@
   <div class="container">
     <el-dialog
         v-model="dialogVisible"
-        title="Tips"
+        title="Chi tiết bộ từ"
         width="30%"
         :before-close="handleClose"
         fullscreen
         destroy-on-close
     >
-        <el-input v-model="inputPersonalVocabName" :placeholder="dataPersonalVocab.PersonalVocabName" />
+        <el-input v-model="inputPersonalVocabName" :placeholder="dataPersonalVocab.PersonalVocabName" @input="this.checkChange()" />
 
 
         <el-table 
@@ -50,26 +50,37 @@
         </el-table>
 
 
-
-
-
-
         <template #footer>
         <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">Đóng</el-button>
-            <el-button type="primary" @click="dialogVisible = false">
+            <el-button size="large" @click="handleClose">Đóng</el-button>
+            <el-button size="large" type="primary" @click="confirm()">
             Xác nhận
             </el-button>
         </span>
         </template>
     </el-dialog>
+
+    <AskBox 
+        v-if="warnDelete"
+        :title="'Bạn có muốn xóa từ này ?'"
+        :typeButton="'danger'"
+        :btnYes="'Xóa'"
+        @confirm="deleteVocab"
+        @close="this.warnDelete = false"
+    />
+
+
     </div>
-    </template>
+</template>
 
 <script>
 import axiosInstance from '@/axios'
+import AskBox from '@/components/AskBox.vue'
+import { ElNotification } from 'element-plus'
 
 export default {
+    components: {AskBox},
+
     props: ['dataVocabID', 'accountID','dataPersonalVocab'],
 
     data(){
@@ -77,7 +88,12 @@ export default {
             dialogVisible: true,
             search: '',
             dataPersonalVocabAPI: '',
-            inputPersonalVocabName: ''
+            inputPersonalVocabName: '',
+
+            warnDelete: false,
+            idVocabDelete: '',
+            detailID: '',
+            isChange: false,
         }
     },
 
@@ -108,9 +124,58 @@ export default {
             })
         },
 
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+        },
+
         handleClose(){
             this.$emit('close')
+        },
+
+
+        handleDeleteVocab(dataVocab){
+            this.detailID = dataVocab.PersonalDetailID
+            this.idVocabDelete = dataVocab.VocabID
+            this.warnDelete = true
+        },
+
+
+        deleteVocab(){
+            axiosInstance.post('deleteVocabOfCollection',{
+                "AccountID": this.accountID,
+                "PersonalDetailID": this.detailID
+            })
+            .then(() => {
+                this.warnDelete = false
+                this.getDataPersonVocab()
+                this.showNotification('Thông báo', 'Xóa thành công', 'success')
+            })
+        },
+
+        checkChange(){
+          this.isChange = true
+        },
+
+        confirm(){
+            if(this.isChange){
+                axiosInstance.patch('changeCollectionName', {
+                    "PersonalVocabID": this.dataVocabID,
+                    "PersonalVocabName": `${this.inputPersonalVocabName}`
+                })
+                .then( () => {
+                    this.$emit('update')
+                    this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
+                })
+            }
+            else{
+                this.handleClose()
+            }
         }
+
     }
 }
 </script>
