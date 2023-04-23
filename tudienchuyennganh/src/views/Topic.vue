@@ -7,21 +7,25 @@
 
     <div class="wrapper">
 
-        <div class="topic-cover" v-for="topic in dataTopicsAPI[0]" :key="topic.TopicID">
+        <div class="topic-cover" v-for="(topic,index) in dataTopicsAPI[0]" :key="topic.TopicID">
             <div class="body-info" >
                 <div class="left-info" >
 
                     <div class="info-topic">
                         <h1>{{ topic.TopicName }}</h1>
-                        <h1> 1/ {{ topic.QuantityWords }} từ đã học</h1>
+                        <el-button plain round type="primary" v-if="dataStatusLearning.length > 0"> 
+                            {{ dataStatusLearning[index].TopicID == topic.TopicID ? dataStatusLearning[index].Learned : 0 }} 
+                            / 
+                            {{ dataStatusLearning[index].TopicID == topic.TopicID ? dataStatusLearning[index].Total : 0 }} từ đã học
+                        </el-button>
                     
-                        <v-progress-linear
-                        model-value= 30
-                        :buffer-value="bufferValue"
-                        height="20"
-                        color="var(--main-color)"
-                        rounded
-                        ></v-progress-linear>
+                        <el-progress v-if="dataStatusLearning.length > 0"
+                            color="var(--main-color)"
+                            :text-inside="true"
+                            :stroke-width="24"
+                            :percentage="Math.round((dataStatusLearning[index].Learned * 100) / dataStatusLearning[index].Total)" 
+                        />
+
                     </div>
                 </div>
 
@@ -33,9 +37,11 @@
                     >Học
                     </el-button>
                 </div>
+                <div class="temporary"></div>
             </div>
 
         </div>
+
     </div>
 
     <el-divider /> 
@@ -52,18 +58,23 @@
 
                     <div class="info-topic">
                         <h1>{{ topic.PersonalVocabName }}</h1>
+
+                        <el-button plain round type="success" v-if="dataStatusLearning.length > 0"> 
+                          1
+                            / 
+                          231 từ đã học
+                        </el-button>
                     
-                        <v-progress-linear
-                        model-value= 30
-                        :buffer-value="bufferValue"
-                        height="20"
-                        color="var(--main-color)"
-                        rounded
-                        ></v-progress-linear>
+            
+                        <el-progress
+                            color="var(--main-color)"
+                            :text-inside="true"
+                            :stroke-width="24"
+                            :percentage="30"
+                        />
                     </div>
                 </div>
-
-                <div class="temporary"></div>
+                
 
                 <div class="right-info">
                     <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.PersonalVocabID}`)"   
@@ -103,17 +114,20 @@ export default {
             showSinhVienForm: false,
             showGiaoVienForm: false,
             dataPersonalVocabAPI: '',
+            dataStatusLearning: [],
+
+            progressPercent: '',
 
         }
     },
 
     mounted(){
-        this.handleNewUser()
         this.changeTitle()
+        this.handleNewUser()
         this.getDataTopic()
     
-
         this.getPersonalVocab()
+
 
 
     },
@@ -152,11 +166,6 @@ export default {
 
         },
         
-        //lấy data từ emitter
-        handleDataUser(data){
-            this.accountID = data.accountID   
-            this.getDataTopic()
-        },
 
         // lấy data topic theo id khoa nhận từ emmitter
         getDataTopic(){
@@ -164,13 +173,12 @@ export default {
             this.accountID = dataUser.accountID
             
             axiosInstance.get(`getTopic/${this.accountID}`)
-                .then(res => this.handleData(res.data))
+                .then(res =>{
+                    this.dataTopicsAPI.push(res.data)
+                    this.getStatusLearning(res.data)
+                })
         },
 
-        // lấy data topic 
-        handleData(dataAPI){
-            this.dataTopicsAPI.push(dataAPI)
-        },
 
         handleFinishForm(){
             this.showSinhVienForm = false
@@ -186,6 +194,30 @@ export default {
                 this.dataPersonalVocabAPI = res.data
             })
         },
+
+        getStatusLearning(data){
+            console.log(data)
+            for (let i = 0; i <  data.length; i++){
+                console.log("logging",data[i].TopicID)
+
+                try{
+                    axiosInstance.post('getStatusLearning',
+                        {
+                            AccountID: this.accountID,
+                            TopicID: data[i].TopicID
+                        }
+                    )
+                    .then((res) => {
+                        this.dataStatusLearning.push(res.data[0])
+                        // this.progressPercent = ()
+                    })
+                }
+                catch (e) {
+
+                }
+            }
+
+        }
         
 
     }
@@ -202,30 +234,45 @@ export default {
 
 .wrapper{
     display: flex;
-    justify-content: start;
-    align-items: start;
     flex-wrap: wrap;
 }
 
 
+
 .topic-cover{
     min-height: 200px;
-    max-width: 400px;
-    min-width: 400px;
+    max-width: 450px;
+    min-width: 450px;
     border: 1px solid transparent;
-    border-radius: 15px;
     line-height: 50px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
+    border-radius: 30px;
 
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2%;
+    transition: 400ms;
+
+    &:first-child{
+        margin: 20px 20px;
+
+    }
+
+    &:hover{
+        border-radius: 0px;
+        box-shadow: var(--tints-20) 0px 2px 5px;
+
+    }
+
+    & + .topic-cover{
+        margin: 20px 20px;
+    }
 
 
     .body-info{
         width: 100%;
-        height: 100px;
+        height: 120px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -255,9 +302,7 @@ export default {
     }
 }
 
-.topic-cover + .topic-cover{
-    margin: 0 20px;
-}
+
 
 
 

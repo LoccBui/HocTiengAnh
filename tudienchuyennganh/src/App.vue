@@ -22,7 +22,17 @@
 .el-button:active,
 .el-button:hover{
   outline: none;
-  border: none !important;
+  border: .3px solid #0038FF !important;
+  opacity: 0.7 !important;
+  background-color: #e6ebff !important;  
+  color: #0038FF !important;
+}
+
+
+
+.el-button:focus{
+  background-color: #e6ebff !important;
+  color: #0038FF!important
 }
 
 .el-dialog{

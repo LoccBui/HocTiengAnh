@@ -188,6 +188,7 @@
     <Compile Include="Controllers\SettingAccount\SettingAccountController.cs" />
     <Compile Include="Controllers\Topic\ShowTopicByFacultyController.cs" />
     <Compile Include="Controllers\Topic\SelectAllTopicController.cs" />
+    <Compile Include="Controllers\Topic\TopicController.cs" />
     <Compile Include="Controllers\TuVungSelectAllController.cs" />
     <Compile Include="Database\DB.cs" />
     <Compile Include="Database\DBConnection.cs" />

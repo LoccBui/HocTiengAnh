@@ -263,7 +263,7 @@ export default {
     },
 
     handleData(dataAPI){
-      console.log(dataAPI)
+        console.log(dataAPI)
       
         this.progressLength = dataAPI.length
         console.log(this.progress)

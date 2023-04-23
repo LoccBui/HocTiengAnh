@@ -5,7 +5,8 @@ const axiosInstance = axios.create({
   baseURL: 'http://localhost:8090/',
   headers: {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT, OPTIONS',
+    'Content-Type': 'application/json'
   }
 });
 

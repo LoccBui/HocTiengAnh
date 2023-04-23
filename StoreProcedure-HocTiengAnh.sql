@@ -1299,6 +1299,25 @@ BEGIN
 END
 
 
+go
+
+alter PROCEDURE sp_GetStatusLearning
+    @AccountID int,
+    @TopicID int
+AS
+BEGIN 
+    DECLARE @learned tinyint
+    DECLARE @total tinyint
+
+    SET @total = (SELECT COUNT(*) FROM TUVUNG WHERE TopicID = @TopicID)
+	
+    SELECT @learned = COUNT(*) FROM CHITIETHOC WHERE AccountID = @AccountID AND TopicID = @TopicID
+    
+    SELECT @TopicID as TopicID,  @learned AS Learned, @total AS Total
+END
+
+
+
 
 
 ----------------- TESTING AREA
