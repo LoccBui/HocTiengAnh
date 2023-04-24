@@ -91,13 +91,13 @@ END
 go
 
 --Hiển thị chủ đề theo khoa
-create procedure sp_ShowTopicByFaculty
+alter procedure sp_ShowTopicByFaculty
 @IDFACULTY tinyint
 as
 BEGIN
 	select CD.TopicID, CD.TopicDescribe, CD.TopicName, CD.CreatedBy, CD.QuantityWords
 	from CHUDE CD
-	where CD.IDFACULTY = @IDFACULTY and CD.QuantityWords >= 5
+	where CD.IDFACULTY = @IDFACULTY
 END
 
 go
@@ -139,6 +139,8 @@ BEGIN
 			exec sp_ShowTopicByFaculty @IDFaculty
 		end	
 END
+
+exec sp_userFalculty 2
 
 
 go
@@ -260,14 +262,14 @@ END
 go
 
 --Thêm Class mới
-create procedure sp_AddNewClass
+alter procedure sp_AddNewClass
 @ClassName varchar(50),
 @IDFaculty tinyint
 as 
 BEGIN
 	declare @lastestID int
 	
-	set @lastestID = (SELECT MAX(IDCLASS) FROM LOP) + 1
+	set @lastestID = COALESCE((SELECT MAX(IDCLASS) FROM LOP),1) + 1
 
 	SET IDENTITY_INSERT LOP ON 
 	
@@ -366,7 +368,7 @@ BEGIN
     DECLARE @check int
     DECLARE @TopicID int
 
-	set @TopicID =  (SELECT MAX(TopicID) FROM CHUDE) + 1
+	set @TopicID =  COALESCE((SELECT MAX(TopicID) FROM CHUDE),0) + 1
 
 	SET IDENTITY_INSERT CHUDE ON 
 
@@ -392,37 +394,31 @@ END
 go
 
 -- Xóa chủ đề theo id
-create PROCEDURE sp_DeleteTopicByID
+alter PROCEDURE sp_DeleteTopicByID
     @TopicID INT
 AS
 BEGIN
 	DECLARE @check int
 
-    BEGIN TRY
-        UPDATE TUVUNG SET TopicID = NULL WHERE TopicID = @TopicID;
-        DELETE FROM CHUDE WHERE TopicID = @TopicID;
-		set @check = (select @@ROWCOUNT) 
-        DELETE FROM TUVUNG WHERE TopicID = @TopicID;
+    DELETE FROM TUVUNG WHERE TopicID = @TopicID;
+    DELETE FROM CHUDE WHERE TopicID = @TopicID;
+	set @check = (select @@ROWCOUNT) 
 
-
-		if(@check > 0)
-			BEGIN 
-				SELECT N'Xóa thành công' AS Status;
-			END
-		else 
-			BEGIN 
-				return null
-			END
-    END TRY
-    BEGIN CATCH
-       return null
-    END CATCH
+	if(@check > 0)
+		BEGIN 
+			SELECT N'Xóa thành công' AS Status;
+		END
+	else 
+		BEGIN 
+			return null
+		END
 END
 
+  
 go
 
 --Thêm từ vựng vào chủ đề mới tạo
-create procedure sp_AddVocabToNewTopic
+alter procedure sp_AddVocabToNewTopic
 @TopicID int,
 @Word varchar(50),
 @IPA varchar(100),
@@ -440,7 +436,7 @@ BEGIN
 
 	DECLARE @lastestID int
 
-	set @lastestID =  (SELECT MAX(VocabID) FROM TUVUNG) + 1
+	set @lastestID =  COALESCE((SELECT MAX(VocabID) FROM TUVUNG), 0) + 1;
 
 	SET IDENTITY_INSERT TUVUNG ON 
 
@@ -458,6 +454,20 @@ BEGIN
 			return null
 		end
 END
+
+--exec sp_AddVocabToNewTopic
+--@TopicID = 1,
+--@Word='test',
+--@IPA ='test',
+--@Label ='test',
+--@Lemma ='test',
+--@Vietnamese='test',
+--@Cluster ='test',
+--@Position ='test',
+--@Example='test',
+--@VN_Example ='test',
+--@Resources ='test'
+
 
 
 go
@@ -537,7 +547,7 @@ go
 
 
 --Tạo tài khoản mới
-create PROCEDURE sp_AddNewUser
+alter PROCEDURE sp_AddNewUser
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
@@ -548,7 +558,7 @@ BEGIN
 	DECLARE @check int
     DECLARE @password_binary VARBINARY(100)
 
-    SET @lastestID = (SELECT MAX(AccountID) FROM TAIKHOAN) + 1
+    SET @lastestID = COALESCE((SELECT MAX(AccountID) FROM TAIKHOAN) , 0) + 1
     SET @password_binary = PWDENCRYPT(@Password)-- Chuyển đổi mật khẩu sang kiểu varbinary
 
 	SET IDENTITY_INSERT TAIKHOAN ON 
@@ -573,7 +583,7 @@ END
 
 go
 
-create PROCEDURE sp_AddNewGiaoVien
+alter PROCEDURE sp_AddNewGiaoVien
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
@@ -584,7 +594,7 @@ BEGIN
 	DECLARE @check int
     DECLARE @password_binary VARBINARY(100)
 
-    SET @lastestID = (SELECT MAX(AccountID) FROM TAIKHOAN) + 1
+    SET @lastestID = COALESCE((SELECT MAX(AccountID) FROM TAIKHOAN),0) + 1
     SET @password_binary = PWDENCRYPT(@Password)-- Chuyển đổi mật khẩu sang kiểu varbinary
 
 	SET IDENTITY_INSERT TAIKHOAN ON 
@@ -611,7 +621,7 @@ END
 
 go
 
-create procedure sp_AddNewSinhVien
+alter procedure sp_AddNewSinhVien
 @AccountID int,
 @Gender nvarchar(10),
 @IDCLASS smallint
@@ -620,7 +630,7 @@ BEGIN
 	DECLARE @check int
     DECLARE @lastestMaSV INT
 
-    SET @lastestMaSV = (SELECT MAX(MaSV) FROM SINHVIEN) + 1
+    SET @lastestMaSV = COALESCE((SELECT MAX(MaSV) FROM SINHVIEN), 0) + 1
 
 	UPDATE TAIKHOAN
 	SET Active = 1
@@ -677,7 +687,7 @@ END
 
 go
 
-create procedure sp_AddGiaoVienToClass
+alter procedure sp_AddGiaoVienToClass
 @ClassName varchar(50),
 @IDFACULTY tinyint
 as
@@ -685,7 +695,7 @@ BEGIN
 	DECLARE @check int
     DECLARE @lastestIDCLASS INT
 
-    SET @lastestIDCLASS = (SELECT MAX(IDCLASS) FROM LOP) + 1
+    SET @lastestIDCLASS = COALESCE((SELECT MAX(IDCLASS) FROM LOP),0) + 1
 	SET IDENTITY_INSERT LOP ON 
 
 
@@ -994,7 +1004,7 @@ END
 
 go
 
-create procedure sp_AddClass
+alter procedure sp_AddClass
 @ClassName varchar(50),
 @FacultyName nvarchar(100)
 as
@@ -1004,7 +1014,7 @@ BEGIN
   DECLARE @findIDFACULTY INT
   DECLARE @check int
 
-  SET @lastestIDCLASS = (SELECT MAX(IDCLASS) FROM LOP) + 1
+  SET @lastestIDCLASS = COALESCE((SELECT MAX(IDCLASS) FROM LOP),0) + 1
 
   set @findIDFACULTY = (SELECT IDFACULTY FROM KHOA WHERE FacultyName like @FacultyName)
   
@@ -1301,7 +1311,7 @@ END
 
 go
 
-alter PROCEDURE sp_GetStatusLearning
+create PROCEDURE sp_GetStatusLearning
     @AccountID int,
     @TopicID int
 AS
@@ -1315,6 +1325,26 @@ BEGIN
     
     SELECT @TopicID as TopicID,  @learned AS Learned, @total AS Total
 END
+
+go
+
+alter PROCEDURE sp_GetStatusPersonalLearning
+    @AccountID int,
+    @TopicID int
+AS
+BEGIN 
+    DECLARE @learned tinyint
+    DECLARE @total tinyint
+
+    SET @total = (SELECT COUNT(*) FROM TUVUNGCANHAN WHERE AccountID = @AccountID)
+	
+    SELECT @learned = COUNT(*) FROM [dbo].[CHITIETTUCANHAN] WHERE AccountID = @AccountID AND TopicID = @TopicID
+    
+    SELECT @TopicID as PersonalTopicID,  @learned AS Learned, @total AS Total
+END
+
+exec sp_GetStatusPersonalLearning 1,4
+
 
 
 

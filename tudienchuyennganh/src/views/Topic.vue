@@ -7,6 +7,12 @@
 
     <div class="wrapper">
 
+        <div  v-if="loadingTopicData">
+            <el-button size="large" plain round color="#7d5b28">
+                Hiện chưa có bộ từ vựng nào !
+            </el-button>
+        </div>
+
         <div class="topic-cover" v-for="(topic,index) in dataTopicsAPI[0]" :key="topic.TopicID">
             <div class="body-info" >
                 <div class="left-info" >
@@ -23,7 +29,7 @@
                             color="var(--main-color)"
                             :text-inside="true"
                             :stroke-width="24"
-                            :percentage="Math.round((dataStatusLearning[index].Learned * 100) / dataStatusLearning[index].Total)" 
+                            :percentage="Math.floor((dataStatusLearning[index].Learned * 100) / dataStatusLearning[index].Total)" 
                         />
 
                     </div>
@@ -51,27 +57,19 @@
 
     <div class="wrapper">
 
-        <div class="topic-cover" v-for="topic in dataPersonalVocabAPI" :key="topic.PersonalVocabID">
+        <div v-if="loadingPersonalData">
+            <el-button size="large" plain round color="#7d5b28" @click="this.$router.push(`/manage/personal/${this.accountID}`)">
+                Hiện chưa có bộ từ vựng cá nhân nào !
+            </el-button>
+        </div>
+
+        <div v-else class="topic-cover" v-for="topic in dataPersonalVocabAPI" :key="topic.PersonalVocabID">
             <div class="body-info" >
                 
                 <div class="left-info" >
 
                     <div class="info-topic">
                         <h1>{{ topic.PersonalVocabName }}</h1>
-
-                        <el-button plain round type="success" v-if="dataStatusLearning.length > 0"> 
-                          1
-                            / 
-                          231 từ đã học
-                        </el-button>
-                    
-            
-                        <el-progress
-                            color="var(--main-color)"
-                            :text-inside="true"
-                            :stroke-width="24"
-                            :percentage="30"
-                        />
                     </div>
                 </div>
                 
@@ -117,6 +115,10 @@ export default {
             dataStatusLearning: [],
 
             progressPercent: '',
+
+            loadingPersonalData: false,
+
+            loadingTopicData: false,
 
         }
     },
@@ -176,6 +178,10 @@ export default {
                 .then(res =>{
                     this.dataTopicsAPI.push(res.data)
                     this.getStatusLearning(res.data)
+                    this.loadingTopicData = false
+                })
+                .catch(() => {
+                    this.loadingTopicData = true
                 })
         },
 
@@ -187,19 +193,23 @@ export default {
         },
 
         getPersonalVocab(){
-            axiosInstance.post('getPersonalVocab', {
-                "AccountID": this.accountID
-            })
-            .then((res) => {
-                this.dataPersonalVocabAPI = res.data
-            })
+                axiosInstance.post('getPersonalVocab', {
+                    "AccountID": this.accountID
+                })
+                .then((res) => {
+                    console.log("adadad",res.data)
+                    this.dataPersonalVocabAPI = res.data
+                    this.loadingPersonalData = false
+                })
+
+                .catch(() => {
+                    this.loadingPersonalData = true
+                })
+
         },
 
         getStatusLearning(data){
-            console.log(data)
             for (let i = 0; i <  data.length; i++){
-                console.log("logging",data[i].TopicID)
-
                 try{
                     axiosInstance.post('getStatusLearning',
                         {
@@ -209,7 +219,6 @@ export default {
                     )
                     .then((res) => {
                         this.dataStatusLearning.push(res.data[0])
-                        // this.progressPercent = ()
                     })
                 }
                 catch (e) {

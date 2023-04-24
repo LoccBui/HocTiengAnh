@@ -1,9 +1,10 @@
 <template>
   <div class="container">
    
-    <el-button type="primary" @click="this.optionsAdd = true" size="large" color="var(--main-color)"
+    <el-button type="primary" @click="this.openBox()" size="large" color="var(--main-color)"
       >Thêm chủ đề mới
     </el-button>  
+
 
     <el-table 
       :data="filterVocab" 
@@ -11,10 +12,11 @@
       empty-text="Không có dữ liệu"
     >
 
+    {{  }}
+
     <el-table-column label="ID" prop="TopicID" width="150" sortable/>
     <el-table-column label="Tên chủ đề" prop="TopicName" />
     <el-table-column label="Miêu tả" prop="TopicDescribe" />
-    <el-table-column label="Số từ" prop="QuantityWords" />
     <el-table-column label="Tạo bởi" prop="CreatedBy" />
     <el-table-column align="center">
 
@@ -36,6 +38,7 @@
 
     </el-table-column>
   </el-table>
+
 
   <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
       <div class="options-container">
@@ -64,6 +67,7 @@
         title="Thêm bằng Excel"
         append-to-body
         fullscreen
+        destroy-on-close	
       >
       <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề">Nhập tên chủ đề muốn tạo</el-input>
       <el-input class="mt-4" v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề" type="textarea">Nhập miêu tả chủ đề</el-input>
@@ -151,13 +155,11 @@ import * as XLSX from 'xlsx';
     data () {
       return {
         idTeacher: '',
-        
-        dataClass: [],
-        facultyList: [],
-        teacherList: [],
+        accountID: '',
         showAskBox: false,
-        showSelectTeacherFaculty: false,
+
         
+
         
         // ----
         idTopicDelete: '',
@@ -187,12 +189,12 @@ import * as XLSX from 'xlsx';
         }
       },    
 
-    mounted(){
-      this.getAllClasses()
-      this.getAllFaculty()
+      
 
-      console.log('mn vocab: mounted')
+    mounted(){
       this.changeTitle()
+
+
       this.getDataLocalStorage()
 
     },
@@ -202,18 +204,26 @@ import * as XLSX from 'xlsx';
         document.title = "Quản lý từ vựng"
       },
 
+      openBox(){
+        console.log(this.optionsAdd)
+        this.optionsAdd = true
+      },
+
       getDataLocalStorage(){
           let dataUser = JSON.parse(localStorage.getItem('userInfo'))
-          this.getDataTopic(dataUser.accountID)
+          this.accountID = dataUser.accountID
+          this.getDataTopic()
       },
 
       //lấy topic theo id user
-      getDataTopic(id){
-            axiosInstance.get(`getTopic/${id}`)
+      getDataTopic(){
+          if(this.accountID){
+            axiosInstance.get(`getTopic/${this.accountID}`)
             .then((res) => {
-              console.log(res.data)
-             this.dataTopicsAPI = res.data
+              this.dataTopicsAPI = res.data
             })
+          }
+           
         },
 
       handleDetail(dataDetail){
@@ -234,78 +244,28 @@ import * as XLSX from 'xlsx';
 
       // ---------------
 
- 
-      getAllClasses(){
-        axiosInstance.get('SelectAllClasses')
-            .then(res => this.handleData(res.data))
-      },
 
 
-      //set data for v-table
-      handleData(data){        
-        this.dataClass.length =0
-          this.dataClass.push(...data)
-      },
 
       handleDeleteTopic(idTopicChoose){
         this.idTopicDelete = idTopicChoose
         this.showAskBox = true
       },
 
-      async deleteTopic(){
+      deleteTopic(){
         console.log(this.idTopicDelete)
-
-        let result = await axiosInstance.delete(`/DeleteTopic/${this.idTopicDelete}`)
-            
-        if (result.status == 200) {
+        axiosInstance.delete(`DeleteTopic/${this.idTopicDelete}`)
+        .then((res) => {
           this.showAskBox = false
           this.getDataLocalStorage() //recall api for refresh topic
           this.showNotification('Hệ thống','Xóa thành công', 'success')
-        }
-        else{
-          this.showNotification('Hệ thống','Xóa không thành công', 'error')
-        }
-       
-      },
-
-      handleABC(index, row){
-        console.log("chạy nè",index, row)
-
-          console.log(index,row)
-      },
-
-
-      getAllFaculty(){
-        // add faculty name to v-select
-        axiosInstance.get('SelectAllFaculty')
-            .then((res) => {
-              for(let i = 0; i < res.data.length; i++){
-                this.facultyList.push(res.data[i].FacultyName)
-              }
-            })
-      },
-      
-      selectFaculty(data){
-        this.showSelectTeacherFaculty = true
-        axiosInstance.post(`getTeacherByFaculty/${data}`)
-        .then((res)=> {
-          this.teacherList.length = 0
-          for(let i = 0; i < res.data.length; i++){
-              this.teacherList.push(res.data[i].Name)
-          
-           }
         })
-         
-      },
 
-      handleEdit(index, row){
-        console.log("chạy nè",index, row)
-      },
-
-      filterHandler(value, row){
-          // console.log(value, row.FacultyName)
-          // console.log(value.FacultyName === value )
-          return row.FacultyName === value 
+        .catch( (error) => {
+          this.showAskBox = false
+          this.showNotification('Hệ thống','Xóa không thành công', 'error')
+        })
+       
       },
 
       openWith(typeOpen){
@@ -381,13 +341,13 @@ import * as XLSX from 'xlsx';
       }, 
 
 
-      async handleAddVocabToTopic(TopicID){
+      handleAddVocabToTopic(TopicID){
             console.log(TopicID)
 
             for (var i = 0; i < this.tableData.length; i++){
               console.log(this.tableData[i].Word)
               try{
-                let result = await axiosInstance.post('/addVocabToNewTopic',{
+                axiosInstance.post('/addVocabToNewTopic',{
                     "TopicID": TopicID,
                     "Word": `${this.tableData[i].Word}`,
                     "IPA": `${this.tableData[i].IPA}`,
@@ -402,7 +362,6 @@ import * as XLSX from 'xlsx';
                 })
               }
               catch(error){
-                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
               }
             }
 

@@ -13,10 +13,17 @@
           <el-button color="var(--main-color)">Thêm từ vựng</el-button>
         </div>
     
+        <el-input v-model="inputTopicName" :placeholder="`${this.inputTopicName}`" @input="this.checkChange()"  />
+        <el-input class="mt-4" v-model="inputTopicDescribe" :placeholder="`${this.inputTopicDescribe}`" @input="this.checkChange()" />
 
-      <el-input v-model="inputTopicName" :placeholder="`${this.inputTopicName}`" @input="this.checkChange()"  />
-      <el-input v-model="inputTopicDescribe" :placeholder="`${this.inputTopicDescribe}`" @input="this.checkChange()" />
-      <el-divider></el-divider>
+        <div class="mt-4">
+          Số từ 
+          <el-button plain type="primary">
+            {{ vocab.length }}
+          </el-button>
+        </div>
+       
+        <el-divider></el-divider>
 
         <!-- Data table -->
       <el-table 

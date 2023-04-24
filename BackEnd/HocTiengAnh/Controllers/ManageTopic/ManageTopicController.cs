@@ -25,6 +25,10 @@ namespace HocTiengAnh.Controllers.ManageTopic
                 };
             var result = new DB().GetDataReader("sp_SelectTuVungByTopicID", param);
 
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
             return Json(result);
         }
          
