@@ -148,6 +148,9 @@ import { ElNotification } from 'element-plus'
               this.finishLearn();
           }, 2000);
 
+          clearTimeout(time)
+
+
         } 
         else if (this.selectedWord != this.titleQuestion) {
           this.$emit('step-Status', 'wrong');
@@ -158,6 +161,9 @@ import { ElNotification } from 'element-plus'
           const time = setTimeout(() => {
               this.finishLearn();
           }, 2000);
+
+          clearTimeout(time)
+
         }
       }
       else{

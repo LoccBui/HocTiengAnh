@@ -79,6 +79,48 @@ where TopicID = @TopicID and Learned = 0
 
 go
 
+create PROCEDURE testHocTU
+@AccountID int,
+@TopicID int
+AS
+BEGIN
+	DECLARE @level tinyint	
+	
+	IF EXISTS(SELECT CTH.Level FROM TUVUNG TV
+		inner join CHITIETHOC CTH on CTH.VocabID = TV.VocabID
+		where AccountID = @AccountID and CTH.TopicID = @TopicID)
+	begin
+		SELECT @level = CTH.Level FROM TUVUNG TV
+		inner join CHITIETHOC CTH on CTH.VocabID = TV.VocabID
+		where AccountID = @AccountID and CTH.TopicID = @TopicID
+
+		if(@level > 5 )
+		begin
+			return null
+		end
+		else
+		begin
+			select TOP 5 TV.VocabID,TV.TopicID, TV.Word
+			from  TUVUNG TV
+			LEFT JOIN CHITIETHOC CTH on CTH.TopicID = TV.TopicID
+			where CTH.Level < 5 OR CTH.Level IS NULL
+		end
+	end
+	ELSE
+	begin
+		return null
+	end
+END
+
+
+exec testHocTU
+@AccountID = 1,
+@TopicID = 4
+
+select * from CHITIETHOC
+
+go
+
 create procedure sp_ShowDetailVocab
 @TopicID int
 as
@@ -1343,11 +1385,61 @@ BEGIN
     SELECT @TopicID as PersonalTopicID,  @learned AS Learned, @total AS Total
 END
 
-exec sp_GetStatusPersonalLearning 1,4
+go
+
+alter procedure sp_AddVocabToDetailLearning
+@AccountID int, 
+@VocabID int,
+@TopicID int,
+@Level tinyint,
+@WrongTimes smallint,
+@Score int
+as
+BEGIN
+	DECLARE @check int
+	
+	IF EXISTS( select * from CHITIETHOC where AccountID = @AccountID and VocabID = @VocabID and TopicID = @TopicID)
+		begin
+			IF @Level <= 5
+				BEGIN
+					UPDATE CHITIETHOC
+					SET Level = @Level, WrongTimes = @WrongTimes, Score = @Score
+					where AccountID = @AccountID  and VocabID = @VocabID and TopicID = @TopicID
+					set @check = (select @@ROWCOUNT) 
+				END
+			ELSE 
+				BEGIN
+					SELECT N'Đã thuộc'
+				END
+		end
+	ELSE
+		begin
+			INSERT INTO CHITIETHOC(AccountID, VocabID, TopicID, Learned, Level, WrongTimes, Score)
+			VALUES(@AccountID, @VocabID, @TopicID, 1, @Level, @WrongTimes, @Score)
+			set @check = (select @@ROWCOUNT) 
+		end
+
+	if(@check > 0 )
+		begin 
+			SELECT N'Thành công'
+		end
+	else
+		begin
+			return null
+		end
+END 
+
+exec sp_AddVocabToDetailLearning
+@AccountID = 1,
+@VocabID=  2,
+@TopicID = 4,
+@Level= 6,
+@WrongTimes = 1,
+@Score = 1000
 
 
 
-
-
+select * from CHITIETHOC
+select * from TUVUNG
 
 ----------------- TESTING AREA

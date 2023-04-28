@@ -40,7 +40,7 @@
                     Đã có trong bộ từ
                   </el-button>
 
-                  <el-button title="Chọn bộ từ khác" color="var(--main-color)" size="small" @click="openPersonalCollection()">...</el-button>
+                  <el-button title="Chọn bộ từ khác" color="var(--main-color)" size="small" @click="openPersonalCollection(word)">...</el-button>
 
                 </div>
           </div>
@@ -88,11 +88,11 @@
     
     <div v-if="notHaveCollectionWarn">
       <h1 class="warning-text">Bạn chưa có bộ từ vựng của riêng mình</h1>
-    </div>
+    </div> 
     
     
     <div class="collection-cover">
-      <el-button v-for="collection in arrCollection" :key="collection" class="collection">
+      <el-button v-for="collection in arrCollection" :key="collection" class="collection" @click="chooseCollectionToAdd(collection)">
         <div class="w80">
           {{ collection.PersonalVocabName }}
         </div>
@@ -137,6 +137,7 @@ export default {
 
             WordExists: [],
             arrWordExists: [],
+            selectedVocabID: ''
           }
     },
 
@@ -209,7 +210,6 @@ export default {
 
           Promise.all(promises).then(responses => {
             this.WordExists = responses.map(res => res.data[0])
-            console.log(this.WordExists)
           })
       },
 
@@ -260,15 +260,42 @@ export default {
       },
 
 
+      addToSelectedCollection(PersonalVocabID){
+          axiosInstance.post('addToPersonalVocab',{
+            "PersonalVocabID": PersonalVocabID,
+            "VocabID": this.selectedVocabID,
+            "AccountID": this.AccountID
+          })
+
+          .then( () => {
+            this.$forceUpdate();
+            this.showNotification('Thông báo', 'Thêm thành công', 'success')
+          })
+          
+          .catch( () => {
+            this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+          })
+      },
+
+
       handleClose(){
         this.personCollection = false
       },
 
-      openPersonalCollection(){
+      openPersonalCollection(word){
+
+        this.selectedVocabID = word.VocabID
+        console.log(word)
+        
         this.personCollection = true
-        this.getPersonCollection()
       },
 
+
+      chooseCollectionToAdd(data){
+        console.log(data)
+        this.addToSelectedCollection(data.PersonalVocabID)
+
+      }
 
 
 

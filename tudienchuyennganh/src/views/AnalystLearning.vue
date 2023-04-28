@@ -8,14 +8,14 @@
         </div>
 
         <el-divider />
-        <h1> Đây là khu vực phân tích</h1>
-
 
         <div class="analyst-cover">
 
             <div class="analyst-area">
                 Từ sai nhiều nhất
-               <div  v-loading="loading"
+               <div v-loading="loading"
+                    :data="arrWrongWord"
+                    style="width: 100%; min-height: 200px;"
                     element-loading-text="Chưa có dữ liệu..."
                     element-loading-background="#e6ebff">
                     
@@ -41,7 +41,7 @@
 
                 <el-table
                     :data="arrMostScore"
-                    style="width: 100%"
+                    style="width: 100%; min-height: 200px;"
                     v-loading="loading"
                     element-loading-text="Chưa có dữ liệu..."
                     element-loading-background="#e6ebff"
@@ -56,27 +56,8 @@
 
             </div>
 
-            <div class="analyst-area">
-                Bảng xếp hạng
-                <div v-loading="loading"
-                    element-loading-text="Chưa có dữ liệu..."
-                    element-loading-background="#e6ebff"
-                ></div>
-            </div>
  
         </div>
-
-
-
-        
-        <!-- <img src="https://img.timviec.com.vn/2021/02/dashboard-la-gi-2.jpg" alt="">
-
-        <div>
-            <img src="https://images.klipfolio.com/website/public/52e06bbd-9d6a-4c7c-b267-43b2302c375d/Digital%20Marketing.png" alt="">
-        </div>
-
-        <span><img src="https://images.klipfolio.com/website/public/92def65c-d0fc-47bf-86e7-b90b709f8158/social-media-dashboard.png" alt=""></span>
-        <span><img src="https://images.klipfolio.com/website/public/8be365cb-7c1b-4a4e-a90d-f588f0553be1/marketing%20dashboard.png" alt=""></span> -->
 
     </div>
 </template>

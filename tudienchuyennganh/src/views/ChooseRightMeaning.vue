@@ -83,7 +83,6 @@ export default {
   mounted(){
     this.getVocabularyByTopicID(this.idTopic)
     this.countDown()
-
   },
 
   methods:{
@@ -143,8 +142,10 @@ export default {
           correct.play();
 
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
           }, 2000);
+
+          clearTimeout(time)
 
         } 
         else if (this.selectedWord != this.titleQuestion) {
@@ -154,8 +155,11 @@ export default {
           wrong.play();
 
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
           }, 2000);
+
+          clearTimeout(time)
+
         }
       }
       else{

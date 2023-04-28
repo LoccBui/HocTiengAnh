@@ -53,7 +53,7 @@
         <template #footer>
         <span class="dialog-footer">
             <el-button size="large" @click="handleClose">Đóng</el-button>
-            <el-button size="large" type="primary" @click="confirm()">
+            <el-button size="large" color="var(--main-color)" @click="confirm()">
             Xác nhận
             </el-button>
         </span>

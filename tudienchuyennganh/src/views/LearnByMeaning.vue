@@ -69,9 +69,6 @@ export default {
 
     methods:{
         chooseAnswer(chooseAnswer, id){
-            console.log("choose", chooseAnswer)
-            console.log("answer", this.titleQuestion)
-
 
             if(chooseAnswer === this.titleQuestion){
                 this.statusAnswer = 'success'

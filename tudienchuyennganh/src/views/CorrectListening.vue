@@ -151,6 +151,9 @@ export default {
               this.finishLearn();
           }, 2000);
 
+          clearTimeout(time)
+
+
         } 
         else if (this.selectedWord != this.titleQuestion) {
           this.$emit('step-Status', 'wrong');
@@ -161,6 +164,8 @@ export default {
           const time = setTimeout(() => {
               this.finishLearn();
           }, 2000);
+          
+          clearTimeout(time)
         }
       }
       else{
