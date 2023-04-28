@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ChooseRightMeaning
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class ChooseRightMeaningController : ApiController
     {

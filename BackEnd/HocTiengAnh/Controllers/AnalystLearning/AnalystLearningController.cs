@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.AnalystLearning
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class AnalystLearningController : ApiController
     {

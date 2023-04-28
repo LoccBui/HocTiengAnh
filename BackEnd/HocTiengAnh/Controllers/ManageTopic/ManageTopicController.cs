@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ManageTopic
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
 
     public class ManageTopicController : ApiController

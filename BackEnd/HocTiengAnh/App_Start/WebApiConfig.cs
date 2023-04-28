@@ -13,7 +13,7 @@ namespace HocTiengAnh
             config.EnableCors();
             // Web API configuration and services
 
-            var cors = new EnableCorsAttribute("https://localhost:8080", "*", "*");
+            var cors = new EnableCorsAttribute("https://localhost:8090", "*", "*");
             config.EnableCors(cors);
 
 

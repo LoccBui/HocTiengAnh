@@ -6,8 +6,12 @@
     </div>
 </template>
 
+
 <script>
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+
 export default {
+  mixins:[requireTokenMixin],
     data(){
       return{
         inputWord: '',

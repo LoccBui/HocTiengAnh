@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailClass
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class DetailClassController : ApiController
     {

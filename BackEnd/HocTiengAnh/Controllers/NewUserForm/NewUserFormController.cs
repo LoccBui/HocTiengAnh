@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.NewUserForm
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
 
     public class NewUserFormController : ApiController

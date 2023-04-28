@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ListenAndChoose
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class ListenAndChooseController : ApiController
     {

@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailVocab
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class DetailVocabController : ApiController
     {

@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.ForgotPassword
 {
     [Route("generateOTP/{id}")]
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class GenerateOTPForEmailController : ApiController
     {

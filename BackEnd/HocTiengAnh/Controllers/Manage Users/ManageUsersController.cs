@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Manage_Users
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
 
     public class ManageUsersController : ApiController

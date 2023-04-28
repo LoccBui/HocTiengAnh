@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Topic
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class TopicController : ApiController
     {
@@ -39,5 +39,55 @@ namespace HocTiengAnh.Controllers.Topic
             }
             return Json(result);
         }
+
+        [HttpPost, HttpGet]
+        [Route("learning/topicid={id}")]
+        public IHttpActionResult SelectTuVungByTopicID(int id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("TopicID", id)
+                };
+            var result = new DB().GetDataReader("sp_SelectTuVungByTopicID", param);
+
+            if (result == null)
+            {
+                return BadRequest("Error occurred while executing stored procedure.");
+            }
+            return Json(result);
+        }
+
+
+        [HttpGet]
+        [Route("SelectAllTuVung")]
+        public IHttpActionResult SelectAllTuVung()
+        {
+            var result = new DB().GetDataReader("sp_SelectAllTuVung");
+
+            return Json(result);
+        }
+
+        [Route("SelectAllTopics")]
+        [HttpGet]
+        public IHttpActionResult SelectAllTopics()
+        {
+            var result = new DB().GetDataReader("sp_ShowAllTopic");
+
+            return Json(result);
+        }
+
+
+
+        [HttpGet]
+        [Route("getTopic/{id}")]
+        public IHttpActionResult ShowTopicByFaculty(int id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", id)
+                };
+            var result = new DB().GetDataReader("sp_userFalculty", param);
+
+            return Json(result);
+        }
+
     }
 }

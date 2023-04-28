@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.NewGiaoVienForm
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class NewGiaoVienFormController : ApiController
     {

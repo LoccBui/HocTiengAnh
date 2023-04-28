@@ -11,12 +11,12 @@ using HocTiengAnh.Database;
 
 namespace HocTiengAnh.Controllers.Login
 {
-    [Route("login/{username}/{password}")]
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class LoginController : ApiController
     {
         [HttpPost]
+        [Route("login/{username}/{password}")]
         public IHttpActionResult Login(string username, string password)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -26,10 +26,20 @@ namespace HocTiengAnh.Controllers.Login
             var result = new DB().GetDataReader("sp_LoginAccount", param);
           
             return Json(result);
-
-
-
-
         }
+
+        [Route("user/id={id}")]
+        [Authorize]
+        [HttpGet]
+        public IHttpActionResult GetDataUserByID(int id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@AccountID", id)
+                };
+            var result = new DB().GetDataReader("sp_AuthUser", param);
+
+            return Json(result);
+        }
+
     }
 }

@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ManagePersonalVocab
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class ManagePersonalVocabController : ApiController
     {

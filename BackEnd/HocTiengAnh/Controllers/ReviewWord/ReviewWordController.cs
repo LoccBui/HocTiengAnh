@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ReviewWord
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class ReviewWordController : ApiController
     {

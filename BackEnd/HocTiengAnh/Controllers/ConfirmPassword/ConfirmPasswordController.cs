@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ConfirmPassword
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class ConfirmPasswordController : ApiController
     {

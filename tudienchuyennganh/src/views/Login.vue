@@ -78,6 +78,9 @@ import DialogBox from "../layouts/DialogBox.vue"
 import axiosInstance from '../axios'
 
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
+
+
 
 export default {
 
@@ -143,8 +146,26 @@ export default {
                         // Account has in database
                         let hasAccountID = Object.values(result.data[0])
                         console.log('hasAccountID',hasAccountID)
+
+
                         if(hasAccountID != 0){
-                            this.getDataUser(hasAccountID)
+                            const params = new URLSearchParams();
+                            params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_ADMIN}`);
+                            params.append('password', `${import.meta.env.VITE_TOKEN_PASS_ADMIN}`);
+                            params.append('grant_type', 'password');
+
+                            axiosInstance.post('token', params, {
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                            })
+                            .then(res => {
+                                const token = res.data.access_token
+                                const expiresAt = new Date(Date.now() + (res.data.expires_in * 1000));
+                                Cookies.set('access_token', token, { expires: expiresAt, secure: true, sameSite: 'none' });
+                                this.getDataUser(hasAccountID)
+                            })
+                            .catch(error => console.log('error:', error));
+
+
                         }
                         else 
                         {
@@ -166,8 +187,7 @@ export default {
         },
 
         getDataUser(idUser){
-            console.log('idUser',idUser)
-            axiosInstance.get(`/user/id=${idUser}`)
+            axiosInstance.get(`user/id=${idUser}`)
             .then((res) => {
                 console.log(res.data[0])
 
@@ -205,8 +225,6 @@ export default {
                     window.location.href = '/topic'
                 }
                
-
-
             })
         },  
     }

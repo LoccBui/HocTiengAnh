@@ -1,22 +1,26 @@
 import axios from "axios";
-// axios.defaults.baseURL = 'http://localhost:8000';
+import Cookies from 'js-cookie';
+
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8090/',
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT, OPTIONS',
     'Content-Type': 'application/json'
   }
 });
 
 // Add a request interceptor
-axios.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    config.headers = config.headers || {};
-    config.headers['Content-Type'] = 'application/json';
+axiosInstance.interceptors.request.use(function (config) {
+
+    const token = Cookies.get('access_token');
+
+    if (token) {
+      config.headers.Authorization = token ? `Bearer ${token}` : ''; 
+    }
     return config;
-  }, function (error) {
+
+  },
+  function (error) {
     // Do something with request error
     return Promise.reject(error);
   });

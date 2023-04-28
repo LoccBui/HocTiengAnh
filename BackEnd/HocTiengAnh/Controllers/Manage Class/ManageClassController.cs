@@ -13,7 +13,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Manage_Class
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]  
+  
     public class ManageClassController : ApiController
     {
 
@@ -53,6 +53,53 @@ namespace HocTiengAnh.Controllers.Manage_Class
             }
             return Json(result);
         }
+
+
+        [Route("DeleteClass/{id}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteClassByID(int id)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@IDClass", id)
+                };
+            var result = new DB().GetDataReader("sp_DeleteClassByID", param);
+
+            return Json(result);
+        }
+
+
+        [Route("SelectAllFaculty")]
+        [HttpGet]
+        public IHttpActionResult JsonResult()
+        {
+            var result = new DB().GetDataReader("sp_SelectAllFaculty");
+
+            return Json(result);
+        }
+
+
+        [HttpGet]
+        [Route("SelectAllClasses")]
+        public IHttpActionResult SelectAllClasses()
+        {
+            var result = new DB().GetDataReader("sp_ShowAllClass");
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        [Route("getTeacherByFaculty/{faculty}")]
+        public IHttpActionResult ShowTeacherByFaculty(string faculty)
+        {
+            SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@FacultyName", faculty)
+                };
+            var result = new DB().GetDataReader("sp_ShowTeacherNameByFaculty", param);
+
+            return Json(result);
+        }
+
 
 
     }

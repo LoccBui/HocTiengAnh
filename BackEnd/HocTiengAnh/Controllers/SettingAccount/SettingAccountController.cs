@@ -14,7 +14,7 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.SettingAccount
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
 
     public class SettingAccountController : ApiController
     {

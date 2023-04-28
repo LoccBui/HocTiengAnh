@@ -102,9 +102,11 @@ import axiosInstance from '../axios'
 import NewSinhVienForm from '../components/NewSinhVienForm.vue';
 import NewGiaoVienForm from '@/components/NewGiaoVienForm.vue';
 
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
 
 export default {
     components: {OptionLearning,NewSinhVienForm, NewGiaoVienForm},
+    mixins:[requireTokenMixin],
     data(){
         return{
             dataTopicsAPI: [],
