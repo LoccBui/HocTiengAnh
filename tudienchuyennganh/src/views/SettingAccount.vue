@@ -204,14 +204,18 @@
 <script>
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
 
 
 export default {
+    mixins:[requireTokenMixin],
+
     data(){
         return{
             accountID: '',
 
-            roleUser: '',
+            Priority: '',
 
             imageUser: '',
             inputName: '',
@@ -224,6 +228,7 @@ export default {
             maSV: '',
 
             selectedAvatar: '',
+            roleID: '',
 
             openPickAvatar: false,
             arrSourcesImage:[
@@ -259,15 +264,16 @@ export default {
         }
     },
 
+    created(){
+        document.title = "Cài đặt tài khoản"
+    },
+
     mounted(){
-        this.changeTitle()
         this.getDataAvailable()
     },
 
     methods: {
-        changeTitle(){
-          document.title = "Cài đặt tài khoản"
-        },
+
 
         openPick(){
             this.openPickAvatar = true
@@ -324,7 +330,8 @@ export default {
 
         async handleChangeInfo(){
             
-            let result, email;
+            console.log(this.Priority)
+            var result, email;
 
 
             if(this.inputEmail.endsWith('@gmail.com') && this.inputEmail != "" && this.inputName != ""){
@@ -339,8 +346,8 @@ export default {
                 // phân loại để gửi theo loại user
                 try{
 
-                    switch(this.roleUser){
-                        case 10:
+                    switch(this.roleID){
+                        case 1:
                             result = await axiosInstance.post('updateInfoGiaoVien', {
                                 "MaGV": this.maGV,
                                 "Gender": `${this.gender == true ? 'Nam' : 'Nữ'}`
@@ -349,9 +356,7 @@ export default {
 
                             if(result.status == 200 && email.status == 200){
                                 window.location.reload()
-
                                 this.getDataAvailable()
-                                // note: đổi lại get data của main layout
                                 this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
                             }
                             else{
@@ -359,7 +364,7 @@ export default {
                             }
                             break;
 
-                        case 1: 
+                        case 3: 
                             result = await axiosInstance.post('updateInfoSinhVien', {
                                 "MaSV": this.maSV,
                                 "Gender": `${this.gender  == true ? 'Nam' : 'Nữ'}`
@@ -368,26 +373,12 @@ export default {
                             if(result.status == 200 && email.status == 200){
                                 window.location.reload()
                                 this.getDataAvailable()
-                                // note: đổi lại get data của main layout
                                 this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
                             }
                             else{
                                 this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
                             }
                             break;
-
-                        default:{
-                            if(result.status == 200 && email.status == 200){
-                                window.location.reload()
-                                this.getDataAvailable()
-                                // note: đổi lại get data của main layout
-                                this.showNotification('Thông báo', 'Cập nhật thành công', 'success')
-                            }
-                            else{
-                                this.showNotification('Thông báo', 'Cập nhật không thành công', 'error')
-                            }
-                            break;
-                        }
                     }
                 }
                 catch(e){
@@ -400,23 +391,29 @@ export default {
 
         },
 
-        async confirmAvatar(){
-            let result = await axiosInstance.post('changeAvatar', {
+        confirmAvatar(){
+            axiosInstance.post('changeAvatar', {
                 "AccountID": this.accountID,
                 "Image": `${this.selectedAvatar}`
             })
 
-            if(result.status == 200) {
+            .then( () => {
                 this.showNotification('Thông báo', 'Cập nhật ảnh thành công', 'success')
                 window.location.reload()
-            }else{
+            })
+
+            .catch( () => {
                 this.showNotification('Thông báo', 'Cập nhật ảnh không thành công', 'error')
-            }
+            })
             
         },  
 
         async getDataAvailable(){
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            
+
+
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
+            console.log(test)
 
 
             this.accountID = dataUser.accountID
@@ -426,16 +423,18 @@ export default {
             })
 
             if(result.status == 200){
-                console.log(result.data[0].Gender)
+                console.log(result.data[0])
                 this.imageUser =  result.data[0].Image
                 this.inputName = result.data[0].Name
                 this.gender = result.data[0].Gender == 'Nam' ? true : false
                 this.inputEmail = result.data[0].Email
                 this.inputClass = result.data[0].ClassName
                 this.inputFaculty = result.data[0].FacultyName
-                this.roleUser = result.data[0].Priority
+                this.Priority = result.data[0].Priority
                 this.maGV = result.data[0].MaGV || undefined
                 this.maSV = result.data[0].MaSV || undefined
+
+                this.roleID = result.data[0].RoleID
                 
             }
         },

@@ -162,9 +162,15 @@
 <script>
 import axiosInstance from '../axios'
 import SettingAccount from '@/views/SettingAccount.vue'
+import Cookies from 'js-cookie';
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+
+
 
 export default {
   components: {SettingAccount},
+  mixins:[requireTokenMixin],
+
   data(){     
       return {
         drawer: true,
@@ -199,7 +205,7 @@ export default {
   methods:{
 
     getData(){
-      let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+      let dataUser = JSON.parse(Cookies.get('userInfo'))
       this.accountID = dataUser.accountID
 
 
@@ -225,6 +231,7 @@ export default {
           ]
         })
 
+
     },
   
 
@@ -234,7 +241,7 @@ export default {
     },
 
     getDataUser(){
-        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+      let dataUser = JSON.parse(Cookies.get('userInfo'))
 
         if(!dataUser){
           this.$router.push('/login')
@@ -246,7 +253,9 @@ export default {
 
 
     logOut(){
-      localStorage.removeItem('userInfo')
+      Cookies.remove('access_token', { path: '' });
+      Cookies.remove('userInfo')
+
       window.location.href = '/login'
     },
   }
@@ -426,6 +435,13 @@ export default {
 
 @media screen and (max-width: 768px){
 
+  .v-list-item{
+      border: 1px solid #ccc !important;
+  }
+  .v-navigation-drawer__scrim{
+    background: rebeccapurple !important;
+  }
+
   .showNav{
     display: none;
   }
@@ -438,9 +454,6 @@ export default {
     display:  block !important;
   }
 
-  .header{
-    display: none;
-  }
 }
 
 

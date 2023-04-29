@@ -33,6 +33,7 @@ namespace HocTiengAnh.Controllers.ReviewWord
         }
 
         [HttpPost]
+        [Authorize]
         [Route("getPersonalCollection")]
         public IHttpActionResult GetPersonalCollection(AccountModel acc)
         {

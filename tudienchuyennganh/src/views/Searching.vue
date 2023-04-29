@@ -25,15 +25,10 @@ export default {
       }
     },
 
-    mounted(){
-        this.changeTitle()
-    },
+    created(){
+      document.title = "Tra từ"
 
-    methods:{
-      changeTitle(){
-        document.title = "Tra từ"
-      }
-    }
+    },
 }
 </script>
 
@@ -48,21 +43,19 @@ export default {
 }
 
 @media screen and (max-width: 768px){
+
+    .container{
+      min-height: 200px !important;
+    }
+
     iframe {
-      margin-left: 10%;
-      width: 20%;
-      height: auto;
+      width: 100%;
       overflow-y: scroll;
     }
-
-    .laban-wrapper{
+    
+    .widget-laban{
+      min-height: 700px;
       width: 100%;
-    }
-
-
-
-    .slide-content-popup>ul>li {
-      width: 2px !important;
     }
 }
 

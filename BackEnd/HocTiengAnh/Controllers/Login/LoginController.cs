@@ -29,7 +29,6 @@ namespace HocTiengAnh.Controllers.Login
         }
 
         [Route("user/id={id}")]
-        [Authorize]
         [HttpGet]
         public IHttpActionResult GetDataUserByID(int id)
         {

@@ -64,7 +64,12 @@
 
 <script>
 import axiosInstance from '../axios'
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+import Cookies from 'js-cookie';
+
+
 export default {
+    mixins:[requireTokenMixin],
     data(){
         return{
             accountID: '',
@@ -92,8 +97,7 @@ export default {
 
     methods:{
         handleDataLocal(){
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
-
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
             this.accountID = dataUser.accountID
         },
 

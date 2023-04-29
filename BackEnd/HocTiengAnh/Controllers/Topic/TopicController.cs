@@ -24,6 +24,7 @@ namespace HocTiengAnh.Controllers.Topic
 
         [HttpPost]
         [Route("getStatusLearning")]
+        [Authorize]
         public IHttpActionResult GetDataUserByID([FromBody] NewClassDataModel data)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -79,6 +80,7 @@ namespace HocTiengAnh.Controllers.Topic
 
         [HttpGet]
         [Route("getTopic/{id}")]
+        [Authorize]
         public IHttpActionResult ShowTopicByFaculty(int id)
         {
             SqlParameter[] param = new SqlParameter[] {

@@ -53,7 +53,8 @@
   <script>
   import axiosInstance from '../axios'
   import { ElNotification } from 'element-plus'
-  
+  import Cookies from 'js-cookie';
+
   
   export default {
       data(){
@@ -100,10 +101,9 @@
           },
 
           async getEmailUser(){
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
             this.Email = dataUser.email
 
-            console.log('get')
             let result = await axiosInstance.post('getUsername',{
                 "Email": `${this.Email}`
             })

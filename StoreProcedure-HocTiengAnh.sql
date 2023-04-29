@@ -113,11 +113,10 @@ BEGIN
 END
 
 
-exec testHocTU
-@AccountID = 1,
-@TopicID = 4
+--exec testHocTU
+--@AccountID = 1,
+--@TopicID = 4
 
-select * from CHITIETHOC
 
 go
 
@@ -133,7 +132,7 @@ END
 go
 
 --Hiển thị chủ đề theo khoa
-alter procedure sp_ShowTopicByFaculty
+create procedure sp_ShowTopicByFaculty
 @IDFACULTY tinyint
 as
 BEGIN
@@ -304,7 +303,7 @@ END
 go
 
 --Thêm Class mới
-alter procedure sp_AddNewClass
+create procedure sp_AddNewClass
 @ClassName varchar(50),
 @IDFaculty tinyint
 as 
@@ -436,7 +435,7 @@ END
 go
 
 -- Xóa chủ đề theo id
-alter PROCEDURE sp_DeleteTopicByID
+create PROCEDURE sp_DeleteTopicByID
     @TopicID INT
 AS
 BEGIN
@@ -460,7 +459,7 @@ END
 go
 
 --Thêm từ vựng vào chủ đề mới tạo
-alter procedure sp_AddVocabToNewTopic
+create procedure sp_AddVocabToNewTopic
 @TopicID int,
 @Word varchar(50),
 @IPA varchar(100),
@@ -589,7 +588,7 @@ go
 
 
 --Tạo tài khoản mới
-alter PROCEDURE sp_AddNewUser
+create PROCEDURE sp_AddNewUser
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
@@ -625,7 +624,7 @@ END
 
 go
 
-alter PROCEDURE sp_AddNewGiaoVien
+create PROCEDURE sp_AddNewGiaoVien
     @Username VARCHAR(50),
     @Password VARCHAR(100),
     @Email VARCHAR(100),
@@ -663,7 +662,7 @@ END
 
 go
 
-alter procedure sp_AddNewSinhVien
+create procedure sp_AddNewSinhVien
 @AccountID int,
 @Gender nvarchar(10),
 @IDCLASS smallint
@@ -729,7 +728,7 @@ END
 
 go
 
-alter procedure sp_AddGiaoVienToClass
+create procedure sp_AddGiaoVienToClass
 @ClassName varchar(50),
 @IDFACULTY tinyint
 as
@@ -1046,7 +1045,7 @@ END
 
 go
 
-alter procedure sp_AddClass
+create procedure sp_AddClass
 @ClassName varchar(50),
 @FacultyName nvarchar(100)
 as
@@ -1370,7 +1369,7 @@ END
 
 go
 
-alter PROCEDURE sp_GetStatusPersonalLearning
+create PROCEDURE sp_GetStatusPersonalLearning
     @AccountID int,
     @TopicID int
 AS
@@ -1380,14 +1379,14 @@ BEGIN
 
     SET @total = (SELECT COUNT(*) FROM TUVUNGCANHAN WHERE AccountID = @AccountID)
 	
-    SELECT @learned = COUNT(*) FROM [dbo].[CHITIETTUCANHAN] WHERE AccountID = @AccountID AND TopicID = @TopicID
+    SELECT @learned = COUNT(*) FROM [dbo].[CHITIETTUCANHAN] WHERE AccountID = @AccountID
     
     SELECT @TopicID as PersonalTopicID,  @learned AS Learned, @total AS Total
 END
 
 go
 
-alter procedure sp_AddVocabToDetailLearning
+create procedure sp_AddVocabToDetailLearning
 @AccountID int, 
 @VocabID int,
 @TopicID int,
@@ -1429,17 +1428,14 @@ BEGIN
 		end
 END 
 
-exec sp_AddVocabToDetailLearning
-@AccountID = 1,
-@VocabID=  2,
-@TopicID = 4,
-@Level= 6,
-@WrongTimes = 1,
-@Score = 1000
+--exec sp_AddVocabToDetailLearning
+--@AccountID = 1,
+--@VocabID=  2,
+--@TopicID = 4,
+--@Level= 6,
+--@WrongTimes = 1,
+--@Score = 1000
 
 
-
-select * from CHITIETHOC
-select * from TUVUNG
 
 ----------------- TESTING AREA

@@ -17,6 +17,7 @@ namespace HocTiengAnh.Controllers.ManagePersonalVocab
     {
         [HttpPost]
         [Route("getPersonalVocab")]
+        [Authorize]
         public IHttpActionResult GetPersonalVocab(PersonalVocabModel personalVocab)
         {
             SqlParameter[] param = new SqlParameter[] {

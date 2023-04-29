@@ -7,18 +7,19 @@ import MainLayout from '../layouts/MainLayout.vue'
 import TestComponent from '../layouts/TestComponent.vue'
 
 
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import Topic from '../views/Topic.vue'
-import LearnWords from '../views/LearnWords.vue'
-import Searching from '../views/Searching.vue'
-import ManageClass from '../views/ManageClass.vue'
-import ForgotPassword from '../views/ForgotPassword.vue'
-import ManageVocab from '../views/ManageVocab.vue'
-import ManageUsers from '../views/ManageUsers.vue'
-import SettingAccount from '../views/SettingAccount.vue'
-import AnalystLearning from '../views/AnalystLearning.vue'
-import ManagePersonalVocab from '../views/ManagePersonalVocab.vue'
+const Login = () => import('../views/Login.vue')
+const Register = () => import('../views/Register.vue')
+const Topic = () => import('../views/Topic.vue')
+const LearnWords = () => import('../views/LearnWords.vue')
+const Searching = () => import('../views/Searching.vue')
+const ManageClass = () => import('../views/ManageClass.vue')
+const ManageVocab = () => import('../views/ManageVocab.vue')
+const ManageUsers = () => import('../views/ManageUsers.vue')
+const ForgotPassword = () => import('../views/ForgotPassword.vue')
+const SettingAccount = () => import('../views/SettingAccount.vue')
+const AnalystLearning = () => import( '../views/AnalystLearning.vue')
+const ManagePersonalVocab = () => import('../views/ManagePersonalVocab.vue')
+
 
 import TopicDetail from '../views/TopicDetail.vue'
 

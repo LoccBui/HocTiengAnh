@@ -271,6 +271,12 @@ export default {
 
 
 @media screen and (max-width: 900px){
+
+    #container{
+        height: 100%;
+        margin: 0 auto;
+    }
+
     #frame-cover{
         display: flex;
         flex-direction: column;
@@ -285,6 +291,11 @@ export default {
             width: 100%;
         }
     }   
+
+    .navigate{
+        margin-top: 50px;
+        font-size: 20px;
+    }
 }
 
 

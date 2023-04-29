@@ -106,6 +106,7 @@
   <script>
   import { ElNotification } from 'element-plus'
   import DetailPersonalVocab from '../components/DetailPersonalVocab.vue'
+  import { requireTokenMixin } from '@/mixin/requireTokenMixin'
 
 
   import axiosInstance from '../axios'
@@ -113,6 +114,8 @@
 
     export default {
       components: {AskBox, DetailPersonalVocab},
+      mixins:[requireTokenMixin],
+
       data () {
         return {
             accountID: this.$route.params.id,

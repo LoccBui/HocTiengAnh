@@ -1,4 +1,4 @@
-﻿--create database HocTiengAnh
+﻿--drop database HocTiengAnh
 
 create database HocTiengAnh
 go
@@ -216,11 +216,12 @@ SET IDENTITY_INSERT [dbo].[NHOMTK] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[TAIKHOAN] ON 
-INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (1, N'loc', N'Bùi Hữu Lộc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435, 'buihuuloc2001@gmail.com',  1, 1)
-INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (2, N'admin',N'Nguyễn Minh Phúc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'phuc@gmail.com', 1, 2)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (1, N'loc', N'Bùi Hữu Lộc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435, 'buihuuloc2001@gmail.com',  1, 3)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (2, N'admin',N'Nguyễn Minh Phúc',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'phuc@gmail.com', 1, 1)
 INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (3, N'an', N'Nguyễn Lê An',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'an@gmail.com',1, 3)
-INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (4, N'huuhiep',N'Trần Hữu Hiệp',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'tranhuuhiep@gmail.com',1, 3)
-INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (5, N'tranbin',N'Ka Bin',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'tranbin@gmail.com',1, 3)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (4, N'huuhiep',N'Trần Hữu Hiệp',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'tranhuuhiep@gmail.com',1, 2)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (5, N'tranbin',N'Ka Bin',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'tranbin@gmail.com',1, 2)
+INSERT [dbo].[TAIKHOAN] ([AccountID], [Username],[Name], [Password], [Email], [Active], [RoleID]) VALUES (6, N'user test',N'User test',0x0200BB89D3BAD30E63E2A7C472E354099014FCC23E5E56FB091375B6D6D972DCE82DD572C0C975A5E620ACE39093B0E8F885DBB43022B4D877E4A14EB08D708CE4593020F435 , 'test1@gmail.com',1, 3)
 SET IDENTITY_INSERT [dbo].[TAIKHOAN] OFF
 
 GO
@@ -251,6 +252,7 @@ GO
 
 INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (1, 1, N'Nam', CAST(N'2023-02-21T00:00:00.000' AS DateTime), 1)
 INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (2, 3, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 1)
+INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (3, 6, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 1)
 
 GO
 
@@ -285,9 +287,7 @@ go
 
 
 SET IDENTITY_INSERT [dbo].[TUVUNGCANHAN] ON 
-INSERT [dbo].[TUVUNGCANHAN] (PersonalVocabID, [VocabID], [AccountID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources]) VALUES (1, 1, 2, 1410, 'benefit', '/ˈbenɪfɪt/', 'noun', 'benefits', N'lợi ích', 'benefit from', 'on left', N'Although at a group level most benefit from ICS is obtained at a low dose, individual ICS responsiveness varies', N'Mặc dù lợi ích từ ICS liều thấp đều được ghi nhận ở cấp độ nhóm nhưng sự đáp ứng với ICS của mỗi cá nhân thì lại khác nhau.', N'GINA 2020. (attach file txt) ')
-INSERT [dbo].[TUVUNGCANHAN] (PersonalVocabID, [VocabID], [AccountID], [Frequency], [Word], [IPA], [Label], [Lemma], [Vietnamese], [Cluster], [Position], [Example], [VN_Example], [Resources]) VALUES (2, 2, 1, 2736, 'low', '/ləʊ /', 'adjective', 'lower; 
-lowly (adv)', N'thấp, nhỏ', 'rate', 'on left', N'Most studies with LABA/LAMA combinations have been performed in patients with a low rate of exacerbations. ', N'Hầu hết các nghiên cứu với sự kết hợp LABA và LAMA đã được thực hiện ở những bệnh nhân lên cơn cấp với tần suất thấp.', 'GLOBAL STRATEGY FOR THE DIAGNOSIS, MANAGEMENT, AND PREVENTION OF CHRONIC OBSTRUCTIVE PULMONARY DISEASE (2018 REPORT). (attach file txt) ')
+INSERT [dbo].[TUVUNGCANHAN] (PersonalVocabID,PersonalVocabName, AccountID, IsDefault ) VALUES(1, 'My great word', 1, 1 )
 SET IDENTITY_INSERT [dbo].[TUVUNGCANHAN] OFF
 
 GO

@@ -119,6 +119,7 @@
 <script>
 import axiosInstance from '@/axios';
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
 
 export default {
     props: ['dataReview', 'idTopic', 'totalScore'],
@@ -161,7 +162,7 @@ export default {
       
 
       handleDataLocal(){
-        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+        let dataUser = JSON.parse(Cookies.get('userInfo'))
         this.AccountID = dataUser.accountID
       },
 

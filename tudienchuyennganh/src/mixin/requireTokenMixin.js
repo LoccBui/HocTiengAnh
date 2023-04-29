@@ -12,7 +12,7 @@ export const requireTokenMixin = {
     const tokenExpired = expiresAt.getTime() <= Date.now();
 
     if (!token || tokenExpired) {
-        this.$router.push('/login');
+        window.location.href = '/login'
     }
   },
 };

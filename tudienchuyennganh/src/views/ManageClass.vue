@@ -153,12 +153,15 @@ import { ElNotification } from 'element-plus'
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailClass from '@/components/DetailClass.vue'
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
 
 import * as XLSX from 'xlsx';
 
 
   export default {
     components: {AskBox, DetailClass},
+    mixins:[requireTokenMixin],
+
     data () {
       return {
         search: '',

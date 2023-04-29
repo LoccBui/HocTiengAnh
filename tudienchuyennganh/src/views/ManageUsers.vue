@@ -181,15 +181,16 @@
   </template>
   
   <script>
-  import { ElNotification } from 'element-plus'
-
-  import ConfirmPassword from '@/components/ConfirmPassword.vue';
-
   import axiosInstance from '../axios'
+  import ConfirmPassword from '@/components/ConfirmPassword.vue';
   import AskBox from '@/components/AskBox.vue'
+  import Cookies from 'js-cookie';
+  import { ElNotification } from 'element-plus'
+  import { requireTokenMixin } from '@/mixin/requireTokenMixin'
   import * as XLSX from 'xlsx';
 
     export default {
+      mixins:[requireTokenMixin],
       components: {AskBox, ConfirmPassword},
       data () {
         return {
@@ -432,7 +433,7 @@
         // ------------------
         
         getDataLocalStorage(){
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
             this.getDataTopic(dataUser.accountID)
         },
   

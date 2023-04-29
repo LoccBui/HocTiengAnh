@@ -76,6 +76,7 @@
 <script>
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
 
 
 export default {
@@ -182,7 +183,7 @@ export default {
         async addToDatabase(){
 
             
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
 
             try{
                 let result = await axiosInstance.post('addInfoNewSinhVien', {

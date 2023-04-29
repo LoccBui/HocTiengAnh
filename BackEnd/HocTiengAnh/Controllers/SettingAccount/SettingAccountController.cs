@@ -36,6 +36,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
+        [Authorize]
         [Route("changeAvatar")]
         public IHttpActionResult ChangeAvatar(AccountModel account)
         {
@@ -74,6 +75,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
 
 
         [HttpPost]
+        [Authorize]
         [Route("updateInfoGiaoVien")]
         public IHttpActionResult UpdateInfoGiaoVien(GiaoVienModel gv)
         {
@@ -92,6 +94,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
+        [Authorize]
         [Route("updateInfoSinhVien")]
         public IHttpActionResult UpdateInfoSinhVien(StudentModel sv)
         {
@@ -110,6 +113,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
+        [Authorize]
         [Route("changePassword")]
         public IHttpActionResult ChangePassword(AccountModel acc)
         {
@@ -147,6 +151,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
+        [Authorize]
         [Route("createPersonalVocab")]
         public IHttpActionResult CreatePersonalVocab(PersonalVocabModel personalVocab)
         {

@@ -145,27 +145,9 @@ export default {
 
                         // Account has in database
                         let hasAccountID = Object.values(result.data[0])
-                        console.log('hasAccountID',hasAccountID)
-
 
                         if(hasAccountID != 0){
-                            const params = new URLSearchParams();
-                            params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_ADMIN}`);
-                            params.append('password', `${import.meta.env.VITE_TOKEN_PASS_ADMIN}`);
-                            params.append('grant_type', 'password');
-
-                            axiosInstance.post('token', params, {
-                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                            })
-                            .then(res => {
-                                const token = res.data.access_token
-                                const expiresAt = new Date(Date.now() + (res.data.expires_in * 1000));
-                                Cookies.set('access_token', token, { expires: expiresAt, secure: true, sameSite: 'none' });
-                                this.getDataUser(hasAccountID)
-                            })
-                            .catch(error => console.log('error:', error));
-
-
+                            this.getDataUser(hasAccountID)
                         }
                         else 
                         {
@@ -191,6 +173,8 @@ export default {
             .then((res) => {
                 console.log(res.data[0])
 
+                const typeUser = res.data[0].Priority
+
                 let dataUser = {
                     accountID: '',
                     email: '',
@@ -199,30 +183,102 @@ export default {
                     IDFACULTY: '', 
                     Role: '',
                 }
-                
-                if(res.data[0].Active == 0){
-                    dataUser.accountID = res.data[0].AccountID
-                    dataUser.Role = res.data[0].RoleID
 
-                    localStorage.setItem('isNew', true)
 
-                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                     window.location.href = '/topic'
+                if(typeUser === 100){
+                    alert('admin -> so run this shit')
 
-                }
-                else {
+                    const params = new URLSearchParams();
+                    params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_ADMIN}`);
+                    params.append('password', `${import.meta.env.VITE_TOKEN_PASS_ADMIN}`);
+                    params.append('grant_type', 'password');
+
+                    axiosInstance.post('token', params, {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+
+                    .then(res => {
+                        const token = res.data.access_token
+                        const expiresAt = new Date(Date.now() + (res.data.expires_in * 1000));
+                        Cookies.set('access_token', token, { expires: expiresAt, secure: true, sameSite: 'none' });
+                    })
+
+                    .catch(error => console.log('error:', error));
                     
-                    dataUser.accountID = res.data[0].AccountID
-                    dataUser.email = res.data[0].Email
-                    dataUser.name = res.data[0].Name
-                    dataUser.MaGV = res.data[0].MaGV || 0
-                    dataUser.IDFACULTY = res.data[0].IDFACULTY
-                    dataUser.Role = res.data[0].Priority
+        
+                    if(res.data[0].Active == 0){
+                        dataUser.accountID = res.data[0].AccountID
+                        dataUser.Role = res.data[0].RoleID
 
-                    localStorage.setItem('userInfo', JSON.stringify(dataUser))
-                    localStorage.setItem('isNew', false)
+                        localStorage.setItem('isNew', true)
+                        Cookies.set('userInfo',  JSON.stringify(dataUser))
 
-                    window.location.href = '/topic'
+                        window.location.href = '/topic'
+
+                    }
+                    else {
+                        
+                        dataUser.accountID = res.data[0].AccountID
+                        dataUser.email = res.data[0].Email
+                        dataUser.name = res.data[0].Name
+                        dataUser.MaGV = res.data[0].MaGV || 0
+                        dataUser.IDFACULTY = res.data[0].IDFACULTY
+                        dataUser.Role = res.data[0].Priority
+
+                        localStorage.setItem('isNew', false)
+
+
+                        Cookies.set('userInfo',  JSON.stringify(dataUser))
+                        window.location.href = '/topic'
+                    }
+                }
+                
+                else{
+                    console.log('user -> so run this shit')
+                    const params = new URLSearchParams();
+                    params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_USER}`);
+                    params.append('password', `${import.meta.env.VITE_TOKEN_PASS_USER}`);
+                    params.append('grant_type', 'password');
+
+                    axiosInstance.post('token', params, {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+
+                    .then(res => {
+                        const token = res.data.access_token
+                        const expiresAt = new Date(Date.now() + (res.data.expires_in * 1000));
+                        Cookies.set('access_token', token, { expires: expiresAt, secure: true, sameSite: 'none' });
+                    })
+
+                    .catch(error => console.log('error:', error));
+
+
+                    if(res.data[0].Active == 0){
+                        dataUser.accountID = res.data[0].AccountID
+                        dataUser.Role = res.data[0].RoleID
+
+                        localStorage.setItem('isNew', true)
+
+                        Cookies.set('userInfo',  JSON.stringify(dataUser))
+
+                        window.location.href = '/topic'
+
+                    }
+                    else {
+                        
+                        dataUser.accountID = res.data[0].AccountID
+                        dataUser.email = res.data[0].Email
+                        dataUser.name = res.data[0].Name
+                        dataUser.MaGV = res.data[0].MaGV || 0
+                        dataUser.IDFACULTY = res.data[0].IDFACULTY
+                        dataUser.Role = res.data[0].Priority
+
+                        localStorage.setItem('isNew', false)
+                        Cookies.set('userInfo',  JSON.stringify(dataUser))
+
+
+                         window.location.href = '/topic'
+                    }
                 }
                
             })
@@ -302,6 +358,11 @@ export default {
 
 
 @media screen and (max-width: 900px){
+    #container{
+        height: 100%;
+        margin: 0 auto;
+    }
+
     #frame-cover{
         display: flex;
         flex-direction: column;
@@ -316,6 +377,19 @@ export default {
             width: 50%;
         }
     }   
+
+    .frame-right{
+
+        .forgot-pass-text{
+            margin-top: 40px;
+            font-size: 20px;
+        }
+
+        .navigate{
+            margin-top: 80px;
+            font-size: 20px;
+        }
+    }
 }
 
 

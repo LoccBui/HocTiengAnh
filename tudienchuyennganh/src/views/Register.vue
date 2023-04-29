@@ -130,6 +130,12 @@ export default {
 
 
 @media screen and (max-width: 900px){
+    #container{
+        height: 100%;
+        margin: 0 auto;
+    }
+
+
     #frame-cover{
         display: flex;
         flex-direction: column;

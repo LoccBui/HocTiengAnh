@@ -143,15 +143,21 @@
 
 <script>
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
 
 import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailVocab from '@/components/DetailVocab.vue'
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+import Cookies from 'js-cookie';
+
 import * as XLSX from 'xlsx';
 
 
   export default {
     components: {AskBox, DetailVocab},
+    mixins:[requireTokenMixin],
+
     data () {
       return {
         idTeacher: '',
@@ -210,7 +216,7 @@ import * as XLSX from 'xlsx';
       },
 
       getDataLocalStorage(){
-          let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+          let dataUser = JSON.parse(Cookies.get('userInfo'))
           this.accountID = dataUser.accountID
           this.getDataTopic()
       },
@@ -306,7 +312,7 @@ import * as XLSX from 'xlsx';
 
       async addNewTopic(){
         let quantiyWord = this.tableData.length
-        let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+        let dataUser = JSON.parse(Cookies.get('userInfo'))
         let createdBy = dataUser.name
         let idFaculty = dataUser.IDFACULTY
 

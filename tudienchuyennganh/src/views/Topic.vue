@@ -20,17 +20,22 @@
                     <div class="info-topic">
                         <h1>{{ topic.TopicName }}</h1>
                         <el-button plain round type="primary" v-if="dataStatusLearning.length > 0"> 
-                            {{ dataStatusLearning[index].TopicID == topic.TopicID ? dataStatusLearning[index].Learned : 0 }} 
+                            {{ dataStatusLearning[index]?.TopicID == topic.TopicID ? dataStatusLearning[index]?.Learned : 0 }} 
                             / 
-                            {{ dataStatusLearning[index].TopicID == topic.TopicID ? dataStatusLearning[index].Total : 0 }} từ đã học
+                            {{ dataStatusLearning[index]?.TopicID == topic.TopicID ? dataStatusLearning[index]?.Total : 0 }} từ đã học
                         </el-button>
+
+
+                        <div v-if="dataStatusLearning.length > 0">
                     
-                        <el-progress v-if="dataStatusLearning.length > 0"
+                        <el-progress
                             color="var(--main-color)"
                             :text-inside="true"
                             :stroke-width="24"
-                            :percentage="Math.floor((dataStatusLearning[index].Learned * 100) / dataStatusLearning[index].Total)" 
+                            :percentage="Math.floor((dataStatusLearning[index]?.Learned * 100) / dataStatusLearning[index]?.Total)" 
                         />
+                    
+                        </div>
 
                     </div>
                 </div>
@@ -101,6 +106,7 @@ import OptionLearning from './OptionLearning.vue';
 import axiosInstance from '../axios'
 import NewSinhVienForm from '../components/NewSinhVienForm.vue';
 import NewGiaoVienForm from '@/components/NewGiaoVienForm.vue';
+import Cookies from 'js-cookie';
 
 import { requireTokenMixin } from '@/mixin/requireTokenMixin'
 
@@ -125,26 +131,25 @@ export default {
         }
     },
 
-    mounted(){
-        this.changeTitle()
-        this.handleNewUser()
-        this.getDataTopic()
-    
-        this.getPersonalVocab()
-
-
+    created(){
+        document.title = "Học từ vựng"
 
     },
 
-    methods:{
-        changeTitle(){
-            document.title = "Học từ vựng"
-        },
+    mounted(){
+        this.handleNewUser()
+        this.getDataTopic()
+        this.getPersonalVocab()
+    },
 
-        handleNewUser(){
+    methods:{
+
+
+        //Show bảng điền thông tin cho user mới
+        handleNewUser(){ 
 
             let isNew = JSON.parse(localStorage.getItem('isNew'))
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
             
 
             console.log('isNew', isNew === true ? 1: 0)
@@ -161,19 +166,16 @@ export default {
                     this.showSinhVienForm = true
                 }        
             }
-            else if(isNew == false){
-                this.showSinhVienForm = false
-            }
             else{
-                window.location.href = '/login'
+                this.showSinhVienForm = false
             }
 
         },
         
 
-        // lấy data topic theo id khoa nhận từ emmitter
+        // lấy data topic theo id khoa
         getDataTopic(){
-            let dataUser = JSON.parse(localStorage.getItem('userInfo'))
+            let dataUser = JSON.parse(Cookies.get('userInfo'))
             this.accountID = dataUser.accountID
             
             axiosInstance.get(`getTopic/${this.accountID}`)
@@ -195,18 +197,17 @@ export default {
         },
 
         getPersonalVocab(){
-                axiosInstance.post('getPersonalVocab', {
-                    "AccountID": this.accountID
-                })
-                .then((res) => {
-                    console.log("adadad",res.data)
-                    this.dataPersonalVocabAPI = res.data
-                    this.loadingPersonalData = false
-                })
+            axiosInstance.post('getPersonalVocab', {
+                "AccountID": this.accountID
+            })
+            .then((res) => {
+                this.dataPersonalVocabAPI = res.data
+                this.loadingPersonalData = false
+            })
 
-                .catch(() => {
-                    this.loadingPersonalData = true
-                })
+            .catch(() => {
+                this.loadingPersonalData = true
+            })
 
         },
 
@@ -240,7 +241,6 @@ export default {
 .container{
     min-height: 700px;
     padding: 2%;
-
 }
 
 .wrapper{
@@ -311,6 +311,13 @@ export default {
     .info-topic{
         flex: 1;
     }
+}
+
+@media screen and (max-width: 900px){
+    .container{
+        width: 100%;
+    }
+
 }
 
 
