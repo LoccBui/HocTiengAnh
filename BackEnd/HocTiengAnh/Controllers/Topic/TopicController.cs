@@ -41,12 +41,14 @@ namespace HocTiengAnh.Controllers.Topic
             return Json(result);
         }
 
-        [HttpPost, HttpGet]
-        [Route("learning/topicid={id}")]
-        public IHttpActionResult SelectTuVungByTopicID(int id)
+        [HttpPost]
+        [Route("learning/topicid")]
+        public IHttpActionResult SelectTuVungByTopicID(DetailLearning learn)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("TopicID", id)
+                    new SqlParameter("TopicID", learn.TopicID),
+                    new SqlParameter("AccountID", learn.AccountID)
+
                 };
             var result = new DB().GetDataReader("sp_SelectTuVungByTopicID", param);
 

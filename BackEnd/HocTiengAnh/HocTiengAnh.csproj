@@ -212,6 +212,7 @@
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\ClassModel.cs" />
     <Compile Include="Models\DetailClassModel.cs" />
+    <Compile Include="Models\DetailLearning.cs" />
     <Compile Include="Models\DetailPersonalVocabModel.cs" />
     <Compile Include="Models\FacultyModel.cs" />
     <Compile Include="Models\GiaoVienModel.cs" />

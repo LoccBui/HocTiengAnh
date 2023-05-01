@@ -43,9 +43,7 @@
       </div>
 
       <div class="right-side-learning">
-        <div class="level-word">
-         <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
-        </div>
+ 
       </div>
 
     </div>
@@ -58,7 +56,7 @@ import { ElNotification } from 'element-plus'
 
 
 export default {
-  props: ['listWord'],
+  props: ['listWord', 'accountID'],
 
   data(){
     return{
@@ -88,14 +86,9 @@ export default {
   },
 
   methods:{
-    
-    async getVocabularyByTopicID(topicID){
-      let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
-
-      if(result.status == 200){
-        this.arrWords = (result.data)
-        this.handleData()
-      }       
+    getVocabularyByTopicID(){
+      this.arrWords = (this.listWord)
+      this.handleData()  
     },
 
     countDown() {
@@ -103,7 +96,7 @@ export default {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
           clearInterval(countDown);
-          this.handleOvertime();
+          // this.handleOvertime();
         }
       }, 1000);
     },
@@ -197,40 +190,42 @@ export default {
 
       this.VN_Meaning = this.arrWords[random].Vietnamese 
 
-      this.levelWord =  this.arrWords[random].Level 
-
       this.getDataListenAndChoose(this.titleQuestion)
 
     },
 
-    async getDataListenAndChoose(Word){      
-        try{
-          let result = await axiosInstance.post('getDataListenAndChoose',{
-            "Word": `${Word}`
-          })
+    getDataListenAndChoose(Word){      
+      axiosInstance.post('getDataListenAndChoose',{
+        "Word": `${Word}`
+      })
 
-          if(result.status == 200){
-            this.dataGetFromAPI.length = 0
-            this.dataGetFromAPI.push(...result.data)
-            this.handleRandom()     
-          }
+      .then( (result) => {
+        this.dataGetFromAPI.length = 0
+        this.dataGetFromAPI.push(...result.data)
+        this.handleRandom()     
+      })
 
-        }
-        catch(error){
-            this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
-        }
+      .catch( () => {
+        this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
+      })
     },
+
 
     handleRandom(){
         this.randomHasAppear.push(this.titleQuestion)
-             
+
         let valueRandom;
         
-
-        while(this.randomHasAppear.length < 6){
+        while(this.randomHasAppear.length < 4){
           const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
           valueRandom = this.dataGetFromAPI[random].Word;
-          this.randomHasAppear.push(valueRandom);
+
+
+          if(!this.randomHasAppear.includes(valueRandom) && valueRandom != this.titleQuestion){
+            this.randomHasAppear.push(valueRandom);
+            console.log(this.randomHasAppear)
+          }
+
         }
 
         this.handleQuestion()

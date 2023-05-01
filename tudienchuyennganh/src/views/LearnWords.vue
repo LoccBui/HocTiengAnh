@@ -60,34 +60,42 @@
 
     <LearnByMeaningVue v-if="learnByMeaning"
     :listWord="dataAPI"
+    :accountID="accountID"
     @step-Status="handleProgress"
     />
 
     <ChooseRightMeaning v-if="ChooseRightMeaning" 
       :listWord="dataAPI"
+      :accountID="accountID"
       @finish-learn="handleFinishLearn"
       @step-Status="handleProgress"
     />
 
     <FillInABlank v-if="FillInABlank"
+      :listWord="dataAPI"
+      :accountID="accountID"
       @finish-learn="handleFinishLearn"
       @step-Status="handleProgress"
     />
 
     <ListenAndChoose v-if="ListenAndChoose"
-    :listWord="dataAPI"
-    @finish-learn="handleFinishLearn"
-    @step-Status="handleProgress"
+      :listWord="dataAPI"
+      :accountID="accountID"
+      @finish-learn="handleFinishLearn"
+      @step-Status="handleProgress"
     />
 
     <ChooseRightWord v-if="ChooseRightWord"
-    @finish-learn="handleFinishLearn"
-    @step-Status="handleProgress"
-    />
+      :listWord="dataAPI"
+      :accountID="accountID"
+      @finish-learn="handleFinishLearn"
+      @step-Status="handleProgress"
+      />
   
     <CorrectListening v-if="CorrectListening"
-    @finish-learn="handleFinishLearn"
-    @step-Status="handleProgress"
+      :listWord="dataAPI"
+      @finish-learn="handleFinishLearn"
+      @step-Status="handleProgress"
     />  
     
 
@@ -110,7 +118,6 @@
 
 <script>
 
-import {func} from '@/GlobalFunction/script.js'
 import axiosInstance from '../axios'
 
 import LearnByMeaningVue from './LearnByMeaning.vue'
@@ -119,6 +126,7 @@ import FillInABlank from './FillInABlank.vue'
 import ListenAndChoose from './ListenAndChoose.vue'
 import ChooseRightWord from './ChooseRightWord.vue'
 import CorrectListening from './CorrectListening.vue'
+import Cookies from 'js-cookie';
 
 import ReviewWord from '@/components/ReviewWord.vue'
 
@@ -181,22 +189,22 @@ export default {
 
       learning: false,
 
+      accountID: ''
+
     }
   },
-  mixins: [func],
 
+  created(){
+    document.title = "Học từ"
+
+  },
 
   mounted(){
-    this.changeTitle()
     this.getVocabularyByTopicID(this.idTopic)
   },
 
 
   methods:{
-    changeTitle(){
-        document.title = "Học từ"
-    },
-
     speak() {
         //set biến đếm để nói 1 lần        
         const listenBtn = document.getElementById('myvoice');
@@ -217,11 +225,19 @@ export default {
      },
 
     getVocabularyByTopicID(topicID){
-      axiosInstance.get(`learning/topicid=${topicID}`)
-            .then(res => this.handleData(res.data))    
+      let dataUser = JSON.parse(Cookies.get('userInfo'))
+
+      this.accountID = dataUser.accountID
+
+      axiosInstance.post(`learning/topicid`, {
+        "TopicID": topicID,
+        "AccountID": dataUser.accountID
+      })
+      .then(res => this.handleData(res.data))    
     },
 
     handleProgress(status){
+
       const totalStep = (this.vocabLength * 2) 
       const inscreasePercent = (100 / totalStep)
 
@@ -245,21 +261,20 @@ export default {
             this.progressPercent += inscreasePercent
             break;
         }
-        if(this.progressPercent == 100){
-          alert('hoan thanh bai hoc')
 
+        if(this.progressPercent == 100){
           this.learnByMeaning = false
           this.ChooseRightMeaning =  false
           this.FillInABlank = false
           this.ListenAndChoose = false
           this.ChooseRightWord = false
           this.CorrectListening = false
-
           this.showReviewWord = true
         }
+        else{
+          this.randomLearningType()
+        }
       }
-
-
     },
 
     handleData(dataAPI){
@@ -284,8 +299,7 @@ export default {
       this.currentVocab.length = 0
 
       if(this.currentIndex != this.vocabLength){
-        this.currentVocab.push(this.dataAPI[this.currentIndex])
-        
+        this.currentVocab.push(this.dataAPI[this.currentIndex])  
         this.englishWords = this.dataAPI[this.currentIndex].Word
       }
       else{
@@ -300,13 +314,12 @@ export default {
     },
 
     handleFinishLearn(){
-      console.log('finish step -> random  learning type')
       this.randomLearningType()
     },
 
     randomLearningType() {
+
       if(this.progressPercent == 100){
-        alert('ko random')
         this.learning = false
       }
       else{
@@ -351,6 +364,7 @@ export default {
             //  số lần random max =  số từ * 2 
             // nếu bằng max -> học xong
             console.log('random times:', this.randomTimes)
+
           }
 
           }

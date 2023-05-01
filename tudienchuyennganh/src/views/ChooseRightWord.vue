@@ -20,7 +20,7 @@
           </el-button>
         </div>
       </div>
-  
+
       <div>
         <div>
           <h2 class="w80 question-text">{{ VN_Meaning }}</h2>
@@ -41,13 +41,11 @@
                 {{ word }}
               </el-button>
   
+
             </div>
         </div>
   
         <div class="right-side-learning">
-          <div class="level-word">
-           <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
-          </div>
         </div>
   
       </div>
@@ -60,6 +58,8 @@ import { ElNotification } from 'element-plus'
   
   
   export default {
+    props: ['listWord', 'accountID'],
+
     data(){
       return{
         idTopic: this.$route.params.id,
@@ -94,7 +94,7 @@ import { ElNotification } from 'element-plus'
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
           clearInterval(countDown);
-          this.handleOvertime();
+          // this.handleOvertime();
         }
       }, 1000);
     },
@@ -104,13 +104,9 @@ import { ElNotification } from 'element-plus'
         this.selectAnswer()
       },
 
-      async getVocabularyByTopicID(topicID){
-        let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
-  
-        if(result.status == 200){
-          this.arrWords = (result.data)
-          this.handleData()
-        }       
+       getVocabularyByTopicID(){
+        this.arrWords = (this.listWord)
+        this.handleData()    
       },
   
   
@@ -123,10 +119,6 @@ import { ElNotification } from 'element-plus'
       },
   
       handleChoose(word, index){
-        this.isCorrect = false;
-        this.isFalse = false
-  
-  
         this.selectedWord = word
         this.selectedIndex = index;
         this.speak(word)
@@ -192,33 +184,33 @@ import { ElNotification } from 'element-plus'
   
       handleData(){
         const random = Math.floor(Math.random() * this.arrWords.length);
-  
+        
+        console.log(random)
+        console.log(this.arrWords[random].Word )
+        console.log(this.arrWords[random].Vietnamese )
+
         this.titleQuestion = this.arrWords[random].Word 
   
         this.VN_Meaning = this.arrWords[random].Vietnamese 
-  
-        this.levelWord =  this.arrWords[random].Level 
   
         this.getDataListenAndChoose(this.titleQuestion)
   
       },
   
-      async getDataListenAndChoose(Word){      
-          try{
-            let result = await axiosInstance.post('getDataListenAndChoose',{
+      getDataListenAndChoose(Word){      
+           axiosInstance.post('getDataListenAndChoose',{
               "Word": `${Word}`
             })
+
+          .then( (result) => {
+            this.dataGetFromAPI.length = 0
+            this.dataGetFromAPI.push(...result.data)
+            this.handleRandom()    
+          })
   
-            if(result.status == 200){
-              this.dataGetFromAPI.length = 0
-              this.dataGetFromAPI.push(...result.data)
-              this.handleRandom()     
-            }
-  
-          }
-          catch(error){
-              this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
-          }
+          .catch(() => {
+            this.showNotification('Thông báo', 'Lấy dữ liệu thất bại', 'error')
+          })
       },
   
       handleRandom(){
@@ -230,7 +222,14 @@ import { ElNotification } from 'element-plus'
           while(this.randomHasAppear.length < 6){
             const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
             valueRandom = this.dataGetFromAPI[random].Word;
-            this.randomHasAppear.push(valueRandom);
+
+            console.log("valueRandom", valueRandom)
+
+
+            if(!this.randomHasAppear.includes(valueRandom) && valueRandom != this.titleQuestion){
+              this.randomHasAppear.push(valueRandom);
+            }
+
           }
   
           this.handleQuestion()

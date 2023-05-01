@@ -149,7 +149,6 @@ import axiosInstance from '../axios'
 import AskBox from '@/components/AskBox.vue'
 import DetailVocab from '@/components/DetailVocab.vue'
 import { requireTokenMixin } from '@/mixin/requireTokenMixin'
-import Cookies from 'js-cookie';
 
 import * as XLSX from 'xlsx';
 
@@ -211,12 +210,12 @@ import * as XLSX from 'xlsx';
       },
 
       openBox(){
-        console.log(this.optionsAdd)
         this.optionsAdd = true
       },
 
       getDataLocalStorage(){
           let dataUser = JSON.parse(Cookies.get('userInfo'))
+          console.log(dataUser)
           this.accountID = dataUser.accountID
           this.getDataTopic()
       },

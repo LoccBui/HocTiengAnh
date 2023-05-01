@@ -10,8 +10,6 @@
        </div>
       </h1>
 
-
-
       <div class="flex1">
         <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
@@ -68,9 +66,7 @@
       </div>
 
       <div class="right-side-learning">
-        <div class="level-word">
-         <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
-        </div>
+        
       </div>
 
     </div>
@@ -83,6 +79,7 @@ import { ElNotification } from 'element-plus'
 
 
 export default {
+  props: ['listWord', 'accountID'],
   data(){
     return{
       idTopic: this.$route.params.id,
@@ -121,7 +118,7 @@ export default {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
           clearInterval(countDown);
-          this.handleOvertime();
+          // this.handleOvertime();
         }
       }, 1000);
     },
@@ -132,12 +129,10 @@ export default {
     },
 
     async getVocabularyByTopicID(topicID){
-      let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
+      this.arrWords = this.listWord
 
-      if(result.status == 200){
-        this.arrWords = (result.data)
-        this.handleData()
-      }       
+      this.handleData()
+     
     },
 
 
@@ -222,7 +217,7 @@ export default {
 
       this.word = this.arrWords[random].Word 
 
-      this.levelWord =  this.arrWords[random].Level 
+      // this.levelWord =  this.arrWords[random].Level 
 
       this.englishWord = this.arrWords[random].Word 
 
@@ -246,7 +241,6 @@ export default {
           })
 
           if(result.status == 200){
-            console.log("-----data api")
             this.dataGetFromAPI.length = 0
             this.dataGetFromAPI.push(...result.data)
             this.handleRandom()     

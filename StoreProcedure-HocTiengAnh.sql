@@ -70,12 +70,21 @@ select * from TUVUNG
 go
 
 --Hiển thị từ vựng theo chủ đề
-create procedure sp_SelectTuVungByTopicID
-@TopicID int
+alter procedure sp_SelectTuVungByTopicID
+@TopicID int,
+@AccountID int
 as
-select TOP 5 *
-from TUVUNG
-where TopicID = @TopicID and Learned = 0
+
+ SELECT TOP 5 TV.VocabID, TV.TopicID, TV.Frequency, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example, TV.Resources
+    FROM TUVUNG TV
+
+    WHERE TV.TopicID = @TopicID
+        AND TV.VocabID NOT IN (
+            SELECT VocabID
+            FROM CHITIETHOC
+            WHERE AccountID = @AccountID AND TopicID = @TopicID AND Level < 5
+        )
+    ORDER BY NEWID()
 
 go
 

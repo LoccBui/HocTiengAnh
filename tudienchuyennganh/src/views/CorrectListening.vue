@@ -14,10 +14,10 @@
       
 
       <div class="w20">
-        <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
+        <!-- <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Chọn
-        </el-button>
+        </el-button> -->
       </div>
     </div>
 
@@ -38,8 +38,12 @@
           <div class="options">
 
             <el-button color="var(--main-color)"
-            v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
-            :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
+              v-for="(word, index) in randomHasAppear" :key="word" 
+              :class="{
+                'success-button': isCorrect && selectedIndex === index && !isFalse,
+                'error-button': isFalse && selectedIndex === index
+              }"
+              @click="handleChoose(word, index)"
             >
               {{ word }}
             </el-button>
@@ -48,9 +52,7 @@
       </div>
 
       <div class="right-side-learning">
-        <div class="level-word">
-         <img :src="`../../assets/img/learning/level${this.levelWord}.png`" alt="Level Word">
-        </div>
+      
       </div>
 
     </div>
@@ -63,6 +65,8 @@ import { ElNotification } from 'element-plus'
 
 
 export default {
+  props: ['listWord', 'accountID'],
+
   data(){
     return{
       idTopic: this.$route.params.id,
@@ -80,7 +84,6 @@ export default {
       selectedIndex: -1,
       selectedWord: '',
       countDownTimes: 30,
-      stopClick: false
     }
   },
 
@@ -96,7 +99,7 @@ export default {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
           clearInterval(countDown);
-          this.handleOvertime();
+          // this.handleOvertime();
         }
       }, 1000);
     },
@@ -108,12 +111,8 @@ export default {
     },
 
     async getVocabularyByTopicID(topicID){
-      let result = await axiosInstance.get(`/learning/topicid=${topicID}`)
-
-      if(result.status == 200){
-        this.arrWords = (result.data)
-        this.handleData()
-      }       
+      this.arrWords = (this.listWord)
+      this.handleData() 
     },
 
 
@@ -126,13 +125,10 @@ export default {
     },
 
     handleChoose(word, index){
-      this.isCorrect = false;
-      this.isFalse = false
-
-
       this.selectedWord = word
       this.selectedIndex = index;
-      this.speak(word)
+
+      this.selectAnswer()
     },
 
     selectAnswer() {
@@ -141,36 +137,34 @@ export default {
 
       if(this.selectedWord){
         if (this.selectedWord == this.titleQuestion) {
-          this.$emit('step-Status', 'correct');
-          this.stopClick = true;
+
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
+          
 
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
           }, 2000);
-
           clearTimeout(time)
-
-
+          this.$emit('step-Status', 'correct');
+          
         } 
         else if (this.selectedWord != this.titleQuestion) {
-          this.$emit('step-Status', 'wrong');
-          this.stopClick = true;
+          this.isCorrect = false;
           this.isFalse = true;
           wrong.play();
 
           const time = setTimeout(() => {
               this.finishLearn();
           }, 2000);
-          
+          this.$emit('step-Status', 'wrong');       
           clearTimeout(time)
         }
+
       }
       else{
         this.$emit('step-Status', 'wrong');
-        this.stopClick = true;
         wrong.play();
         this.finishLearn();
       }
@@ -197,9 +191,9 @@ export default {
 
       this.titleQuestion = this.arrWords[random].Word 
 
+
       this.VN_Meaning = this.arrWords[random].Vietnamese 
 
-      this.levelWord =  this.arrWords[random].Level 
 
       this.getDataListenAndChoose(this.titleQuestion)
 
@@ -232,7 +226,11 @@ export default {
         while(this.randomHasAppear.length < 6){
           const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
           valueRandom = this.dataGetFromAPI[random].Word;
-          this.randomHasAppear.push(valueRandom);
+
+          if(!this.randomHasAppear.includes(valueRandom) && valueRandom != this.titleQuestion){
+            this.randomHasAppear.push(valueRandom);
+          }
+
         }
 
         this.handleQuestion()
@@ -367,13 +365,15 @@ export default {
 
 
 .success-button {
-  background-color: green;
-  border-color: green;
+  background-color: green !important;
+  border-color: green  !important;
+  color: white !important ;
 }
 
 .error-button {
-  background-color: red;
-  border-color: red;
+  background-color: red  !important;
+  border-color: red  !important;
+  color: white !important ;
 }
 
 .options{
