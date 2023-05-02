@@ -13,14 +13,6 @@
 
                     <div v-if="notShowTimer">
 
-                        <v-alert
-                            v-if="alertNotHaveEmail"
-                            color="error"
-                            icon="$success"
-                            text="Email của bạn chưa được đăng kí trong hệ thống"
-                            max-height="70px"
-                        ></v-alert>
-
                         <v-form
                             ref="form"
                             v-model="valid"
@@ -85,6 +77,7 @@
 <script>
 import emailjs from '@emailjs/browser';
 import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
 
 import Timer from '@/components/Timer.vue';
 
@@ -94,7 +87,6 @@ export default {
     data() {
         return {
             valid: false, 
-            alertNotHaveEmail: false,
             emailInput: '', 
             emailFilter: '',
             accountID: '',
@@ -114,14 +106,22 @@ export default {
         }
     },
 
+    created(){
+        document.title = "Quên mật khẩu"
+
+    },
+
     mounted() {
-        this.changeTitle()
     },
 
     methods:{
-        changeTitle(){
-            document.title = "Quên mật khẩu"
-        },
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+         },
 
         moveToLogin(){
             this.$router.push('/')
@@ -147,25 +147,19 @@ export default {
                 //Have account in database
                 if(this.accountID != 0){
                     this.generateOTPForEmail(this.accountID)
-                    
                 }
                 else{
-                    this.alertNotHaveEmail = true
-
-                    setTimeout(() => {
-                        this.alertNotHaveEmail = false 
-                    }, 3000);
+                    this.showNotification('Thông báo', 'Email không tồn tại trong hệ thống', 'error')
                 }
             }
         },
 
-        async generateOTPForEmail(accountID){
-            let result = await axiosInstance.get(`generateOTP/${accountID}`)
-            if(result.status == 200){
-                console.log('otp created successfully')
+        generateOTPForEmail(accountID){
+           axiosInstance.get(`generateOTP/${accountID}`)
 
-                this.notShowTimer = !this.notShowTimer
-            }             
+           .then( (result) => {
+             this.notShowTimer = !this.notShowTimer
+           })           
         },
 
 
@@ -288,7 +282,7 @@ export default {
         justify-content: center;
 
         .brand-logo-img{
-            width: 100%;
+            width: 50%;
         }
     }   
 

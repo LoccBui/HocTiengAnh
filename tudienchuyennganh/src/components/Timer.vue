@@ -49,6 +49,8 @@
 import VOtpInput from 'vue3-otp-input';
 import { ref } from 'vue';
 import axiosInstance from '../axios'
+import { ElNotification } from 'element-plus'
+
 
 export default {
     components: { VOtpInput },
@@ -84,7 +86,6 @@ export default {
 
             const handleOnChange = (value) => {
                 console.log('OTP changed: ', value);
-             
             };
 
             const clearInput = () => {
@@ -105,21 +106,29 @@ export default {
             tryTimes: 10,
             showAlertWrongOTP: false,
 
-            otpInputCode: []
+            otpInputCode: [],
         }
     },
-    mounted: function () {
-        console.log(this.accountID)
+    mounted() {
         this.total = parseInt(this.time, 10)
         this.interval = setInterval(() => {
             this.tick()
         }, 1000)
     },
     methods: {
+        showNotification(title ,message, type){
+            ElNotification({
+                title: `${title}`,
+                message: `${message}`,
+                type: `${type}`,
+            })
+         },
+
         str_pad_left: function (string, pad, length) {
             return (new Array(length+1).join(pad)+string).slice(-length)
         },
         tick: function () {
+
             var minutes = Math.floor(this.total / 60)
             var seconds = this.total - minutes * 60
             this.minutes = this.str_pad_left(minutes, '0', 2)
@@ -142,17 +151,19 @@ export default {
 
         },
 
-        async generateOTPForEmail(){
-            let result = await axiosInstance.get(`generateOTP/${this.accountID}`)
-            if(result.status == 200){
-                console.log('otp created successfully')
+        generateOTPForEmail(){
+            axiosInstance.get(`generateOTP/${this.accountID}`)
 
-            }             
+            .then( () => {
+                this.showNotification('Thông báo', 'Tạo otp mới thành công', 'success')
+            })
+
+            .catch( () => {
+                this.showNotification('Thông báo', 'Tạo otp không thành công', 'error')
+            })         
         },
 
         handleWrongOTP(){
-            console.log(this.wrongOTP)
-
             if(this.wrongOTP != 0){
                 this.showAlertWrongOTP = true
 

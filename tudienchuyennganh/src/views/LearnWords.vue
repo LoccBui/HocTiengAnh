@@ -57,7 +57,7 @@
 
     </div>
 
-
+    <div class="learning-content">
     <LearnByMeaningVue v-if="learnByMeaning"
     :listWord="dataAPI"
     :accountID="accountID"
@@ -97,6 +97,7 @@
       @finish-learn="handleFinishLearn"
       @step-Status="handleProgress"
     />  
+  </div>
     
 
     
@@ -271,9 +272,7 @@ export default {
           this.CorrectListening = false
           this.showReviewWord = true
         }
-        else{
-          this.randomLearningType()
-        }
+
       }
     },
 
@@ -305,10 +304,7 @@ export default {
       else{
         this.reviewWords = false
         this.learning = true
-        // this.learnByMeaning = true
-   
         this.randomLearningType()
-        
       }
 
     },
@@ -318,8 +314,7 @@ export default {
     },
 
     randomLearningType() {
-
-      if(this.progressPercent == 100){
+      if(this.progressPercent === 100){
         this.learning = false
       }
       else{
@@ -475,6 +470,7 @@ export default {
 
 
 }
+
 
 
 // Mobile devices

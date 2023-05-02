@@ -14,9 +14,9 @@
         
 
         <div class="w20">
-          <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
+          <el-button color="var(--main-color)"  @click="this.finishLearn()" :disabled="stopClick"> 
             <v-icon>mdi-check</v-icon>
-            Chọn
+            Tiếp theo
           </el-button>
         </div>
       </div>
@@ -37,6 +37,8 @@
               <el-button color="var(--main-color)"
               v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
               :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
+              :disabled="stopChoosing"
+
               >
                 {{ word }}
               </el-button>
@@ -77,7 +79,8 @@ import { ElNotification } from 'element-plus'
         selectedIndex: -1,
         selectedWord: '',
         countDownTimes: 30,
-        stopClick: false
+        stopClick: true,
+        stopChoosing: false
       }
     },
   
@@ -119,50 +122,57 @@ import { ElNotification } from 'element-plus'
       },
   
       handleChoose(word, index){
+        this.stopClick = false;
+
         this.selectedWord = word
         this.selectedIndex = index;
-        this.speak(word)
+        this.selectAnswer()
       },
   
     selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
+      this.stopChoosing = true
+
       if(this.selectedWord){
         if (this.selectedWord == this.titleQuestion) {
-          this.$emit('step-Status', 'correct');
-          this.stopClick = true;
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-
+          this.$emit('step-Status', 'correct');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
 
-          clearTimeout(time)
 
 
         } 
         else if (this.selectedWord != this.titleQuestion) {
-          this.$emit('step-Status', 'wrong');
-          this.stopClick = true;
           this.isFalse = true;
           wrong.play();
-
+          this.$emit('step-Status', 'wrong');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
 
-          clearTimeout(time)
 
         }
       }
       else{
         this.$emit('step-Status', 'wrong');
-        this.stopClick = true;
-        wrong.play();
-        this.finishLearn();
+
+        const time = setTimeout(() => {
+          wrong.play();
+          this.finishLearn();
+          clearTimeout(time)
+        }, 2000);
+
+    
       }
     },
   
@@ -347,14 +357,17 @@ import { ElNotification } from 'element-plus'
   
   
   .success-button {
-    background-color: green;
-    border-color: green;
-  }
-  
-  .error-button {
-    background-color: red;
-    border-color: red;
-  }
+  background-color: green !important;
+  border-color: green  !important;
+  color: white !important ;
+}
+
+.error-button {
+  background-color: red  !important;
+  border-color: red  !important;
+  color: white !important ;
+}
+
   
   .options{
     .el-button{

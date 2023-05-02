@@ -48,13 +48,7 @@ const routes = [
       {
         name: 'LearnTopic',
         path: '/learning/topicid=:id',
-        component: LearnWords,
-          children: [
-            {
-              path: '/test',
-              component:  TestComponent
-            }
-          ]
+        component: LearnWords
       },
       {
         path: '/manage/class',

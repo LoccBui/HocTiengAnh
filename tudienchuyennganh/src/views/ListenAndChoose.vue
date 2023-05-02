@@ -35,6 +35,8 @@
             <el-button color="var(--main-color)"
             v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
             :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
+            :disabled="stopChoosing"
+
             >
               <v-icon> mdi-volume-high </v-icon>
             </el-button>
@@ -76,6 +78,7 @@ export default {
       selectedWord: '',
       countDownTimes: 30,
       stopClick: false,
+      stopChoosing: false,
     }
   },
 
@@ -116,10 +119,6 @@ export default {
     },
 
     handleChoose(word, index){
-      this.isCorrect = false;
-      this.isFalse = false
-
-
       this.selectedWord = word
       this.selectedIndex = index;
       this.speak(word)
@@ -128,42 +127,41 @@ export default {
     selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
+      this.stopClick = false;
+      this.stopChoosing = true
 
       if(this.selectedWord){
         if (this.selectedWord == this.titleQuestion) {
-          this.$emit('step-Status', 'correct');
-          this.stopClick = true;
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-
+          this.$emit('step-Status', 'correct');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
-
-          clearTimeout(time)
-
-
         } 
         else if (this.selectedWord != this.titleQuestion) {
-          this.$emit('step-Status', 'wrong');
-          this.stopClick = true;
           this.isFalse = true;
           wrong.play();
-
+          this.$emit('step-Status', 'wrong');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
 
-          clearTimeout(time)
 
         }
       }
       else{
         this.$emit('step-Status', 'wrong');
-        this.stopClick = true;
-        wrong.play();
-        this.finishLearn();
+        const time = setTimeout(() => {
+          wrong.play();
+          this.finishLearn();
+          clearTimeout(time)
+        }, 2000);
       }
     },
 
@@ -216,7 +214,7 @@ export default {
 
         let valueRandom;
         
-        while(this.randomHasAppear.length < 4){
+        while(this.randomHasAppear.length < 6){
           const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
           valueRandom = this.dataGetFromAPI[random].Word;
 
@@ -248,7 +246,7 @@ export default {
 
 .container{
   padding: 0;
-}
+  }
 .normal-text{
   font-size: 30px;
   font-weight: normal;

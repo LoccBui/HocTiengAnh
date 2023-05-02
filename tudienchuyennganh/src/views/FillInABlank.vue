@@ -13,7 +13,7 @@
       <div class="flex1">
         <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
-          Chọn
+          Tiếp theo
         </el-button>
       </div>
     </div>
@@ -28,7 +28,6 @@
             >Số lượng kí tự cần điền
             
             </v-tooltip>
-            
             <el-button type="primary" bg text="true" size="large" >
               {{ englishWord.length }}
             </el-button>
@@ -50,7 +49,7 @@
             <el-input v-model="inputAnswer" class="input-answer" 
             placeholder="Nhập kết quả của bạn tại đây"
             @keyup.enter="selectAnswer()"   
-            >\</el-input>
+            />
             
             
             <span class="mention" v-if="mention">
@@ -101,7 +100,7 @@ export default {
       inputAnswer: '',
       mention: false,
       countDownTimes: 30,
-      stopClick: false,
+      stopClick: true,
     }
   },
 
@@ -144,55 +143,47 @@ export default {
         })
     },
 
-    handleChoose(word, index){
-      this.isCorrect = false;
-      this.isFalse = false
-
-
-      this.selectedWord = word
-      this.selectedIndex = index;
-      this.speak(word)
-    },
-
     selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
-      if(this.selectedWord){
-        if (this.selectedWord == this.titleQuestion) {
-          this.$emit('step-Status', 'correct');
-          this.stopClick = true;
+      this.stopClick = false;
+
+
+      if(this.inputAnswer != ""){
+
+        // trả lời đúng
+        if (this.inputAnswer == this.englishWord) {
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-
+          this.$emit('step-Status', 'correct');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
-
-          clearTimeout(time)
-
-
         } 
+        // trả lời sai
         else if (this.selectedWord != this.titleQuestion) {
-          this.$emit('step-Status', 'wrong');
-          this.stopClick = true;
           this.isFalse = true;
           wrong.play();
-
+          this.$emit('step-Status', 'wrong');
+          
           const time = setTimeout(() => {
-              this.finishLearn();
+            this.finishLearn();
+            clearTimeout(time)
           }, 2000);
-
-          clearTimeout(time)
-
         }
       }
+      //case không có giá trị input
       else{
         this.$emit('step-Status', 'wrong');
-        this.stopClick = true;
-        wrong.play();
-        this.finishLearn();
+        const time = setTimeout(() => {
+          wrong.play();
+          this.finishLearn();
+          clearTimeout(time)
+        }, 2000);
       }
     },
 
@@ -216,8 +207,6 @@ export default {
       const random = Math.floor(Math.random() * this.arrWords.length);
 
       this.word = this.arrWords[random].Word 
-
-      // this.levelWord =  this.arrWords[random].Level 
 
       this.englishWord = this.arrWords[random].Word 
 
@@ -270,10 +259,6 @@ export default {
     },
 
     hightlighKeyWord(inputString, keywords){
-      console.log('hightlighKeyWord')
-
-      console.log(inputString, keywords)
-
       const pattern = new RegExp(`\\b(${keywords.replace(/,/g, '|')})\\b`, 'gi');
        return inputString.replace(pattern, '<strong>$1</strong>');
     },

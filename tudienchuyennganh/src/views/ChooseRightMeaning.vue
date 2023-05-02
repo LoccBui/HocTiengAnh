@@ -10,9 +10,9 @@
         </div>
       </h1>
       <div class="w20">
-        <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
+        <el-button color="var(--main-color)"  @click="this.finishLearn()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
-          Chọn
+          Tiếp theo
         </el-button>
       </div>
     </div>
@@ -33,6 +33,8 @@
             <el-button color="var(--main-color)"
             v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
             :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
+            :disabled="stopChoosing"
+
             >
               {{ word }}
             </el-button>
@@ -72,7 +74,8 @@ export default {
       selectedIndex: -1,
       selectedWord: '',
       countDownTimes: 30,
-      stopClick: false,
+      stopClick: true,
+      stopChoosing: false
 
     }
   },
@@ -114,53 +117,56 @@ export default {
     },
 
     handleChoose(word, index){
-      this.isCorrect = false;
-      this.isFalse = false
-
+      this.stopClick = false;
+      this.stopChoosing = true
 
       this.selectedWord = word
       this.selectedIndex = index;
-      this.speak(word)
+
+      this.selectAnswer()
     },
 
     selectAnswer() {
       const correct = new Audio('../../assets/audio/correct.mp3');
       const wrong = new Audio('../../assets/audio/wrong.mp3');
 
+
       if(this.selectedWord){
-        if (this.selectedWord == this.titleQuestion) {
-          this.$emit('step-Status', 'correct');
-          this.stopClick = true;
+        if (this.selectedWord == this.Vietnamese) {
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
+          this.$emit('step-Status', 'correct');
 
           const time = setTimeout(() => {
             this.finishLearn();
+            clearTimeout(time)
           }, 2000);
 
-          clearTimeout(time)
 
         } 
         else if (this.selectedWord != this.titleQuestion) {
-          this.$emit('step-Status', 'wrong');
-          this.stopClick = true;
           this.isFalse = true;
           wrong.play();
-
+          this.$emit('step-Status', 'wrong');
+          
           const time = setTimeout(() => {
             this.finishLearn();
+            clearTimeout(time)
           }, 2000);
 
-          clearTimeout(time)
 
         }
       }
       else{
         this.$emit('step-Status', 'wrong');
-        this.stopClick = true;
-        wrong.play();
-        this.finishLearn();
+
+        const time = setTimeout(() => {
+          wrong.play();
+          this.finishLearn();
+          clearTimeout(time)
+        }, 2000);
+
       }
     },
 
@@ -185,9 +191,8 @@ export default {
       const random = Math.floor(Math.random() * this.arrWords.length);
 
       this.word = this.arrWords[random].Word 
-
-
-      // this.levelWord =  this.arrWords[random].Level 
+      
+      this.titleQuestion = this.arrWords[random].Word 
 
       this.englishWord = this.arrWords[random].Word 
 
@@ -348,14 +353,17 @@ export default {
 }
 
 
+
 .success-button {
-  background-color: green;
-  border-color: green;
+  background-color: green !important;
+  border-color: green  !important;
+  color: white !important ;
 }
 
 .error-button {
-  background-color: red;
-  border-color: red;
+  background-color: red  !important;
+  border-color: red  !important;
+  color: white !important ;
 }
 
 .options{
