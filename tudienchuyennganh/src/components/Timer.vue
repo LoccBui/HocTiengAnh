@@ -3,14 +3,14 @@
 
         <span class="otp-heading-text  no-hover-pointer">Mã OTP đã được gửi vào email của bạn </span>
 
-        <p :class="{'text-danger': total<=0}">
+        <p :class="{'text-danger': total<=0}" v-if="showTimeRunning">
             <strong class="otp-timer">{{minutes}}</strong>
             <strong class="otp-timer">:</strong>
             <strong class="otp-timer">{{seconds}}</strong>
         </p>
 
-        <div style="display: flex; flex-direction: row; padding: 20px 0px; ">
-            <v-otp-input
+        <div style="display: flex; flex-direction: row; padding: 20px 0px; " v-if="showTimer">
+            <v-otp-input 
                 ref="otpInput"
                 input-classes="otp-input"
                 separator="-"
@@ -50,6 +50,7 @@ import VOtpInput from 'vue3-otp-input';
 import { ref } from 'vue';
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
+import emailjs from '@emailjs/browser';
 
 
 export default {
@@ -79,6 +80,11 @@ export default {
     setup() {
         const otpInput = ref(null)
 
+
+        const showTimeRunning = ref(true)
+        const hiddenConfirmOTP = ref(false)
+        const showTimer = ref(true)
+
             const handleOnComplete = (value) => {
                 console.log('OTP completed: ', value)
                 console.log('OTP completed nef')
@@ -92,7 +98,7 @@ export default {
                 otpInput.value.clearInput()
             }
 
-        return { handleOnComplete, handleOnChange, clearInput, otpInput };
+        return { handleOnComplete, handleOnChange, clearInput, otpInput , showTimer, showTimeRunning, hiddenConfirmOTP};
     },
 
     data: function () {
@@ -138,6 +144,7 @@ export default {
                 clearInterval(this.interval)
                 this.$emit('timer-stop')
                 console.log('hết giờ nha')
+                this.showTimer = false
             }
 
             this.total -= 1          
@@ -145,17 +152,17 @@ export default {
 
         confirmOTP(){
             var arrOTP= [].concat(this.otpInput.otp).join("")
-            console.log(arrOTP)
-
             this.$emit('confirm-OTP', arrOTP)
-
         },
 
         generateOTPForEmail(){
             axiosInstance.get(`generateOTP/${this.accountID}`)
 
-            .then( () => {
+            .then( (result) => {
+                console.log(result.data)
                 this.showNotification('Thông báo', 'Tạo otp mới thành công', 'success')
+                this.$emit('refreshNewOTP')
+                this.sendEmailToUser(result.data[0])
             })
 
             .catch( () => {
@@ -163,14 +170,32 @@ export default {
             })         
         },
 
+        sendEmailToUser(data){
+            // Send OTP to email have verified 
+            var emailParams = {
+                user_name: `${data.Name}`,
+                otp_code: `${data.OTPCode}`,
+                from_name: "Học từ vựng Tiếng Anh",
+                user_email: `${data.Email}`,
+            }
+
+            emailjs.send(
+            `${import.meta.env.VITE_SERVICE_ID}`,
+            `${import.meta.env.VITE_TEMPLATE_ID}`, 
+                emailParams, 
+            `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
+
+            .then(() => {
+                this.showNotification('Thông báo', 'Đã gửi OTP', 'success')
+            })
+
+            },
+
         handleWrongOTP(){
             if(this.wrongOTP != 0){
-                this.showAlertWrongOTP = true
-
-                this.hiddenConfirmOTP = false
-                setTimeout(() => {
-                    this.hiddenConfirmOTP = true
-                }, 2000)
+                this.showNotification('Thông báo', 'Mã otp không chính xác', 'error')
+                this.showTimer = this.showTimeRunning = false
+                this.hiddenConfirmOTP = true
             }
         }
 

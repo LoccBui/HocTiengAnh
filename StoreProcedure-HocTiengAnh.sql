@@ -214,8 +214,9 @@ BEGIN
     DELETE FROM OTP WHERE ExpiredAt < GETDATE();
     
     -- Lấy thông tin OTP vừa được thêm vào bảng
-    SELECT ID, AccountID, OTPCode, CreatedAt, ExpiredAt 
+    SELECT ID, OTP.AccountID, TK.Name, TK.Email, OTPCode, CreatedAt, ExpiredAt 
     FROM OTP 
+	INNER JOIN TAIKHOAN TK on TK.AccountID = OTP.AccountID
     WHERE ID = SCOPE_IDENTITY();
 END
 

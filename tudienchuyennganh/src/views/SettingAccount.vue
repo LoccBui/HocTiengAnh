@@ -62,7 +62,7 @@
                     <el-col>
                         <h1 class="txt-40">Thay đổi mật khẩu</h1>
 
-                        <el-form  
+                    <el-form  
                             ref="ruleFormRef"
                             :model="ruleForm"
                             :rules="rules"
@@ -78,7 +78,7 @@
                             <el-input prop="inputConfirmNewPassword" size="large"   show-password
                             v-model="ruleForm.confirmNewPasword" placeholder="Xác nhận mật khẩu"   />
                         </el-form-item>
-            </el-form>
+                    </el-form>
 
 
                         <div class="confirm-btn">

@@ -113,7 +113,6 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
-        [Authorize]
         [Route("changePassword")]
         public IHttpActionResult ChangePassword(AccountModel acc)
         {

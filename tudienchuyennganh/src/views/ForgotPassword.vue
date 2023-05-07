@@ -47,11 +47,15 @@
                         </span>     
                     </div>
 
-                    <div  v-else>
-                        <Timer :time="120"
-                        @confirm-OTP="confirmOTP"
+                    <div  v-else-if="showInputOTP">
+                        <Timer 
+                        :key="refreshKey"
+                        :time="120"
+                        @confirm-OTP="confirmOTP"              
+                        @refreshNewOTP="refreshNewOTP"
                         :accountID ="this.accountID"
                         :wrongOTP="this.wrongOTP"
+
                         />
 
                         <div class="navigate-otp">
@@ -62,6 +66,36 @@
                         </div>  
                         
                     </div>
+
+                    <div v-else>
+                        <el-form  
+                            ref="ruleFormRef"
+                            :model="ruleForm"
+                            :rules="rules"
+                            status-icon
+                            :label-position="'left'" >
+
+                            <el-form-item prop="newPassword" >
+                                <el-input prop="inputNewPassword" size="large"   show-password
+                                v-model="ruleForm.newPassword" placeholder="Mật khẩu mới"   />
+                            </el-form-item>
+
+                            <el-form-item prop="confirmNewPasword" >
+                                <el-input prop="inputConfirmNewPassword" size="large"   show-password
+                                v-model="ruleForm.confirmNewPasword" placeholder="Xác nhận mật khẩu"   />
+                            </el-form-item>
+                         </el-form>
+
+                         <div class="confirm-btn">
+                            <el-button  
+                             style="width: 100%;"
+                             color="var(--main-color)" 
+                             size="large" @click="changePassword()">
+                             Thay đổi mật khẩu</el-button>
+                        </div>
+                    </div>
+
+
                 </div>
 
 
@@ -102,7 +136,19 @@ export default {
             notShowTimer: true,
 
             //otp
-            wrongOTP: 0
+            wrongOTP: 0,
+            refreshKey: 0,
+
+            //new password
+            ruleForm : {
+                inputNewPassword: '',
+                inputConfirmNewPassword: ''
+            },
+
+            rules: {
+                newPassword: [{ required: true, message: 'Bạn cần mật khẩu mới', trigger: 'change' }],
+                confirmNewPasword: [{ required: true, message: 'Bạn cần nhập xác nhận mật khẩu', trigger: 'change' }],
+            }    
         }
     },
 
@@ -125,6 +171,11 @@ export default {
 
         moveToLogin(){
             this.$router.push('/')
+        },
+
+        refreshNewOTP(){
+            this.refreshKey++
+            // this.sendEmailVerification()
         },
 
         async handleEmail(){
@@ -158,49 +209,92 @@ export default {
            axiosInstance.get(`generateOTP/${accountID}`)
 
            .then( (result) => {
-             this.notShowTimer = !this.notShowTimer
+              this.notShowTimer = !this.notShowTimer
+              this.showInputOTP = true
+              this.sendEmailToUser(result.data[0])
            })           
+
         },
 
-
+        //handle value OTP value confirm
         async confirmOTP(data){
             let result = await axiosInstance.get(`verify/${this.accountID}/${data}`)
 
             if(result.status == 200){
 
                 if(result.data[0].VerifyStatus == 200){
-                    alert('move to change password')
+                    this.showInputOTP = this.notShowTimer = false
+                    this.$forceUpdate()
                 }
                 else{
-                    alert('wrong otp')
                     this.wrongOTP+=1
-                    console.log(this.wrongOTP)
                 }
             
             }
+        },
 
 
-        }
+        async changePassword(){
 
-            
-            // Generate OTP for account -> sp_GenerateOTP
+            await  this.$refs.ruleFormRef.validate((valid) => {
+            if (valid) {
+                try{
+                    if(this.ruleForm.newPassword != this.ruleForm.confirmNewPasword){
+                        this.showNotification('Thông báo', 'Mật khẩu không trùng nhau', 'error')
+                    }
+                    else{
+
+                        axiosInstance.post('changePassword', {
+                            "Password": `${this.ruleForm.confirmNewPasword}`,
+                            "AccountID": this.accountID
+                        })
+
+                        .then(() => {
+                            this.showNotification('Thông báo', 'Đổi mật khẩu thành công', 'success')
+                            this.$router.push('/login')
+                        })
+                    }
+
+                }
+                catch(e){
+                    this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                }  
+
+            } else {
+                this.$message.error('Dữ liệu còn thiếu.');
+                return false;
+            }
+            });
+        },
+
+        sendEmailToUser(data){
 
             // Send OTP to email have verified 
-            // var emailParams = {
-            //     user_name: 123,
-            //     otp_code: "54682",
-            //     from_name: "Học từ vựng Tiếng Anh",
-            //     user_email: "buihuuloc2001@gmail.com",
-            // }
+            var emailParams = {
+                user_name: `${data.Name}`,
+                otp_code: `${data.OTPCode}`,
+                from_name: "Học từ vựng Tiếng Anh",
+                user_email: `${this.emailInput}`,
+            }
             
-            // emailjs.send(
-            //     `${import.meta.env.VITE_SERVICE_ID}`,
-            //     `${import.meta.env.VITE_TEMPLATE_ID}`, 
-            //      emailParams, 
-            //      `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
-            //     .then(function(response) {
-            //         alert("status" + response.status)
-            //     })
+            emailjs.send(
+            `${import.meta.env.VITE_SERVICE_ID}`,
+            `${import.meta.env.VITE_TEMPLATE_ID}`, 
+                emailParams, 
+            `${import.meta.env.VITE_PUBLIC_KEY_ID}`)
+
+            .then(() => {
+                this.showNotification('Thông báo', 'Đã gửi OTP', 'success')
+            })
+            
+        }
+
+        
+
+    
+
+            
+            
     }
 }   
 </script>
