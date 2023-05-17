@@ -23,6 +23,7 @@ namespace HocTiengAnh.Controllers.NewUserForm
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@AccountID", student.AccountID),
                     new SqlParameter("@Gender", student.Gender),
+                    new SqlParameter("@Name", student.Name),
                     new SqlParameter("@IDCLASS", student.IDCLASS)
             };
 

@@ -45,8 +45,10 @@ go
 create table KHOA(
 	IDFACULTY tinyint IDENTITY(1,1),
 	FacultyName nvarchar(100),
+	MaGV smallint,
 
 	PRIMARY KEY (IDFACULTY),
+	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV)
 )
 
 go 
@@ -121,11 +123,9 @@ GO
 CREATE TABLE CHITIETLOP (
 	DetailID int IDENTITY(1,1),
 	MaSV int,
-	MaGV smallint,
 	IDCLASS smallint,
 	IsApproved bit default 0,
 	PRIMARY KEY (MaSV, IDCLASS),
-	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV),
 	FOREIGN KEY (MaSV) REFERENCES SINHVIEN(MaSV),
 	FOREIGN KEY (IDCLASS) REFERENCES LOP(IDCLASS),
 )
@@ -226,18 +226,19 @@ SET IDENTITY_INSERT [dbo].[TAIKHOAN] OFF
 
 GO
 
-
-SET IDENTITY_INSERT [dbo].[KHOA] ON 
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (1, N'Công nghệ thông tin')
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (2, N'Dược')
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (3, N'Maketing')
-SET IDENTITY_INSERT [dbo].[KHOA] OFF
-
-GO
-
 INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (1, 2, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
 INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (2, 4, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
 INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (3, 5, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
+
+GO
+
+
+SET IDENTITY_INSERT [dbo].[KHOA] ON 
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (1, N'Công nghệ thông tin', 1)
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (2, N'Dược', 2)
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (3, N'Maketing', 3)
+SET IDENTITY_INSERT [dbo].[KHOA] OFF
+
 
 
 GO
@@ -257,8 +258,8 @@ INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS])
 GO
 
 SET IDENTITY_INSERT [dbo].[CHITIETLOP] ON 
-INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[MaGV],[IDCLASS],[IsApproved]) VALUES (1, 1, 1, 1, 0)
-INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[MaGV],[IDCLASS],[IsApproved]) VALUES (2, 2, 1, 1, 0)
+INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[IDCLASS],[IsApproved]) VALUES (1, 1, 1, 0)
+INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[IDCLASS],[IsApproved]) VALUES (2, 2, 1, 0)
 SET IDENTITY_INSERT [dbo].[CHITIETLOP] OFF
 
 

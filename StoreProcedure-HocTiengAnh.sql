@@ -29,9 +29,7 @@ BEGIN
 			select GV.AccountID, GV.MaGV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join CHITIETLOP CTL on CTL.MaGV = GV.MaGV
-			inner join LOP L on L.IDCLASS = CTL.IDCLASS
-			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join KHOA K on K.MaGV = GV.MaGV
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
@@ -70,7 +68,7 @@ select * from TUVUNG
 go
 
 --Hiển thị từ vựng theo chủ đề
-alter procedure sp_SelectTuVungByTopicID
+create procedure sp_SelectTuVungByTopicID
 @TopicID int,
 @AccountID int
 as
@@ -169,8 +167,7 @@ BEGIN
 		begin
 			select @IDFaculty = L.IDFACULTY
 			from SINHVIEN SV
-			inner join CHITIETLOP CT on CT.MaSV = SV.MaSV
-			inner join LOP L on L.IDCLASS = CT.IDCLASS
+			inner join LOP L on L.IDCLASS = SV.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			where SV.AccountID = @AccountID
 
@@ -181,9 +178,8 @@ BEGIN
 		begin
 			select DISTINCT @IDFaculty = L.IDFACULTY
 			from GIAOVIEN GV
-			inner join CHITIETLOP CT on CT.MaGV = GV.MaGV
-			inner join LOP L on L.IDCLASS = CT.IDCLASS
-			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join KHOA K on K.MaGV = GV.MaGV
+			inner join LOP L on L.IDFACULTY = K.IDFACULTY
 			where GV.AccountID = @AccountID;
 
 			exec sp_ShowTopicByFaculty @IDFaculty
@@ -384,15 +380,12 @@ as
 BEGIN
     DECLARE @check int
 
-	delete 
-	from TAIKHOAN
+	UPDATE TAIKHOAN
+	SET Active = 0
 	where AccountID = @AccountID
 	set @check = (select @@ROWCOUNT) 
 
-	delete 
-	from SINHVIEN
-	where AccountID = @AccountID 
-
+	
 	IF(@check > 0 )
 	begin 
 		 SELECT N'Xóa tài khoản thành công'
@@ -668,13 +661,12 @@ BEGIN
 		end
 END
 
-
-
 go
 
-create procedure sp_AddNewSinhVien
+alter procedure sp_AddNewSinhVien
 @AccountID int,
 @Gender nvarchar(10),
+@Name nvarchar(100),
 @IDCLASS smallint
 as
 BEGIN
@@ -684,13 +676,18 @@ BEGIN
     SET @lastestMaSV = COALESCE((SELECT MAX(MaSV) FROM SINHVIEN), 0) + 1
 
 	UPDATE TAIKHOAN
-	SET Active = 1
+	SET Active = 1, Name = @Name
 	where AccountID = @AccountID
+
 
 
 	INSERT INTO SINHVIEN(MaSV, AccountID, Gender, DateCreated, IDCLASS)
 	VALUES (@lastestMaSV, @AccountID, @Gender, GETDATE(), @IDCLASS)
 	set @check = (select @@ROWCOUNT) 
+
+	
+	INSERT INTO CHITIETLOP(MaSV, IDCLASS)
+	VALUES(@lastestMaSV, @IDCLASS)
 
 	if(@check > 0 )
 		begin 
@@ -847,9 +844,8 @@ BEGIN
 			select GV.AccountID, GV.MaGV,  TK.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
-			inner join LOP L on L.IDCLASS = CTL.IDCLASS
-			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
+			inner join KHOA K on K.MaGV = GV.MaGV
+			inner join LOP L on L.IDFACULTY = K.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
@@ -858,8 +854,7 @@ BEGIN
 			select SV.AccountID, SV.MaSV, TK.Name, SV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
-			inner join CHITIETLOP CTL on CTL.MaGV = CTL.MaGV
-			inner join LOP L on L.IDCLASS = CTL.IDCLASS
+			inner join LOP L on L.IDCLASS = SV.IDCLASS
 			inner join KHOA K on K.IDFACULTY = L.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where SV.AccountID = @AccountID
@@ -898,8 +893,8 @@ END
 go
 
 create procedure sp_ChangePassword
-@Password varchar(100),
-@AccountID  int
+@AccountID  int,
+@Password varchar(100)
 as
 BEGIN
     DECLARE @password_binary VARBINARY(100)
@@ -923,10 +918,6 @@ BEGIN
 			return null
 		end
 END
-exec sp_ChangePassword '123', 1
-
-	
-
 
 go
 --Update bảng tài khoản 
