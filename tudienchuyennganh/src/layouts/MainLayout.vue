@@ -227,7 +227,7 @@ export default {
             {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản - Admin', value: 5, route: '/manage/users', roles: [100]},
             {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng - GV', value: 6, route: '/manage/vocab', roles: [10,100]},
             {icon: 'mdi-google-analytics ', title: 'Chi tiết học', value: 7, route: '/analyst/1', roles: [10,100]},
-            {icon: 'mdi-file-word-box ', title: 'Bộ từ của tôi', value: 8, route: `/manage/personal/${this.accountID}`, roles: [10,100]},
+            {icon: 'mdi-file-word-box ', title: 'Bộ từ của tôi', value: 8, route: `/manage/personal/${this.accountID}`, roles: [1,10,100]},
           ]
         })
 

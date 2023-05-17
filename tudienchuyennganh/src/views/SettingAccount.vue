@@ -410,11 +410,7 @@ export default {
 
         async getDataAvailable(){
             
-
-
             let dataUser = JSON.parse(Cookies.get('userInfo'))
-            console.log(test)
-
 
             this.accountID = dataUser.accountID
 

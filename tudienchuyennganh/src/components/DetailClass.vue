@@ -190,7 +190,7 @@
       </el-table>
 
       <template #footer>
-        <el-button type="primary" @click="handleVocabChoose(scope.row)">Phê duyệt tất cả</el-button>
+        <el-button type="primary" @click="handleAddAll()">Phê duyệt tất cả</el-button>
         <el-button @click="showListNeedApproved = false">Đóng</el-button>
       </template>
 
@@ -230,7 +230,6 @@ import { ElNotification } from 'element-plus'
     
                 refreshKey: 0,
 
-    
                 dataDetailVocab: {
                   Word: '',
                   Vietnamese: '',
@@ -316,15 +315,26 @@ import { ElNotification } from 'element-plus'
                 })
             },    
     
-            handleVocabChoose(dataVocabChoose){
-    
-              //Tự động gán giá trị data object cùng với data của từ đã chọn
-              var keys = Object.keys(dataVocabChoose)
-              keys.forEach((data)=>{
-                this.dataDetailVocab[data] = dataVocabChoose[data]
-              })
-    
-              this.innerVisible = true
+            async handleAddAll(){
+              let showNotificationFlag = false;
+
+              for (let i = 0; i < this.filterStundentNotApproved.length; i++) {
+                const student = this.filterStundentNotApproved[i];
+
+                let result = await axiosInstance.post('updateStudentApproved', {
+                  "DetailID": student.DetailID
+                })
+
+                if(result.status == 200){
+                  this.getDataTableTopic()
+                  this.refreshKey++;
+
+                  if (!showNotificationFlag) {
+                    this.showNotification('Thông báo', 'Thêm thành công', 'success');
+                    showNotificationFlag = true; // Đánh dấu thông báo đã được hiển thị
+                  }
+                }
+              }
             },
     
             // Nếu có input nào thay đổi thì thay đổi thành có sự thành đổi -> không cần phải post lên api mỗi khi ko có xác nhận
@@ -384,11 +394,7 @@ import { ElNotification } from 'element-plus'
                   this.showNotification('Thông báo', 'Phê duyệt thành công', 'success')
                   this.getDataTableTopic()
                   this.refreshKey++;
-
                 }
-
-
-
               }
               catch(e){
                 this.showNotification('Thông báo', 'Không thể lấy dữ liệu', 'error')

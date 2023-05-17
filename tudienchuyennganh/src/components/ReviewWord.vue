@@ -144,14 +144,12 @@ export default {
 
     mounted(){
       this.handleDataLocal()
-
       this.getDefaultCollection()
       this.getRanking()
     },
 
 
     methods:{
-
       showNotification(title ,message, type){
           ElNotification({
               title: `${title}`,

@@ -37,9 +37,6 @@
         </template>
   
         <template #default="scope">
-          <el-button color="var(--main-color)" size="large" @click="handleDetail(scope.row)"
-            >Chi tiết
-          </el-button>
           <el-button
             size="large"
             type="danger"
@@ -52,20 +49,13 @@
     </el-table>
 
 
-    <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
+    <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm" width="40%">
       <div class="options-container">
         <div class="option-area">
           <el-button type="success" @click="openWith('excel')">
             <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
             Thêm qua excel
           </el-button>
-        </div>
-
-        <div class="option-area">
-          <el-button type="primary" @click="openWith('default')">
-            <v-icon class="option-icon">mdi-plus-thick</v-icon>
-            Thêm thủ công
-          </el-button>         
         </div>
       </div>
   </el-dialog>
@@ -208,9 +198,7 @@
   
   
           // ----
-          dataUsersAPI: '',
-          showDetailBox: false,
-          detailDataTopic: '',
+          dataUsersAPI: [],
           inputTopicName: '',
           inputTopicDescribe: '',
           optionsAdd: false,
@@ -250,9 +238,9 @@
       computed: {
         filterUser(){
           if (!this.search) {
-              return this.dataUsersAPI;
-            }
-            return this.dataUsersAPI.filter(cls => cls.UserName.toLowerCase().includes(this.search.toLowerCase()));
+            return this.dataUsersAPI.flatMap(user => user).filter(user => user.Active === true)
+          }
+          return this.dataUsersAPI.flatMap(user => user).filter(user => user.UserName.toLowerCase().includes(this.search.toLowerCase()));
         }
       },    
   
@@ -279,7 +267,8 @@
         getAllUsers(id){
             axiosInstance.get('getAllUsers')
             .then((res) => {
-                this.dataUsersAPI = res.data
+                this.dataUsersAPI.length = 0
+                this.dataUsersAPI.push(res.data)
             })
         },
 
@@ -328,7 +317,6 @@
         openWith(typeOpen){
             if(typeOpen == 'excel'){
               this.addByExcel = true
-              
             }
             else{
               this.addByDefault = true
@@ -388,8 +376,7 @@
                 this.showAuthenBox = true
               }
             else{
-              console.log('add sinh vien')
-                this.handleAddNewUser()
+              this.handleAddNewUser()
             }
           }
           else{
@@ -399,6 +386,8 @@
         },
 
         async handleAddNewUser(){
+          let showNotificationFlag = false;
+
           for (let i = 0; i < this.tableData.length; i++){
             let convertTypeUser = this.typeUser == false ? 3 : 2
 
@@ -415,12 +404,18 @@
                     this.optionsAdd = false 
                     this.getAllUsers()
                     
-                    this.showNotification('Thông báo', 'Thêm thành công', 'success')
+                    if (!showNotificationFlag) {
+                      this.showNotification('Thông báo', 'Thêm thành công', 'success');
+                      showNotificationFlag = true; // Đánh dấu thông báo đã được hiển thị
+                    }
                   }
 
                 }
               catch(error){
-                this.showNotification('Thông báo', 'Thêm không thành công', 'error')
+                if (!showNotificationFlag) {
+                  this.showNotification('Thông báo', 'Thêm không thành công', 'error');
+                  showNotificationFlag = true; // Đánh dấu thông báo đã được hiển thị
+                }
               }
             }    
         },
@@ -435,19 +430,6 @@
         getDataLocalStorage(){
             let dataUser = JSON.parse(Cookies.get('userInfo'))
             this.getDataTopic(dataUser.accountID)
-        },
-  
-        handleDetail(dataDetail){
-  
-          this.detailDataTopic = dataDetail
-  
-          this.showDetailBox = true
-  
-        },
-  
-        detailHasClosed(){
-          this.showDetailBox = false
-  
         },
 
         // Handle upload file 
@@ -579,7 +561,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width: 100%;
     height: 100%;
     font-size: 50px;
 

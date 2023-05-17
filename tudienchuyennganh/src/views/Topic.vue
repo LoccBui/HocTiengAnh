@@ -3,6 +3,7 @@
 
     <div>
         <h1 class="txt-20 m-ud-8">Kho từ chung</h1>
+        <span>Bộ từ chỉ có thể học nếu số lượng từ lớn hơn 20</span>
     </div>
 
     <div class="wrapper">
@@ -44,8 +45,11 @@
 
                 <div class="right-info">
 
-                    <el-button size="large" color="var(--main-color)" @click="this.$router.push(`learning/topicid=${topic.TopicID}`)"
-                    >Học
+                    <el-button 
+                    :disabled="dataTopicsAPI[0][index].QuantityWords < 20 ? true : false" 
+                    size="large" color="var(--main-color)"
+                    @click="this.$router.push(`learning/topicid=${topic.TopicID}`)"
+                    >Học 
                     </el-button>
                 </div>
                 <div class="temporary"></div>
@@ -183,6 +187,7 @@ export default {
                     this.dataTopicsAPI.push(res.data)
                     this.getStatusLearning(res.data)
                     this.loadingTopicData = false
+                    console.log(res.data)
                 })
                 .catch(() => {
                     this.loadingTopicData = true

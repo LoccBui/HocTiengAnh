@@ -46,7 +46,7 @@
           <div class="options">
 
 
-            <el-input v-model="inputAnswer" class="input-answer" 
+            <el-input v-model="inputAnswer" class="input-answer" autofocus	
             placeholder="Nhập kết quả của bạn tại đây"
             @keyup.enter="selectAnswer()"   
             />

@@ -242,8 +242,6 @@ export default {
       const totalStep = (this.vocabLength * 2) 
       const inscreasePercent = (100 / totalStep)
 
-
-      if(this.progressPercent != 100){
         switch(status){
           case "correct": 
             this.totalScore += 100
@@ -270,10 +268,12 @@ export default {
           this.ListenAndChoose = false
           this.ChooseRightWord = false
           this.CorrectListening = false
+
+          this.learning = false
+
           this.showReviewWord = true
         }
 
-      }
     },
 
     handleData(dataAPI){

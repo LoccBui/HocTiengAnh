@@ -49,6 +49,7 @@
 
                     <div  v-else-if="showInputOTP">
                         <Timer 
+                        v-if="showCountDown"
                         :key="refreshKey"
                         :time="120"
                         @confirm-OTP="confirmOTP"              
@@ -134,6 +135,7 @@ export default {
 
             // timer
             notShowTimer: true,
+            showCountDown: true,
 
             //otp
             wrongOTP: 0,
@@ -216,6 +218,12 @@ export default {
 
         },
 
+        hideInputOTP(){
+            this.showInputOTP = false;
+            this.notShowTimer = false;
+            this.showTimer = false;
+        },
+
         //handle value OTP value confirm
         async confirmOTP(data){
             let result = await axiosInstance.get(`verify/${this.accountID}/${data}`)
@@ -224,6 +232,7 @@ export default {
 
                 if(result.data[0].VerifyStatus == 200){
                     this.showInputOTP = this.notShowTimer = false
+                    this.showCountDown = false
                     this.$forceUpdate()
                 }
                 else{
@@ -348,6 +357,7 @@ export default {
     .navigate{
         display: flex;
         justify-content: space-evenly;
+        margin-top: 20px;
     }
 }
 

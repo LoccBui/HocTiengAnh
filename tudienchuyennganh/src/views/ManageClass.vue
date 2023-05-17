@@ -1,7 +1,7 @@
 <template>
   <div class="container">
    
-    <el-button class="mt-4" color="#1565C0" @click="openOptionAddClass()"
+    <el-button class="mt-4" color="#1565C0" @click="openOptionAddClass()" size="large"
     >Thêm lớp</el-button> 
 
 
@@ -51,21 +51,14 @@
 
 
   <!-- Option box -->
-  <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm">
+  <el-dialog v-model="optionsAdd" title="Chọn hình thức thêm" width="40%">
       <div class="options-container">
         <div class="option-area">
           <el-button type="success" @click="openWith('excel')">
             <v-icon class="option-icon">mdi-microsoft-excel</v-icon>
             Thêm qua excel
           </el-button>
-        </div>
-
-        <div class="option-area">
-          <el-button type="primary" @click="openWith('default')">
-            <v-icon class="option-icon">mdi-plus-thick</v-icon>
-            Thêm thủ công
-          </el-button>         
-        </div>
+        </div>  
       </div>
   </el-dialog>
 
@@ -79,11 +72,7 @@
         fullscreen
         destroy-on-close	
       >
-      <el-input v-model="inputNewTopicName" placeholder="Nhập tên chủ đề">Nhập tên chủ đề muốn tạo</el-input>
-      <el-input v-model="inputTopicDescribe" placeholder="Nhập miêu tả chủ đề">Nhập miêu tả chủ đề</el-input>
       
-      <el-divider />
-
       <el-upload
         class="upload-demo"
         :auto-upload="false"
@@ -99,13 +88,19 @@
           Thả file ở đây hoặc <em>chọn file</em>
         </div>
 
+
         <template #tip>
           <div class="el-upload__tip">
             Chỉ chọn 1 file (dạng xls)
           </div>
         </template>
 
+
+
       </el-upload>
+
+      <el-divider />
+
 
       <el-table :data="tableData" max-width="1000px" max-height="500px" 
       empty-text="Chưa có dữ liệu"
@@ -310,12 +305,11 @@ import * as XLSX from 'xlsx';
       },
 
       async addNewClass(){
+        let showNotificationFlag = false;
 
         if( this.tableData.length > 0 ){
 
           for (var i = 0; i < this.tableData.length; i++){
-              console.log(this.tableData[i].ClassName)
-              console.log(this.tableData[i].Faculty)
               try{
                 let result = await axiosInstance.post('newClass',{
                     "ClassName": `${this.tableData[i].ClassName}`,
@@ -327,9 +321,18 @@ import * as XLSX from 'xlsx';
                   this.getAllClasses()
                   this.getAllFaculty()
                   this.optionsAdd = false
+
+                  if (!showNotificationFlag) {
+                    this.showNotification('Thông báo', 'Thêm thành công', 'success');
+                    showNotificationFlag = true; // Đánh dấu thông báo đã được hiển thị
+                  }
                 }
               }
               catch(error){
+                if (!showNotificationFlag) {
+                  this.showNotification('Thông báo', 'Thêm không thành công', 'error');
+                  showNotificationFlag = true; // Đánh dấu thông báo đã được hiển thị
+                }
               }
             }
         }
@@ -400,7 +403,7 @@ import * as XLSX from 'xlsx';
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width: 100%;;
     height: 100%;
     font-size: 50px;
 

@@ -40,7 +40,6 @@
                             color="primary"
                             variant="underlined"
                             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                            hint="Tối thiểu 10 kí tự"
                             @click:append="showPass = !showPass"  
                             @keyup.enter="login()"
                             required
@@ -186,8 +185,6 @@ export default {
 
 
                 if(typeUser === 100){
-                    alert('admin -> so run this shit')
-
                     const params = new URLSearchParams();
                     params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_ADMIN}`);
                     params.append('password', `${import.meta.env.VITE_TOKEN_PASS_ADMIN}`);

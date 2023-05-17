@@ -64,7 +64,7 @@
 </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="confirm()">
+        <el-button size="large" type="primary" @click="confirm()">
           Xác nhận thông tin
         </el-button>
       </span>
@@ -149,7 +149,6 @@ export default {
         },
 
         getClassForSelect(IDFACULTY){
-            console.log(IDFACULTY)
             axiosInstance.get(`getClassByID/${IDFACULTY}`)
             .then((res) => {
                 this.classList.length = 0          
@@ -159,20 +158,14 @@ export default {
         },
 
         handleSelectClass(){
-            console.log(this.selectedClass)
             this.refreshClass = !this.refreshClass
-
         },
 
         async confirm(){
-
             await  this.$refs.ruleFormRef.validate((valid) => {
                 if (valid) {
-                    console.log('submit')
                     this.addToDatabase()
-
                 } else {
-                    console.log('chưa valid')
                     this.$message.error('Dữ liệu còn thiếu.');
                     return false;
                 }
@@ -181,19 +174,17 @@ export default {
         },
 
         async addToDatabase(){
-
-            
             let dataUser = JSON.parse(Cookies.get('userInfo'))
 
             try{
                 let result = await axiosInstance.post('addInfoNewSinhVien', {
                     "AccountID": dataUser.accountID,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
+                    "Name": `${this.ruleForm.name}`,
                     "IDCLASS": this.ruleForm.class
                 })
 
                 if(result.status == 200){
-                    console.log('finish add to database')
                     this.getDataUser(dataUser.accountID)
                 }
             }
@@ -207,7 +198,6 @@ export default {
         getDataUser(idUser){
             axiosInstance.get(`/user/id=${idUser}`)
             .then((res) => {
-                console.log(res.data[0])
 
                 let dataUser = {
                     accountID: '',
@@ -226,7 +216,8 @@ export default {
                 dataUser.IDFACULTY = res.data[0].IDFACULTY
                 dataUser.Role = res.data[0].Priority
 
-                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                Cookies.set('userInfo',  JSON.stringify(dataUser))
+
                 localStorage.setItem('isNew', false)
                     
                 this.$emit('finish-update-information')
