@@ -1,5 +1,4 @@
 ﻿using HocTiengAnh.Database;
-using HocTiengAnh.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,8 +10,6 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Topic
 {
-
-
     public class TopicController : ApiController
     {
 
@@ -43,7 +40,7 @@ namespace HocTiengAnh.Controllers.Topic
 
         [HttpPost]
         [Route("learning/topicid")]
-        public IHttpActionResult SelectTuVungByTopicID(DetailLearning learn)
+        public IHttpActionResult SelectTuVungByTopicID(NewClassDataModel learn)
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("TopicID", learn.TopicID),

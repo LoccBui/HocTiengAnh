@@ -182,6 +182,6 @@ E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Cors.xml
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Host.SystemWeb.xml
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.xml
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.OAuth.xml
-E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CoreCompileInputs.cache
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.CopyComplete
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Debug\HocTiengAnh.csproj.AssemblyReference.cache

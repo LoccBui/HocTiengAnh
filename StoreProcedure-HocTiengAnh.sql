@@ -20,13 +20,13 @@ END
 go
 
 -- Phân loại user theo admin hoặc giáo viên hoặc sinh viên
-create procedure sp_AuthUser
+alter procedure sp_AuthUser
 @AccountID int
 as 
 BEGIN
 	if EXISTS ( select * from GIAOVIEN where AccountID = @AccountID)
 		begin 
-			select GV.AccountID, GV.MaGV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image 
+			select GV.AccountID, GV.MaGV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image, '0'as isNewUser  
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
 			inner join KHOA K on K.MaGV = GV.MaGV
@@ -35,7 +35,7 @@ BEGIN
 		end
 	else if EXISTS ( select * from SINHVIEN where AccountID = @AccountID)
 		begin 
-			select SV.AccountID, SV.MaSV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image  
+			select SV.AccountID, SV.MaSV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image, '0'as isNewUser  
 			from SINHVIEN SV
 			inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
 			inner join LOP L on L.IDCLASS = SV.IDCLASS
@@ -73,7 +73,7 @@ create procedure sp_SelectTuVungByTopicID
 @AccountID int
 as
 
- SELECT TOP 5 TV.VocabID, TV.TopicID, TV.Frequency, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example, TV.Resources
+ SELECT TOP 5 TV.VocabID, TV.TopicID, TV.Frequency,TV.Level, TV.Word, TV.IPA, TV.Label, TV.Lemma, TV.Vietnamese, TV.Cluster, TV.Position, TV.Example, TV.VN_Example, TV.Resources
     FROM TUVUNG TV
 
     WHERE TV.TopicID = @TopicID
@@ -610,7 +610,7 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM TAIKHOAN WHERE Username = @Username)
     BEGIN
         INSERT INTO TAIKHOAN (AccountID, Username, Password, Email, Active, RoleID)
-        VALUES (@lastestID, @Username, @password_binary, @Email, 0, @RoleID)
+        VALUES (@lastestID, @Username, @password_binary, @Email, 1, @RoleID)
 
 		set @check = (select @@ROWCOUNT) 
     END
@@ -702,8 +702,9 @@ END
 go
 
 --Cập nhật thông tin giáo viên
-create procedure sp_AddInfoGiaoVien
+alter procedure sp_AddInfoGiaoVien
 @AccountID int,
+@Name nvarchar(100),
 @Gender nvarchar(10)
 as
 BEGIN
@@ -713,7 +714,7 @@ BEGIN
     SET @lastestMaGV = (SELECT MAX(MaGV) FROM GIAOVIEN) + 1
 
 	UPDATE TAIKHOAN
-	SET Active = 1
+	SET Active = 1, Name = @Name
 	where AccountID = @AccountID
 
 	if not EXISTS (select * from GIAOVIEN where AccountID = @AccountID)
@@ -735,31 +736,31 @@ END
 
 go
 
-create procedure sp_AddGiaoVienToClass
-@ClassName varchar(50),
-@IDFACULTY tinyint
+alter procedure sp_AddGiaoVienToKhoa
+@IDFACULTY tinyint,
+@FacultyName nvarchar(50)
 as
 BEGIN 
 	DECLARE @check int
-    DECLARE @lastestIDCLASS INT
+    DECLARE @lastestIDMaGV INT
 
-    SET @lastestIDCLASS = COALESCE((SELECT MAX(IDCLASS) FROM LOP),0) + 1
-	SET IDENTITY_INSERT LOP ON 
+    SET @lastestIDMaGV = COALESCE((SELECT MAX(MAGV) FROM GIAOVIEN),0)
 
-
-	INSERT INTO LOP(IDCLASS, ClassName, IDFACULTY)
-	VALUES(@lastestIDCLASS, @ClassName, @IDFACULTY )
+	SET IDENTITY_INSERT KHOA ON 
+	INSERT INTO KHOA(IDFACULTY, FacultyName, MaGV)
+	VALUES(@IDFACULTY, @FacultyName, @lastestIDMaGV )
 	set @check = (select @@ROWCOUNT) 
 
 	if(@check > 0 )
 	begin 
-			SELECT N'Thêm giáo viên vào lớp thành công'
+			SELECT N'Thêm giáo viên vào khoa thành công'
 		end
 	else
 		begin
 			return null
 		end
 END
+
 
 go
 
@@ -1403,7 +1404,7 @@ BEGIN
 			IF @Level <= 5
 				BEGIN
 					UPDATE CHITIETHOC
-					SET Level = @Level, WrongTimes = @WrongTimes, Score = @Score
+					SET Level = @Level, WrongTimes = @WrongTimes, Score = Score + @Score
 					where AccountID = @AccountID  and VocabID = @VocabID and TopicID = @TopicID
 					set @check = (select @@ROWCOUNT) 
 				END
@@ -1430,12 +1431,12 @@ BEGIN
 END 
 
 --exec sp_AddVocabToDetailLearning
---@AccountID = 1,
---@VocabID=  2,
+--@AccountID = 2,
+--@VocabID=  5,
 --@TopicID = 4,
---@Level= 6,
---@WrongTimes = 1,
---@Score = 1000
+--@Level= 0,
+--@WrongTimes = 0,
+--@Score = 100
 
 
 

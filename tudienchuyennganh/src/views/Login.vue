@@ -170,7 +170,6 @@ export default {
         getDataUser(idUser){
             axiosInstance.get(`user/id=${idUser}`)
             .then((res) => {
-                console.log(res.data[0])
 
                 const typeUser = res.data[0].Priority
 
@@ -200,10 +199,9 @@ export default {
                         Cookies.set('access_token', token, { expires: expiresAt, secure: true, sameSite: 'none' });
                     })
 
-                    .catch(error => console.log('error:', error));
-                    
-        
-                    if(res.data[0].Active == 0){
+                    .catch(error => console.log('error:', error));        
+
+                    if(res.data[0].isNewUser == 1){
                         dataUser.accountID = res.data[0].AccountID
                         dataUser.Role = res.data[0].RoleID
 
@@ -231,7 +229,6 @@ export default {
                 }
                 
                 else{
-                    console.log('user -> so run this shit')
                     const params = new URLSearchParams();
                     params.append('username', `${import.meta.env.VITE_TOKEN_USERNAME_USER}`);
                     params.append('password', `${import.meta.env.VITE_TOKEN_PASS_USER}`);
@@ -250,7 +247,7 @@ export default {
                     .catch(error => console.log('error:', error));
 
 
-                    if(res.data[0].Active == 0){
+                    if(res.data[0].isNewUser == 1){
                         dataUser.accountID = res.data[0].AccountID
                         dataUser.Role = res.data[0].RoleID
 

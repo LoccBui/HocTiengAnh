@@ -85,6 +85,7 @@ export default {
       Vietnamese: '',
       arrWords: '',
       englishWord: '',
+      vocabID: '',
       levelWord: '',
       word: '',
       VN_Meaning:'',
@@ -116,14 +117,18 @@ export default {
       let countDown = setInterval(() => {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
+          this.handleOvertime();
           clearInterval(countDown);
-          // this.handleOvertime();
         }
       }, 1000);
     },
 
     handleOvertime(){
-      this.$emit('step-Status', 'overtime')
+      this.$emit('step-Status', {
+        vocabID: this.vocabID,
+        level: this.levelWord,
+        result: 'overtime'
+      });
       this.selectAnswer()
     },
 
@@ -157,7 +162,11 @@ export default {
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-          this.$emit('step-Status', 'correct');
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'correct'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -168,7 +177,11 @@ export default {
         else if (this.selectedWord != this.titleQuestion) {
           this.isFalse = true;
           wrong.play();
-          this.$emit('step-Status', 'wrong');
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'wrong'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -178,7 +191,12 @@ export default {
       }
       //case không có giá trị input
       else{
-        this.$emit('step-Status', 'wrong');
+        this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'wrong'
+        });
+
         const time = setTimeout(() => {
           wrong.play();
           this.finishLearn();
@@ -216,7 +234,9 @@ export default {
 
       this.VN_Example = this.arrWords[random].VN_Example
 
-      console.log(this.arrWords[random])
+      this.vocabID = this.arrWords[random].VocabID
+
+      this.levelWord = this.arrWords[random].Level
 
       this.getDataListenAndChoose(this.word)
     },

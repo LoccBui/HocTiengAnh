@@ -11,7 +11,7 @@
           <span class="txt-20"> VIETNAMESE </span>
           <h1 class="txt-40">{{  words.Vietnamese }}</h1>
       </div>
-    
+
       <div class="next-action">
         <el-button type="primary" size="large" @click="nextWord()">
           <v-icon>mdi-arrow-right-thick</v-icon>
@@ -120,6 +120,8 @@
 <script>
 
 import axiosInstance from '../axios'
+import Cookies from 'js-cookie';
+import globalFunc from '@/GlobalFunction/script.js'
 
 import LearnByMeaningVue from './LearnByMeaning.vue'
 import ChooseRightMeaning from './ChooseRightMeaning.vue'
@@ -127,9 +129,8 @@ import FillInABlank from './FillInABlank.vue'
 import ListenAndChoose from './ListenAndChoose.vue'
 import ChooseRightWord from './ChooseRightWord.vue'
 import CorrectListening from './CorrectListening.vue'
-import Cookies from 'js-cookie';
-
 import ReviewWord from '@/components/ReviewWord.vue'
+
 
 export default {
   components: {LearnByMeaningVue, ChooseRightMeaning, FillInABlank, ListenAndChoose, ChooseRightWord, CorrectListening, ReviewWord},
@@ -190,7 +191,8 @@ export default {
 
       learning: false,
 
-      accountID: ''
+      accountID: '',
+      topicID: ''
 
     }
   },
@@ -229,6 +231,7 @@ export default {
       let dataUser = JSON.parse(Cookies.get('userInfo'))
 
       this.accountID = dataUser.accountID
+      this.topicID = topicID
 
       axiosInstance.post(`learning/topicid`, {
         "TopicID": topicID,
@@ -242,37 +245,41 @@ export default {
       const totalStep = (this.vocabLength * 2) 
       const inscreasePercent = (100 / totalStep)
 
-        switch(status){
-          case "correct": 
-            this.totalScore += 100
-            this.progressPercent += inscreasePercent
-            break;
-          case "wrong": 
-            this.totalScore += 0
-            this.progressPercent += inscreasePercent
-            break;
-          case "mention": 
-            this.totalScore += 50
-            this.progressPercent += inscreasePercent
-            break;
-          default: 
-            this.totalScore += 0
-            this.progressPercent += inscreasePercent
-            break;
+      switch(status.result){
+        case "correct": 
+          this.totalScore += 100
+          this.progressPercent += inscreasePercent
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level + 1, 0, this.totalScore)
+          break;
+        case "wrong": 
+          this.totalScore += 0
+          this.progressPercent += inscreasePercent
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 0, this.totalScore)
+          break;
+        case "mention": 
+          this.totalScore += 50
+          this.progressPercent += inscreasePercent
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level + 1, 0, this.totalScore)
+          break;
+        default: /* overtime */ 
+          this.totalScore += 0
+          this.progressPercent += inscreasePercent
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 0, this.totalScore)
+          break;
         }
 
-        if(this.progressPercent == 100){
-          this.learnByMeaning = false
-          this.ChooseRightMeaning =  false
-          this.FillInABlank = false
-          this.ListenAndChoose = false
-          this.ChooseRightWord = false
-          this.CorrectListening = false
+      if(this.progressPercent == 100){
+        this.learnByMeaning = false
+        this.ChooseRightMeaning =  false
+        this.FillInABlank = false
+        this.ListenAndChoose = false
+        this.ChooseRightWord = false
+        this.CorrectListening = false
 
-          this.learning = false
+        this.learning = false
 
-          this.showReviewWord = true
-        }
+        this.showReviewWord = true
+      }
 
     },
 
@@ -280,7 +287,6 @@ export default {
         console.log(dataAPI)
       
         this.progressLength = dataAPI.length
-        console.log(this.progress)
 
         this.dataAPI = dataAPI
 
@@ -381,7 +387,9 @@ export default {
 
       }
 
-    },
+    }
+
+
   }
 }
 </script>

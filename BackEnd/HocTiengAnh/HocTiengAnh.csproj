@@ -187,6 +187,7 @@
     <Compile Include="Controllers\ChooseRightMeaning\ChooseRightMeaningController.cs" />
     <Compile Include="Controllers\ConfirmPassword\ConfirmPasswordController.cs" />
     <Compile Include="Controllers\DetailClass\DetailClassController.cs" />
+    <Compile Include="Controllers\DetailLearning\DetailLearningController.cs" />
     <Compile Include="Controllers\DetailPersonalVocab\DetailPersonalVocabController.cs" />
     <Compile Include="Controllers\DetailVocab\DetailVocabController.cs" />
     <Compile Include="Controllers\ForgotPassword\GenerateOTPForEmailController.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Models\ClassModel.cs" />
     <Compile Include="Models\DetailClassModel.cs" />
     <Compile Include="Models\DetailLearning.cs" />
+    <Compile Include="Models\DetailLearningModel.cs" />
     <Compile Include="Models\DetailPersonalVocabModel.cs" />
     <Compile Include="Models\FacultyModel.cs" />
     <Compile Include="Models\GiaoVienModel.cs" />

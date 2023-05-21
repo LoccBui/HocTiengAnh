@@ -80,7 +80,9 @@ import { ElNotification } from 'element-plus'
         selectedWord: '',
         countDownTimes: 30,
         stopClick: true,
-        stopChoosing: false
+        stopChoosing: false,
+
+        vocabID: '',
       }
     },
   
@@ -96,14 +98,19 @@ import { ElNotification } from 'element-plus'
       let countDown = setInterval(() => {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
+          this.handleOvertime(); 
           clearInterval(countDown);
-          // this.handleOvertime();
         }
       }, 1000);
     },
 
       handleOvertime(){
-        this.$emit('step-Status', 'overtime')
+        this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'overtime'
+        });
+
         this.selectAnswer()
       },
 
@@ -140,20 +147,25 @@ import { ElNotification } from 'element-plus'
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-          this.$emit('step-Status', 'correct');
-          
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'correct'
+          });
+            
           const time = setTimeout(() => {
             this.finishLearn();
             clearTimeout(time)
           }, 2000);
-
-
-
         } 
         else if (this.selectedWord != this.titleQuestion) {
           this.isFalse = true;
           wrong.play();
-          this.$emit('step-Status', 'wrong');
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'wrong'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -164,7 +176,11 @@ import { ElNotification } from 'element-plus'
         }
       }
       else{
-        this.$emit('step-Status', 'wrong');
+        this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'wrong'
+        });
 
         const time = setTimeout(() => {
           wrong.play();
@@ -194,16 +210,18 @@ import { ElNotification } from 'element-plus'
   
       handleData(){
         const random = Math.floor(Math.random() * this.arrWords.length);
-        
-        console.log(random)
-        console.log(this.arrWords[random].Word )
-        console.log(this.arrWords[random].Vietnamese )
 
         this.titleQuestion = this.arrWords[random].Word 
   
         this.VN_Meaning = this.arrWords[random].Vietnamese 
+
+        this.vocabID = this.arrWords[random].VocabID
+
+        this.levelWord = this.arrWords[random].Level
   
         this.getDataListenAndChoose(this.titleQuestion)
+
+        console.log(this.vocabID, this.levelWord)
   
       },
   
@@ -232,9 +250,6 @@ import { ElNotification } from 'element-plus'
           while(this.randomHasAppear.length < 6){
             const random = Math.floor(Math.random() * this.dataGetFromAPI.length);
             valueRandom = this.dataGetFromAPI[random].Word;
-
-            console.log("valueRandom", valueRandom)
-
 
             if(!this.randomHasAppear.includes(valueRandom) && valueRandom != this.titleQuestion){
               this.randomHasAppear.push(valueRandom);

@@ -56,7 +56,6 @@
 import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 
-
 export default {
   props: ['listWord', 'accountID'],
 
@@ -79,13 +78,14 @@ export default {
       countDownTimes: 30,
       stopClick: false,
       stopChoosing: false,
+
+      vocabID: ''
     }
   },
 
   mounted(){
     this.getVocabularyByTopicID(this.idTopic)
     this.countDown()
-
   },
 
   methods:{
@@ -98,14 +98,18 @@ export default {
       let countDown = setInterval(() => {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
+          this.handleOvertime();
           clearInterval(countDown);
-          // this.handleOvertime();
         }
       }, 1000);
     },
     
     handleOvertime(){
-      this.$emit('step-Status', 'overtime')
+      this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'overtime'
+        });
       this.selectAnswer()
     },
 
@@ -135,7 +139,12 @@ export default {
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-          this.$emit('step-Status', 'correct');
+
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'correct'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -145,7 +154,12 @@ export default {
         else if (this.selectedWord != this.titleQuestion) {
           this.isFalse = true;
           wrong.play();
-          this.$emit('step-Status', 'wrong');
+          
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'wrong'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -156,7 +170,12 @@ export default {
         }
       }
       else{
-        this.$emit('step-Status', 'wrong');
+        this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'wrong'
+        });
+
         const time = setTimeout(() => {
           wrong.play();
           this.finishLearn();
@@ -187,6 +206,10 @@ export default {
       this.titleQuestion = this.arrWords[random].Word 
 
       this.VN_Meaning = this.arrWords[random].Vietnamese 
+
+      this.vocabID = this.arrWords[random].VocabID
+
+      this.levelWord = this.arrWords[random].Level
 
       this.getDataListenAndChoose(this.titleQuestion)
 
@@ -221,7 +244,6 @@ export default {
 
           if(!this.randomHasAppear.includes(valueRandom) && valueRandom != this.titleQuestion){
             this.randomHasAppear.push(valueRandom);
-            console.log(this.randomHasAppear)
           }
 
         }

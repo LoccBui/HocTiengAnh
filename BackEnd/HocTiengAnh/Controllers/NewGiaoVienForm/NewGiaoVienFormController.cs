@@ -21,6 +21,7 @@ namespace HocTiengAnh.Controllers.NewGiaoVienForm
         {
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@AccountID", teacher.AccountID),
+                    new SqlParameter("@Name", teacher.Name),
                     new SqlParameter("@Gender", teacher.Gender)
             };
 
@@ -34,15 +35,15 @@ namespace HocTiengAnh.Controllers.NewGiaoVienForm
         }
 
         [HttpPost]
-        [Route("addGiaoVienToClass")]
-        public IHttpActionResult AddGiaoVienToClass(ClassModel cls)
+        [Route("addGiaoVienToFaculty")]
+        public IHttpActionResult AddGiaoVienToFaculty(FacultyModel fal)
         {
             SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@ClassName", cls.ClassName),
-                    new SqlParameter("@IDFACULTY", cls.IDFACULTY)
+                    new SqlParameter("@IDFACULTY", fal.IDFACULTY),
+                    new SqlParameter("@FacultyName", fal.FacultyName)
             };
 
-            var result = new DB().GetDataReader("sp_AddGiaoVienToClass", param);
+            var result = new DB().GetDataReader("sp_AddGiaoVienToKhoa", param);
 
             if (result == null)
             {

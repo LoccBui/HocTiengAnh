@@ -34,7 +34,6 @@
             v-for="(word, index) in randomHasAppear" :key="word" @click="handleChoose(word, index)"
             :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
             :disabled="stopChoosing"
-
             >
               {{ word }}
             </el-button>
@@ -75,7 +74,9 @@ export default {
       selectedWord: '',
       countDownTimes: 30,
       stopClick: true,
-      stopChoosing: false
+      stopChoosing: false,
+
+      vocabID: ''
 
     }
   },
@@ -96,14 +97,18 @@ export default {
       let countDown = setInterval(() => {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
+          this.handleOvertime();
           clearInterval(countDown);
-          // this.handleOvertime();
         }
       }, 1000);
     },
 
     handleOvertime(){
-      this.$emit('step-Status', 'overtime')
+      this.$emit('step-Status', {
+        vocabID: this.vocabID,
+        level: this.levelWord,
+        result: 'overtime'
+      });
       this.selectAnswer()
     },
 
@@ -136,7 +141,11 @@ export default {
           this.isCorrect = true;
           this.isFalse = false;
           correct.play();
-          this.$emit('step-Status', 'correct');
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'correct'
+          });
 
           const time = setTimeout(() => {
             this.finishLearn();
@@ -148,7 +157,11 @@ export default {
         else if (this.selectedWord != this.titleQuestion) {
           this.isFalse = true;
           wrong.play();
-          this.$emit('step-Status', 'wrong');
+          this.$emit('step-Status', {
+            vocabID: this.vocabID,
+            level: this.levelWord,
+            result: 'wrong'
+          });
           
           const time = setTimeout(() => {
             this.finishLearn();
@@ -159,7 +172,11 @@ export default {
         }
       }
       else{
-        this.$emit('step-Status', 'wrong');
+        this.$emit('step-Status', {
+          vocabID: this.vocabID,
+          level: this.levelWord,
+          result: 'wrong'
+        });
 
         const time = setTimeout(() => {
           wrong.play();
@@ -197,6 +214,10 @@ export default {
       this.englishWord = this.arrWords[random].Word 
 
       this.Vietnamese = this.arrWords[random].Vietnamese
+
+      this.vocabID = this.arrWords[random].VocabID
+
+      this.levelWord = this.arrWords[random].Level
 
       this.getDataListenAndChoose(this.word)
     },

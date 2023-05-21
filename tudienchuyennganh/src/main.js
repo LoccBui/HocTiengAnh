@@ -11,6 +11,8 @@ import { createApp } from 'vue'
 // Plugins
 import { registerPlugins } from '@/plugins'
 
+import globalFunc from './GlobalFunction/script'
+
 
 
 import 'element-plus/dist/index.css'
@@ -26,6 +28,8 @@ import ElementPlus from 'element-plus'
 
 
 app.use(ElementPlus)
+
+app.config.globalProperties.$globalFunc = globalFunc
 
 registerPlugins(app)
 

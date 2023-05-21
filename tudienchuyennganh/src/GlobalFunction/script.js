@@ -1,16 +1,28 @@
+import axiosInstance from "@/axios";
 
-export const func = {
+
+export const globalFunc = {
     speakWord: (word) => {
         const listenBtn = document.getElementById('myvoice');
         listenBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        console.log("script.js: speakWord: " + word)
-        
         const msg = new SpeechSynthesisUtterance( word );
         window.speechSynthesis.speak(msg);
         });
      },
+
+     addToDetailLearning: (AccountID, VocabID, TopicID, Level, WrongTimes, Score) => {
+        axiosInstance.post('detailLearning', {
+            "AccountID": AccountID, 
+            "VocabID":  VocabID, 
+            "TopicID": TopicID,
+            "Level":  Level,
+            "WrongTimes": WrongTimes,
+            "Score": Score
+        })
+        .then(res => console.log(res))
+     }
 
  }
 
@@ -22,5 +34,7 @@ export const func = {
     }
  }
 
+
+ export default globalFunc
 
   

@@ -39,15 +39,15 @@
             placeholder="Khoa">
                 <el-option
                     v-for="item in facultyList"
-                    :key="item.value"
+                    :key="item"
                     :label="item.label"
-                    :value="item.value"
+                    :value="item"
                 />
             </el-select>
         </el-form-item>
         
     
-        <el-form-item label="Lớp chủ nhiệm" v-if="showSelectClass" prop="class">
+        <!-- <el-form-item label="Lớp chủ nhiệm" v-if="showSelectClass" prop="class">
             <el-select  v-model="ruleForm.class" @change="handleSelectClass" 
             placeholder="Lớp chủ nhiệm">
                 <el-option
@@ -57,7 +57,7 @@
                     :value="item"
                 />
             </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
 
     </el-form>
@@ -164,7 +164,6 @@ export default {
                 if (valid) {
                      this.addToDatabase()             
                 } else {
-                    console.log('chưa valid')
                     this.$message.error('Dữ liệu còn thiếu.');
                     return false;
                 }
@@ -175,32 +174,25 @@ export default {
         async addToDatabase(){
             let dataUser = JSON.parse(Cookies.get('userInfo'))
 
-
             try{
-
-
                 let addToGiaoVien = await axiosInstance.post('addInfoNewGiaoVien', {
                     "AccountID": dataUser.accountID,
+                    "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
                 })
 
-
-
-                let addToClass =  await axiosInstance.post('addGiaoVienToClass', {
-                    "ClassName": `${this.ruleForm.class.label}`, 
-                    "IDFACULTY":this.ruleForm.faculty 
+                let addToClass =  await axiosInstance.post('addGiaoVienToFaculty', {
+                    "IDFACULTY": this.ruleForm.faculty.value, 
+                    "FacultyName": `${this.ruleForm.faculty.label}`, 
                 })
 
-
               
-                if(addToClass.status == 200 && addToGiaoVien.status == 200){
-
-                     this.getDataUser(dataUser.accountID)
+                if(addToGiaoVien.status == 200){
+                    this.getDataUser(dataUser.accountID)
                 }
             }
             catch(error){
                 this.showNotification('Thông báo', 'Thêm không thành công', 'error')
-
             }
             
         },
@@ -227,7 +219,8 @@ export default {
                 dataUser.IDFACULTY = res.data[0].IDFACULTY
                 dataUser.Role = res.data[0].Priority
 
-                localStorage.setItem('userInfo', JSON.stringify(dataUser))
+                Cookies.set('userInfo',  JSON.stringify(dataUser))
+
                 localStorage.setItem('isNew', false)
                     
                 this.$emit('finish-update-information')
