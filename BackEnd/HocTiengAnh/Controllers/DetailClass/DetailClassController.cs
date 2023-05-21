@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailClass
 {
-
-
     public class DetailClassController : ApiController
     {
+        [Authorize]
         [Route("DetailClass")]
         [HttpPost]
         public IHttpActionResult SelectTuVungByTopicID(ClassModel cl)
@@ -31,7 +30,7 @@ namespace HocTiengAnh.Controllers.DetailClass
             return Json(result);
         }
 
-
+        [Authorize]
         [Route("updateStudentApproved")]
         [HttpPost]
         public IHttpActionResult UpdateStudentApproved(DetailClassModel dcl)

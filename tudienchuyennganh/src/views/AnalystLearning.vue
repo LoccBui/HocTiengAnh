@@ -13,23 +13,16 @@
 
             <div class="analyst-area">
                 Từ sai nhiều nhất
-               <div v-loading="loading"
+               <el-table v-loading="loading"
                     :data="arrWrongWord"
                     style="width: 100%; min-height: 200px;"
                     element-loading-text="Chưa có dữ liệu..."
                     element-loading-background="#e6ebff">
-                    
-                    <div v-for="word in arrWrongWord" :key="word.VOCABID"   class="ranking-cover">
-                        <div class="w80">
-                            <span> {{ word.VocabID }} - </span>
-                            <span> {{ word.Word }}</span>
-                        </div>
 
-                        <div class="right-side w20">
-                            <span> {{ word.TotalWrong }}</span>
-                        </div>
-                    </div>
-               </div>
+                    <el-table-column type="index" :index="indexMethod"/>
+                    <el-table-column prop="Word" label="Từ vựng" fit/>
+                    <el-table-column prop="TotalWrong" label="Số lần sai" fit/>
+               </el-table>
 
             </div>
 

@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailPersonalVocab
 {
-
-
     public class DetailPersonalVocabController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("detailPersonalVocab")]
         public IHttpActionResult DetailPersonalVocab(PersonalVocabModel personalVocab)
@@ -33,6 +32,8 @@ namespace HocTiengAnh.Controllers.DetailPersonalVocab
             return Json(result);
         }
 
+
+        [Authorize]
         [HttpPost]
         [Route("deleteVocabOfCollection")]
         public IHttpActionResult DeleteVocabOfCollection(DetailPersonalVocabModel personalVocab)
@@ -51,6 +52,7 @@ namespace HocTiengAnh.Controllers.DetailPersonalVocab
             return Json(result);
         }
 
+        [Authorize]
         [HttpPatch]
         [Route("changeCollectionName")]
         public IHttpActionResult ChangeCollectionName(PersonalVocabModel personalVocab)

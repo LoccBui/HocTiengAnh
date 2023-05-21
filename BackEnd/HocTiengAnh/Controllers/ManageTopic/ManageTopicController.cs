@@ -12,11 +12,10 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.ManageTopic
 {
 
-
-
     public class ManageTopicController : ApiController
     {
         [Route("detail/topicid={id}")]
+        [Authorize]
         [HttpGet]
         public IHttpActionResult SelectTuVungByTopicID(int id)
         {
@@ -33,6 +32,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
         }
          
         [Route("addNewTopic")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IHttpActionResult AddNewTopic(TopicModel topic)
         {
@@ -55,6 +55,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
 
         [HttpDelete]
+        [Authorize(Roles = "admin")]
         [Route("DeleteTopic/{id}")]
         public IHttpActionResult DeleteTopic(string id)
         {
@@ -73,6 +74,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
 
         [Route("addVocabToNewTopic")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IHttpActionResult AddVocabToNewTopic(WordModel word)
         {
@@ -101,6 +103,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
 
         [Route("updateVocabByTopicID")]
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public IHttpActionResult UpdateVocabByTopicID(WordModel word)
         {
@@ -131,6 +134,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
 
 
         [Route("updateTopic")]
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public IHttpActionResult UpdateTopic(TopicModel topic)
         {

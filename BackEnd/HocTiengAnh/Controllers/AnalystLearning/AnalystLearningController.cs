@@ -12,9 +12,9 @@ using System.Web.Http.Cors;
 namespace HocTiengAnh.Controllers.AnalystLearning
 {
 
-
     public class AnalystLearningController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("wrongTimesTopic")]
         public IHttpActionResult AnalystMostWrongTopic(TopicModel topicModel)
@@ -31,6 +31,7 @@ namespace HocTiengAnh.Controllers.AnalystLearning
             return Json(result);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("topicScore")]
         public IHttpActionResult MostScoreTopic(TopicModel topicModel)

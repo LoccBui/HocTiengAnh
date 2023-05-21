@@ -11,8 +11,6 @@ using HocTiengAnh.Database;
 
 namespace HocTiengAnh.Controllers.Login
 {
-
-
     public class LoginController : ApiController
     {
         [HttpPost]

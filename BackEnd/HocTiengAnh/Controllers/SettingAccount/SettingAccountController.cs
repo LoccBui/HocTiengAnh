@@ -14,10 +14,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.SettingAccount
 {
-
-
     public class SettingAccountController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("settingAccount")]
         public IHttpActionResult AuthUser(AccountModel account)
@@ -55,6 +54,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
         }
 
         [HttpPost]
+        [Authorize]
         [Route("updateInfoAccount")]
         public IHttpActionResult UpdateInfoGiaoVien(AccountModel account)
         {
@@ -130,7 +130,7 @@ namespace HocTiengAnh.Controllers.SettingAccount
             return Json(result);
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("changeDefaultPersonalVocab")]
         public IHttpActionResult ChangeDefaultPersonalVocab(PersonalVocabModel personalVocab)

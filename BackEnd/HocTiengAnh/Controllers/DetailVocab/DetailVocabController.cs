@@ -10,10 +10,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.DetailVocab
 {
-
-
     public class DetailVocabController : ApiController
     {
+        [Authorize]
         [Route("vocabdetail/topicid={id}")]
         [HttpGet]
         public IHttpActionResult SelectTuVungByTopicID(int id)

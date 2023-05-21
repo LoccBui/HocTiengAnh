@@ -20,6 +20,8 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
         [HttpGet]
         [Route("getClassByID/{id}")]
+        [Authorize]
+
         public IHttpActionResult GetClassByID(string id)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -38,6 +40,8 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
         [HttpPost]
         [Route("newClass")]
+        [Authorize(Roles = "admin")]
+
         public IHttpActionResult NewClass([FromBody] NewClassDataModel data)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -56,6 +60,7 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
 
         [Route("DeleteClass/{id}")]
+        [Authorize(Roles = "admin")]
         [HttpDelete]
         public IHttpActionResult DeleteClassByID(int id)
         {
@@ -69,6 +74,7 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
 
         [Route("SelectAllFaculty")]
+        [Authorize]
         [HttpGet]
         public IHttpActionResult JsonResult()
         {
@@ -80,6 +86,7 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
         [HttpGet]
         [Route("SelectAllClasses")]
+        [Authorize]
         public IHttpActionResult SelectAllClasses()
         {
             var result = new DB().GetDataReader("sp_ShowAllClass");
@@ -90,6 +97,7 @@ namespace HocTiengAnh.Controllers.Manage_Class
 
         [HttpPost]
         [Route("getTeacherByFaculty/{faculty}")]
+        [Authorize]
         public IHttpActionResult ShowTeacherByFaculty(string faculty)
         {
             SqlParameter[] param = new SqlParameter[] {

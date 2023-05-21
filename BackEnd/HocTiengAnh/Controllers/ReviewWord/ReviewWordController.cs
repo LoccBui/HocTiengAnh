@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ReviewWord
 {
-
-
     public class ReviewWordController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("rankingTopic")]
         public IHttpActionResult GetRanking(TopicModel topic)
@@ -50,6 +49,7 @@ namespace HocTiengAnh.Controllers.ReviewWord
             return Json(result);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("addToPersonalVocab")]
         public IHttpActionResult GetPersonalCollection(DetailPersonalVocabModel vocabPersonDetail)
@@ -71,7 +71,7 @@ namespace HocTiengAnh.Controllers.ReviewWord
         }
 
 
-
+        [Authorize]
         [HttpPost]
         [Route("wordExists")]
         public IHttpActionResult CheckWordExists(DetailPersonalVocabModel vocabPersonDetail)

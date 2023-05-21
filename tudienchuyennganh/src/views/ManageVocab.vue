@@ -49,12 +49,12 @@
           </el-button>
         </div>
 
-        <div class="option-area">
+        <!-- <div class="option-area">
           <el-button type="primary" @click="openWith('default')">
             <v-icon class="option-icon">mdi-plus-thick</v-icon>
             Thêm thủ công
           </el-button>         
-        </div>
+        </div> -->
       </div>
   </el-dialog>
 
@@ -415,7 +415,7 @@ import * as XLSX from 'xlsx';
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width:100%;
     height: 100%;
     font-size: 50px;
 

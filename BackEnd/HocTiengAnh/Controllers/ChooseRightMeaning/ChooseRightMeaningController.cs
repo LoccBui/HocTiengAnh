@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ChooseRightMeaning
 {
-
-
     public class ChooseRightMeaningController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("getVietnameseMeaning")]
         public IHttpActionResult GetVietNameseMeaning(WordModel word)
@@ -22,7 +21,6 @@ namespace HocTiengAnh.Controllers.ChooseRightMeaning
             SqlParameter[] param = new SqlParameter[] {
                     new SqlParameter("@Word", word.Word),
                     new SqlParameter("@Vietnamese", word.Vietnamese),
-
             };
 
             var result = new DB().GetDataReader("sp_GetVietNameseRightMeaning", param);

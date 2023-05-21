@@ -11,12 +11,10 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.Manage_Users
 {
-
-
-
     public class ManageUsersController : ApiController
     {
         [HttpGet]
+        [Authorize]
         [Route("getAllUsers")]
         public IHttpActionResult JsonResult()
         {
@@ -27,6 +25,7 @@ namespace HocTiengAnh.Controllers.Manage_Users
 
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [Route("addNewUser")]
         public IHttpActionResult AddNewUser(AccountModel account) 
         {
@@ -43,6 +42,7 @@ namespace HocTiengAnh.Controllers.Manage_Users
         }
 
         [HttpDelete]
+        [Authorize(Roles = "admin")]
         [Route("DeleteUser/{id}")]
         public IHttpActionResult DeleteUser(string id)
         {

@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ListenAndChoose
 {
-
-
     public class ListenAndChooseController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("getDataListenAndChoose")]
         public IHttpActionResult AddInfoNewUser(WordModel word)

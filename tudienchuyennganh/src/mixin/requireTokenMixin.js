@@ -12,7 +12,14 @@ export const requireTokenMixin = {
     const tokenExpired = expiresAt.getTime() <= Date.now();
 
     if (!token || tokenExpired) {
-        window.location.href = '/login'
+        if(!document.URL.includes('/login')){
+          window.location.href = '/login';
+        }
+    }
+    else{
+      const currentPath = this.$route.path;
+
+      this.$router.push(`${currentPath}`)
     }
   },
 };

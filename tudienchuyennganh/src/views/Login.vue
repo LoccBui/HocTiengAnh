@@ -79,9 +79,12 @@ import axiosInstance from '../axios'
 import { ElNotification } from 'element-plus'
 import Cookies from 'js-cookie';
 
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+
 
 
 export default {
+    mixins:[requireTokenMixin],
 
     name: "Login",
     components: {DialogBox},

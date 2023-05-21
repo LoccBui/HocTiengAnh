@@ -11,10 +11,9 @@ using System.Web.Http.Cors;
 
 namespace HocTiengAnh.Controllers.ConfirmPassword
 {
-
-
     public class ConfirmPasswordController : ApiController
     {
+        [Authorize]
         [HttpPost]
         [Route("getUsername")]
         public IHttpActionResult GetDataUserByID(AccountModel account)

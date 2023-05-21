@@ -21,9 +21,6 @@ const AnalystLearning = () => import( '../views/AnalystLearning.vue')
 const ManagePersonalVocab = () => import('../views/ManagePersonalVocab.vue')
 
 
-import TopicDetail from '../views/TopicDetail.vue'
-
-
 const routes = [
   {path: '/',  component: Login},
   {path: '/login',  component: Login},
@@ -63,7 +60,7 @@ const routes = [
         component: ManageUsers
       },
       {
-        path: '/analyst/1',
+        path: '/analyst',
         component: AnalystLearning
       },
       {

@@ -12,12 +12,12 @@ namespace HocTiengAnh.Controllers.Topic
 {
     public class TopicController : ApiController
     {
-
         public class NewClassDataModel
         {
             public int AccountID { get; set; }
             public int TopicID { get; set; }
         }
+
 
         [HttpPost]
         [Route("getStatusLearning")]
@@ -39,6 +39,7 @@ namespace HocTiengAnh.Controllers.Topic
         }
 
         [HttpPost]
+        [Authorize]
         [Route("learning/topicid")]
         public IHttpActionResult SelectTuVungByTopicID(NewClassDataModel learn)
         {
@@ -58,6 +59,7 @@ namespace HocTiengAnh.Controllers.Topic
 
 
         [HttpGet]
+        [Authorize]
         [Route("SelectAllTuVung")]
         public IHttpActionResult SelectAllTuVung()
         {
@@ -68,6 +70,7 @@ namespace HocTiengAnh.Controllers.Topic
 
         [Route("SelectAllTopics")]
         [HttpGet]
+        [Authorize]
         public IHttpActionResult SelectAllTopics()
         {
             var result = new DB().GetDataReader("sp_ShowAllTopic");

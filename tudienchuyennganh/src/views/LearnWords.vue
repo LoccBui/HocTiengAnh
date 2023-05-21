@@ -122,6 +122,8 @@
 import axiosInstance from '../axios'
 import Cookies from 'js-cookie';
 import globalFunc from '@/GlobalFunction/script.js'
+import { requireTokenMixin } from '@/mixin/requireTokenMixin'
+
 
 import LearnByMeaningVue from './LearnByMeaning.vue'
 import ChooseRightMeaning from './ChooseRightMeaning.vue'
@@ -133,6 +135,7 @@ import ReviewWord from '@/components/ReviewWord.vue'
 
 
 export default {
+  mixins:[requireTokenMixin],
   components: {LearnByMeaningVue, ChooseRightMeaning, FillInABlank, ListenAndChoose, ChooseRightWord, CorrectListening, ReviewWord},
   data(){
     return {
@@ -254,7 +257,7 @@ export default {
         case "wrong": 
           this.totalScore += 0
           this.progressPercent += inscreasePercent
-          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 0, this.totalScore)
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 1, this.totalScore)
           break;
         case "mention": 
           this.totalScore += 50
@@ -264,7 +267,7 @@ export default {
         default: /* overtime */ 
           this.totalScore += 0
           this.progressPercent += inscreasePercent
-          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 0, this.totalScore)
+          globalFunc.addToDetailLearning(this.accountID, status.vocabID, this.topicID*1, status.level, 1, this.totalScore)
           break;
         }
 
