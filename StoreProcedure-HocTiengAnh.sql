@@ -20,7 +20,7 @@ END
 go
 
 -- Phân loại user theo admin hoặc giáo viên hoặc sinh viên
-alter procedure sp_AuthUser
+create procedure sp_AuthUser
 @AccountID int
 as 
 BEGIN
@@ -29,7 +29,7 @@ BEGIN
 			select GV.AccountID, GV.MaGV, TK.Name, TK.Email, K.IDFACULTY, NTK.Priority, TK.Active, TK.Image, '0'as isNewUser  
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join KHOA K on K.MaGV = GV.MaGV
+			inner join KHOA K on K.IDFACULTY = GV.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID
 		end
@@ -176,10 +176,9 @@ BEGIN
 
 	ELSE 
 		begin
-			select DISTINCT @IDFaculty = L.IDFACULTY
+			select DISTINCT @IDFaculty = K.IDFACULTY
 			from GIAOVIEN GV
-			inner join KHOA K on K.MaGV = GV.MaGV
-			inner join LOP L on L.IDFACULTY = K.IDFACULTY
+			inner join KHOA K on K.IDFACULTY = GV.IDFACULTY
 			where GV.AccountID = @AccountID;
 
 			exec sp_ShowTopicByFaculty @IDFaculty
@@ -663,7 +662,7 @@ END
 
 go
 
-alter procedure sp_AddNewSinhVien
+create procedure sp_AddNewSinhVien
 @AccountID int,
 @Gender nvarchar(10),
 @Name nvarchar(100),
@@ -702,10 +701,11 @@ END
 go
 
 --Cập nhật thông tin giáo viên
-alter procedure sp_AddInfoGiaoVien
+create procedure sp_AddInfoGiaoVien
 @AccountID int,
 @Name nvarchar(100),
-@Gender nvarchar(10)
+@Gender nvarchar(10),
+@IDFACULTY tinyint
 as
 BEGIN
 	DECLARE @check int
@@ -719,8 +719,8 @@ BEGIN
 
 	if not EXISTS (select * from GIAOVIEN where AccountID = @AccountID)
 	BEGIN
-		INSERT INTO GIAOVIEN(MaGV, AccountID, Gender, DateCreated)
-		VALUES (@lastestMaGV, @AccountID, @Gender, GETDATE())
+		INSERT INTO GIAOVIEN(MaGV, IDFACULTY, AccountID, Gender, DateCreated)
+		VALUES (@lastestMaGV, @IDFACULTY, @AccountID, @Gender, GETDATE())
 		set @check = (select @@ROWCOUNT) 
 	END
 
@@ -734,9 +734,14 @@ BEGIN
 		end
 END
 
+exec sp_AddInfoGiaoVien
+@AccountID = 9,
+@Name = 'q',
+@Gender = N'Nữ',
+@IDFACULTY =1
 go
 
-alter procedure sp_AddGiaoVienToKhoa
+create procedure sp_AddGiaoVienToKhoa
 @IDFACULTY tinyint,
 @FacultyName nvarchar(50)
 as
@@ -747,8 +752,8 @@ BEGIN
     SET @lastestIDMaGV = COALESCE((SELECT MAX(MAGV) FROM GIAOVIEN),0)
 
 	SET IDENTITY_INSERT KHOA ON 
-	INSERT INTO KHOA(IDFACULTY, FacultyName, MaGV)
-	VALUES(@IDFACULTY, @FacultyName, @lastestIDMaGV )
+	INSERT INTO KHOA(IDFACULTY, FacultyName)
+	VALUES(@IDFACULTY, @FacultyName )
 	set @check = (select @@ROWCOUNT) 
 
 	if(@check > 0 )
@@ -845,7 +850,7 @@ BEGIN
 			select GV.AccountID, GV.MaGV,  TK.Name, GV.Gender, TK.Email, L.ClassName, K.FacultyName, TK.Image, TK.RoleID, NTK.Priority
 			from GIAOVIEN GV
 			inner join TAIKHOAN TK on TK.AccountID = GV.AccountID
-			inner join KHOA K on K.MaGV = GV.MaGV
+			inner join KHOA K on K.IDFACULTY = GV.IDFACULTY
 			inner join LOP L on L.IDFACULTY = K.IDFACULTY
 			inner join NHOMTK NTK on NTK.RoleID = TK.RoleID
 			where GV.AccountID = @AccountID

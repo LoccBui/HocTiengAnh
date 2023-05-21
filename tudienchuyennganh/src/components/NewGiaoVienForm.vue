@@ -179,14 +179,9 @@ export default {
                     "AccountID": dataUser.accountID,
                     "Name": `${this.ruleForm.name}`,
                     "Gender": `${this.gender == false ? 'Nữ': 'Nam'}`,
+                    "IDFACULTY": this.ruleForm.faculty.value
                 })
 
-                let addToClass =  await axiosInstance.post('addGiaoVienToFaculty', {
-                    "IDFACULTY": this.ruleForm.faculty.value, 
-                    "FacultyName": `${this.ruleForm.faculty.label}`, 
-                })
-
-              
                 if(addToGiaoVien.status == 200){
                     this.getDataUser(dataUser.accountID)
                 }

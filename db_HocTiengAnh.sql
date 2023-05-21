@@ -29,29 +29,29 @@ create table TAIKHOAN (
 )
 go
 
+create table KHOA(
+	IDFACULTY tinyint IDENTITY(1,1),
+	FacultyName nvarchar(100),
+
+	PRIMARY KEY (IDFACULTY),
+)
+
+go 
 
 create table GIAOVIEN (
 	MaGV smallint,
+	IDFACULTY tinyint,
 	AccountID int,
 	Gender nvarchar(10),
 	DateCreated datetime,
 
 	PRIMARY KEY (MaGV),
 	FOREIGN KEY (AccountID) REFERENCES TAIKHOAN(AccountID),
+	FOREIGN KEY (IDFACULTY) REFERENCES KHOA(IDFACULTY),
 )
 
 go
 
-create table KHOA(
-	IDFACULTY tinyint IDENTITY(1,1),
-	FacultyName nvarchar(100),
-	MaGV smallint,
-
-	PRIMARY KEY (IDFACULTY),
-	FOREIGN KEY (MaGV) REFERENCES GIAOVIEN(MaGV)
-)
-
-go 
 
 create table LOP(
 	IDCLASS smallint IDENTITY(1,1) UNIQUE,
@@ -226,20 +226,18 @@ SET IDENTITY_INSERT [dbo].[TAIKHOAN] OFF
 
 GO
 
-INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (1, 2, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
-INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (2, 4, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
-INSERT [dbo].[GIAOVIEN] ([MaGV], [AccountID], [Gender], [DateCreated]) VALUES (3, 5, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
+
+SET IDENTITY_INSERT [dbo].[KHOA] ON 
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (1, N'Công nghệ thông tin')
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (2, N'Dược')
+INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName]) VALUES (3, N'Maketing')
+SET IDENTITY_INSERT [dbo].[KHOA] OFF
 
 GO
 
-
-SET IDENTITY_INSERT [dbo].[KHOA] ON 
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (1, N'Công nghệ thông tin', 1)
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (2, N'Dược', 2)
-INSERT [dbo].[KHOA] ([IDFACULTY], [FacultyName], [MaGV]) VALUES (3, N'Maketing', 3)
-SET IDENTITY_INSERT [dbo].[KHOA] OFF
-
-
+INSERT [dbo].[GIAOVIEN] ([MaGV], [IDFACULTY], [AccountID], [Gender], [DateCreated]) VALUES (1, 1, 2, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
+INSERT [dbo].[GIAOVIEN] ([MaGV], [IDFACULTY], [AccountID], [Gender], [DateCreated]) VALUES (2, 2, 4, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
+INSERT [dbo].[GIAOVIEN] ([MaGV], [IDFACULTY], [AccountID], [Gender], [DateCreated]) VALUES (3, 3, 5, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime))
 
 GO
 
