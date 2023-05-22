@@ -15,7 +15,7 @@
                 Từ sai nhiều nhất
                <el-table v-loading="loading"
                     :data="arrWrongWord"
-                    style="width: 100%; min-height: 200px;"
+                    style="width: 100%; min-height: 200px; max-height: 200px; overflow-y: scroll ;"
                     element-loading-text="Chưa có dữ liệu..."
                     element-loading-background="#e6ebff">
 
@@ -34,7 +34,7 @@
 
                 <el-table
                     :data="arrMostScore"
-                    style="width: 100%; min-height: 200px;"
+                    style="width: 100%; min-height: 200px; max-height: 200px; overflow-y: scroll ;"
                     v-loading="loading"
                     element-loading-text="Chưa có dữ liệu..."
                     element-loading-background="#e6ebff"
@@ -176,13 +176,13 @@ export default {
     }
 
     .analyst-cover{
-        width: 100%;
+        width: 500px;
         display: flex;
         align-items: center;
-        justify-content: space-around;
     }
 
     .analyst-area{
+        width: 600px;
         flex: 1;
         margin: 0 20px;
         padding: 2%;

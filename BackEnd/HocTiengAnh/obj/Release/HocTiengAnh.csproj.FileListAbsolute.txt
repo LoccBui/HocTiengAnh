@@ -85,3 +85,15 @@ E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Release\HocTiengAnh.csproj.CoreComp
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Release\HocTiengAnh.csproj.CopyComplete
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Release\HocTiengAnh.dll
 E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Release\HocTiengAnh.pdb
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Cors.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Host.SystemWeb.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.OAuth.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Owin.dll
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.xml
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Cors.xml
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.xml
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\bin\Microsoft.Owin.Security.OAuth.xml
+E:\TuDienChuyenNganh\BackEnd\HocTiengAnh\obj\Release\HocTiengAnh.csproj.AssemblyReference.cache

@@ -97,8 +97,8 @@ export default {
       let countDown = setInterval(() => {
         this.countDownTimes -= 1;
         if (this.countDownTimes === 0) {
-          this.handleOvertime();
-          clearInterval(countDown);
+          // this.handleOvertime();
+          // clearInterval(countDown);
         }
       }, 1000);
     },

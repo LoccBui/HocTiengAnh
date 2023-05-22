@@ -14,19 +14,19 @@
           <div style="margin-top: 20px;">
                 Số lượng sinh viên trong lớp: 
                 <el-button type="primary" plain disabled >  
-                  {{ arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === true).length}} 
+                  {{ arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false).length}} 
                 </el-button> 
           </div>
           
 
-          <div style="margin-top: 20px;">
+          <!-- <div style="margin-top: 20px;">
               <el-badge :value="`${arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false).length}`" class="item">
                 <el-button plain @click="this.showListNeedApproved = true"> 
                   Đang chờ xét duyệt
                 </el-button> 
             </el-badge>
 
-          </div>
+          </div> -->
             
         
           <el-divider></el-divider>
@@ -263,7 +263,7 @@ import { ElNotification } from 'element-plus'
 
             filterStundentHasApproved(){
               if (!this.search) {
-                return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === true)
+                return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false)
               }
              return this.arrClass.flatMap(cls => cls).filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
             },

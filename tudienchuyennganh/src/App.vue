@@ -6,7 +6,7 @@
 
 <script setup>
        // disable console.log
-      //  console.log = function () {}; 
+       console.log = function () {}; 
 </script>
 
 <style lang="scss">

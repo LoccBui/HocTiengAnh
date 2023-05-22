@@ -58,13 +58,13 @@
                     
                     </v-form>
 
-                    <span class="navigate">
+                    <!-- <span class="navigate">
                         <span class="no-hover-pointer"> Chưa có tài khoản ? </span>  
                         <h3>
                             <router-link class="primary-text-color hover-pointer" 
                             to="/register"> Đăng kí </router-link>   
                         </h3>
-                    </span>
+                    </span> -->
                 </div>
             </div>
         </div>
