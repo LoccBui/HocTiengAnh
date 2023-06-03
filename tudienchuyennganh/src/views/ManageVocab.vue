@@ -206,7 +206,7 @@ import * as XLSX from 'xlsx';
 
     methods:{
       changeTitle(){
-        document.title = "Quản lý từ vựng"
+        document.title = "Quản lý chủ đề"
       },
 
       openBox(){

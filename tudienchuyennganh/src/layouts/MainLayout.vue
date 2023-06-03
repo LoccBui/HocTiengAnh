@@ -226,7 +226,7 @@ export default {
             {icon: 'mdi-account', title: 'Cài đặt tài khoản', value: 3, route: '/account/setting', roles: [1, 10, 100]},
             {icon: 'mdi-account-group ', title: 'Quản lý lớp', value: 4, route: '/manage/class', roles: [100]},
             {icon: 'mdi-account-cog ', title: 'Quản lý tài khoản', value: 5, route: '/manage/users', roles: [100]},
-            {icon: 'mdi-alpha-v-circle ', title: 'Quản lý từ vựng', value: 6, route: '/manage/vocab', roles: [10,100]},
+            {icon: 'mdi-alpha-v-circle ', title: 'Quản lý chủ đề', value: 6, route: '/manage/vocab', roles: [10,100]},
             {icon: 'mdi-google-analytics ', title: 'Chi tiết học', value: 7, route: '/analyst', roles: [10,100]},
             {icon: 'mdi-file-word-box ', title: 'Bộ từ của tôi', value: 8, route: `/manage/personal/${this.accountID}`, roles: [1,10,100]},
           ]

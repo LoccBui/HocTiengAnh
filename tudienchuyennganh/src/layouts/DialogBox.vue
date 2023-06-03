@@ -7,7 +7,7 @@
             <template #header>
                 <div class="header-box">
                     <div class="close-ask-box" >
-                        <img src="../assets/icon/ic_checkmark.png" class="img-dialog" @click="closeBox()">    
+                        <!-- <img src="../assets/icon/ic_checkmark.png" class="img-dialog" @click="closeBox()">     -->
                     </div>
                     <h3 class="state-text">{{titleBox}}</h3>
                 </div>
@@ -86,4 +86,4 @@ export default {
     color: #28A745;
     font-size: 30px;
 }
-</style>>
+</style>
