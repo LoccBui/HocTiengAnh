@@ -323,6 +323,12 @@ export default {
         width: 100%;
     }
 
+    .topic-cover{
+        width: 100%;
+        min-width: 0;
+        margin: 20px 0 !important;
+    }
+
 }
 
 

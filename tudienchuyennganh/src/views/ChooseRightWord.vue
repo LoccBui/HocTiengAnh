@@ -7,14 +7,14 @@
           Chọn đúng từ
 
           <div class="timer">
-            <h1>{{ countDownTimes }}</h1>
+            <h1 style="text-align: center;">{{ countDownTimes }}</h1>
           </div>
         </h1>
 
         
 
         <div class="w20">
-          <el-button color="var(--main-color)"  @click="this.finishLearn()" :disabled="stopClick"> 
+          <el-button color="var(--main-color)" class="btn-next"  @click="this.finishLearn()" :disabled="stopClick"> 
             <v-icon>mdi-check</v-icon>
             Tiếp theo
           </el-button>
@@ -406,5 +406,39 @@ import { ElNotification } from 'element-plus'
       }
     }
   }
+
+
+@media screen and (max-width: 900px){
+.header{
+  flex-direction: column;
+
+  h1{
+    width: 100%;
+  }
+
+  .btn-next{
+    display: none;
+  }
+}
+
+.question-text{
+  width: 100% !important;
+}
+
+.body{
+  .left-side{
+    width: 100% !important;
+  }
+}
+
+.left-side-learning{
+  width: 100% !important;
+
+  .options{
+    flex-direction: column;
+  }
+}
+
+}
   
   </style>

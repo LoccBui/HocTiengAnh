@@ -1,8 +1,14 @@
 ﻿--drop database HocTiengAnh
+use master
+
+go
 
 create database HocTiengAnh
+
 go
+
 use HocTiengAnh
+
 go
 
 create table NHOMTK (
@@ -118,19 +124,6 @@ create table TUVUNG(
 	PRIMARY KEY (VocabID),
 	FOREIGN KEY (TopicID) REFERENCES CHUDE(TopicID)
 )
-GO
-
-CREATE TABLE CHITIETLOP (
-	DetailID int IDENTITY(1,1),
-	MaSV int,
-	IDCLASS smallint,
-	IsApproved bit default 0,
-	PRIMARY KEY (MaSV, IDCLASS),
-	FOREIGN KEY (MaSV) REFERENCES SINHVIEN(MaSV),
-	FOREIGN KEY (IDCLASS) REFERENCES LOP(IDCLASS),
-)
-
-
 GO
 
 CREATE TABLE CHITIETHOC (
@@ -251,19 +244,9 @@ GO
 
 INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (1, 1, N'Nam', CAST(N'2023-02-21T00:00:00.000' AS DateTime), 1)
 INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (2, 3, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 1)
-INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (3, 6, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 1)
+INSERT [dbo].[SINHVIEN] ([MaSV],[AccountID], [Gender], [DateCreated], [IDCLASS]) VALUES (3, 6, N'Nam', CAST(N'2023-02-20T00:00:00.000' AS DateTime), 2)
 
 GO
-
-SET IDENTITY_INSERT [dbo].[CHITIETLOP] ON 
-INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[IDCLASS],[IsApproved]) VALUES (1, 1, 1, 0)
-INSERT [dbo].[CHITIETLOP] ([DetailID],[MaSV],[IDCLASS],[IsApproved]) VALUES (2, 2, 1, 0)
-SET IDENTITY_INSERT [dbo].[CHITIETLOP] OFF
-
-
-go
-
-
 
 SET IDENTITY_INSERT [dbo].[CHUDE] ON 
 INSERT [dbo].[CHUDE] ([TopicID],[IDFACULTY], [TopicName], [TopicDescribe], [QuantityWords], [Active], [CreatedBy] ) VALUES (1, 1, N'Chuyên Ngành CNTT', N'Ví dụ 1', 10, 1, N'Minh Phúc')

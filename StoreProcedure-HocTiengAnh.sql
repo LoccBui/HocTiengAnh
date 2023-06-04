@@ -1,4 +1,7 @@
-﻿
+﻿use HocTiengAnh
+
+
+go
 -- Login so sánh usesrname và pass
 create procedure sp_LoginAccount
 	@UserName varchar(50),
@@ -684,9 +687,6 @@ BEGIN
 	VALUES (@lastestMaSV, @AccountID, @Gender, GETDATE(), @IDCLASS)
 	set @check = (select @@ROWCOUNT) 
 
-	
-	INSERT INTO CHITIETLOP(MaSV, IDCLASS)
-	VALUES(@lastestMaSV, @IDCLASS)
 
 	if(@check > 0 )
 		begin 
@@ -1012,11 +1012,11 @@ as
 BEGIN
 	DECLARE @check int
 
-	select CTL.DetailID, SV.MaSV, TK.Name, SV.Gender, CTL.IsApproved
-	from CHITIETLOP CTL
-	inner join SINHVIEN SV on SV.MaSV = CTL.MaSV
+	select LOP.IDCLASS, SV.MaSV, TK.Name, SV.Gender
+	from LOP LOP
+	inner join SINHVIEN SV on SV.IDCLASS = LOP.IDCLASS
 	inner join TAIKHOAN TK on TK.AccountID = SV.AccountID
-	where CTL.IDCLASS = @IDCLASS
+	where LOP.IDCLASS = @IDCLASS
 
 	set @check = (select @@ROWCOUNT) 
 
@@ -1107,7 +1107,7 @@ as
 BEGIN
     DECLARE @check int
 	
-	select CHITIETHOC.VocabID, TV.Word, SUM(WrongTimes) as TotalWrong
+	select TOP(10) CHITIETHOC.VocabID, TV.Word, SUM(WrongTimes) as TotalWrong
 	from CHITIETHOC 
 	inner join TUVUNG TV on TV.VocabID = CHITIETHOC.VocabID
 	where CHITIETHOC.TopicID = @TopicID

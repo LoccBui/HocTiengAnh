@@ -6,12 +6,12 @@
         Điền vào chỗ trống     
 
         <div class="timer">
-          <h1>{{ countDownTimes }}</h1>
+          <h1 style="text-align: center;">{{ countDownTimes }}</h1>
        </div>
       </h1>
 
       <div class="flex1">
-        <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
+        <el-button color="var(--main-color)" class="btn-next" @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Tiếp theo
         </el-button>
@@ -444,6 +444,44 @@ export default {
 
     }
   }
+}
+
+
+@media screen and (max-width: 900px){
+  .header{
+    flex-direction: column;
+
+    h1{
+      width: 100%;
+    }
+
+    .btn-next{
+      display: none;
+    }
+  }
+
+  .question-area{
+    width: 100% !important;
+    .question-text{
+      font-size: 25px;
+    }
+  }
+  
+
+  .body{
+    .left-side{
+      width: 100% !important;
+    }
+  }
+
+  .left-side-learning{
+    width: 100% !important;
+
+    .options{
+      flex-direction: column;
+    }
+  }
+
 }
 
 </style>

@@ -202,4 +202,19 @@ export default {
         }
     }
 
+@media screen and (max-width: 900px){
+    .analyst-cover{
+        width: 100%;
+        flex-direction: column;
+
+        .analyst-area{
+            width: 90%;
+        }
+
+        .analyst-area:nth-child(2){
+            margin-top: 20px;
+        }
+    }
+}
+
 </style>

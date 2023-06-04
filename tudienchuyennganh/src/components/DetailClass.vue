@@ -14,7 +14,7 @@
           <div style="margin-top: 20px;">
                 Số lượng sinh viên trong lớp: 
                 <el-button type="primary" plain disabled >  
-                  {{ arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false).length}} 
+                  {{ arrClass.flatMap(cls => cls).length}} 
                 </el-button> 
           </div>
           
@@ -36,10 +36,10 @@
             max-height="400px"
             :data="filterStundentHasApproved" 
             :default-sort="{ prop: 'TopicID', order: 'ascending' }"
-            empty-text="Bạn cần phê duyệt để thấy danh sách sinh viên"
+            empty-text="Chưa có sinh viên trong lớp"
           >
     
-          <el-table-column label="ID" prop="DetailID"  sortable/>
+          <el-table-column label="STT" width="auto" type="index" sortable/>
           <el-table-column label="Họ và tên" prop="Name" />
           <el-table-column label="Giới tính" prop="Gender" />
           <el-table-column align="center">
@@ -263,7 +263,7 @@ import { ElNotification } from 'element-plus'
 
             filterStundentHasApproved(){
               if (!this.search) {
-                return this.arrClass.flatMap(cls => cls).filter(cls => cls.IsApproved === false)
+                return this.arrClass.flatMap(cls => cls)
               }
              return this.arrClass.flatMap(cls => cls).filter(cls => cls.Name.toLowerCase().includes(this.search.toLowerCase()));
             },

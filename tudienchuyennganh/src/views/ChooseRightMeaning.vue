@@ -6,11 +6,11 @@
         Chọn đúng nghĩa của từ
 
         <div class="timer">
-          <h1>{{ countDownTimes }}</h1>
+          <h1 style="text-align: center;">{{ countDownTimes }}</h1>
         </div>
       </h1>
       <div class="w20">
-        <el-button color="var(--main-color)"  @click="this.finishLearn()" :disabled="stopClick"> 
+        <el-button color="var(--main-color)" class="btn-next"  @click="this.finishLearn()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Tiếp theo
         </el-button>
@@ -35,7 +35,9 @@
             :class="{ 'success-button': isCorrect === true && selectedIndex === index && isFalse === false, 'error-button': isFalse === true && selectedIndex === index }"
             :disabled="stopChoosing"
             >
+             <span class="option-text-result">
               {{ word }}
+             </span> 
             </el-button>
 
           </div>
@@ -408,6 +410,46 @@ export default {
 
     }
   }
+}
+
+
+@media screen and (max-width: 900px){
+  .header{
+    flex-direction: column;
+
+    h1{
+      width: 100%;
+    }
+
+    .btn-next{
+      display: none;
+    }
+  }
+
+  .body{
+    .left-side{
+      width: 100% !important;
+    }
+  }
+
+  .left-side-learning{
+    width: 100% !important;
+
+    .options{
+      flex-direction: column;
+
+      .el-button{
+        width: 100% !important;
+        word-wrap: break-word !important;
+
+        .option-text-result{
+          white-space: pre-wrap;
+          font-size: 25px;
+        }
+      }
+    }
+  }
+
 }
 
 </style>

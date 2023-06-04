@@ -79,9 +79,10 @@
 
 
     <el-dialog
+      class="personCollectionBox"
       v-model="personCollection"
       title="Chọn bộ từ cá nhân của bạn"
-      width="30%"
+      width="auto"
       :before-close="handleClose"
     >
 
@@ -453,5 +454,18 @@ export default {
     }
 
   }
+
+  
+@media screen and (max-width: 900px){
+    .table-cover{
+      flex-direction: column;
+    }
+
+    .word-cover,
+    .ranking-cover{
+      width: 100% !important;
+      margin: 10px 0 !important;;
+    }
+}
 
 </style>

@@ -6,12 +6,12 @@
         Nghe và chọn kết quả
       
         <div class="timer">
-          <h1>{{ countDownTimes }}</h1>
+          <h1 style="text-align: center;">{{ countDownTimes }}</h1>
         </div>
       </h1>
 
-      <div class="w20">
-        <el-button color="var(--main-color)"  @click="this.selectAnswer()" :disabled="stopClick"> 
+      <div class="w20 right-side-header">
+        <el-button color="var(--main-color)" class="btn-next" @click="this.selectAnswer()" :disabled="stopClick"> 
           <v-icon>mdi-check</v-icon>
           Chọn
         </el-button>
@@ -395,6 +395,44 @@ export default {
 
     }
   }
+}
+
+
+@media screen and (max-width: 900px){
+
+  .container{
+    min-height: 0;
+  }
+  
+  .header{
+    flex-direction: column;
+
+    h1{
+      width: 100%;
+    }
+
+    .right-side-header{
+      width: 100% !important;
+      margin: 4px 0;
+    }
+
+  }
+
+  .body{
+    .left-side{
+      width: 100% !important;
+    }
+  }
+
+  .question-text{
+    margin-top: 40px;
+    width: 100% !important;
+  }
+
+  .left-side-learning{
+    width: 100% !important;
+  }
+
 }
 
 </style>

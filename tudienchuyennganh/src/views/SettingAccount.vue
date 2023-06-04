@@ -55,7 +55,7 @@
                 </el-col>
             </div>
 
-            <div class="wrapper">
+            <div class="wrapper password-wrapper">
 
                 <el-row style="width: 100%; " >
 
@@ -107,7 +107,7 @@
 
        
 
-        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="45%"  align-center>
+        <el-dialog v-model="openPickAvatar" title="Hãy chọn avatar mới" width="auto"  align-center>
             <span>
                 Hãy chọn avatar mới
 
@@ -657,8 +657,6 @@ export default {
   }
 
 .personalVocabDialog{
-
-
     .dialog-footer{
         
         .el-button{
@@ -667,5 +665,22 @@ export default {
     }
 
 }
+
+@media screen and (max-width: 900px){
+    .info-wrapper{
+        padding: 0px;
+        flex-direction: column;
+
+        .wrapper{
+            width: 100%;
+        }
+    }
+
+    .password-wrapper{
+        margin: 0 !important;
+        padding: 0;
+    }
+}
+
 </style>
 
