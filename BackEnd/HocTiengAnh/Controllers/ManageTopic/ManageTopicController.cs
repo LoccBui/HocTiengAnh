@@ -32,7 +32,7 @@ namespace HocTiengAnh.Controllers.ManageTopic
         }
          
         [Route("addNewTopic")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [HttpPost]
         public IHttpActionResult AddNewTopic(TopicModel topic)
         {

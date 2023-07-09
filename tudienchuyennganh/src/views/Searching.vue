@@ -35,7 +35,7 @@ export default {
 <style lang="scss" scoped>
 .container{
   width: 100%;
-  min-height: 600px;
+  height: 100vh;
 }
 
 .widget-laban{

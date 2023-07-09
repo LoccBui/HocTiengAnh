@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-
+// http://35.247.167.65:8090/
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8090/',
+
   headers: {
     'Content-Type': 'application/json'
   }
